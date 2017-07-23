@@ -9,3 +9,117 @@ body{
     margin-top:0px;
     margin-left:0px;
 }
+
+#test{
+	position:absolute;
+	width:90%;
+	height:500px;
+	background-color:rgba(100,100,100,0.5);
+	left:5%;
+	z-index:2;
+}
+
+#deleteBtn{
+	z-index:2;
+	position:absolute;
+	top:20px;
+	right:20px;
+	width:auto;
+	height:20px;
+	padding:10px;
+	cursor:pointer;
+	color:white;
+	opacity:0.5;
+	background-color:rgb(20,70,150);
+}
+
+#deleteBtn:hover{
+	background-color:rgb(30,120,180);
+	opacity:1;
+}
+
+#deleteBtn:active{
+	background-color:grey;
+}
+
+#Anim{
+	height:20px;
+	margin-right:5px;
+}
+
+#backBtn{
+    z-index:1;
+    position:fixed;
+    color: white;
+    top:50px;
+    left:20px;
+    background-color:rgb(20,70,150);
+    padding: 10px;
+    opacity: 0.5;
+}
+
+#backBtn:link {
+
+    background-color: rgb(20,70,150); 
+    text-decoration: none;
+}
+
+#backBtn:visited {
+
+    background-color: rgb(20,70,150);
+    text-decoration: none;
+}
+
+#backBtn:hover {
+    opacity:1;
+    background-color: rgb(30,120,180);
+    text-decoration: none;
+}
+
+#backBtn:active {
+
+    background-color: grey;
+    text-decoration: none;
+}
+
+#mainContainer{
+    position:relative;
+    overflow:hidden;
+    top:100px;
+    width:90%;
+    left:5%;
+    height:350px;
+}
+
+#proiect1{
+    overflow:hidden;
+    width:48%;
+    height:99%;
+    margin-right:3%;
+    float:left;
+    background-color:rgb(220,220,220);
+    border:1px solid black;
+}
+
+#proiect2{
+    overflow:hidden;
+    width:48%;
+    height:99%;
+    float:left;
+    border:1px solid grey;
+    background-color:black;
+}
+
+#imgProiect{
+    width:100%;
+    height:auto;
+    opacity:0.5;
+}
+
+#proiect1:hover #imgProiect{
+    opacity:1;
+}
+
+#proiect2:hover #imgProiect{
+    opacity:1;
+}   

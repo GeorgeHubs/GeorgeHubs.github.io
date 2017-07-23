@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Cevas</title>
+	<link rel="stylesheet" href="Styles/Style.css">
+</head>
+
+<body onload="countEm();addFireworks();draw()" style="bakcground-color:black;">
+
+    <canvas onclick = "addOneFirework()" width="800px" height="400px" id="myCanvas"></canvas>
+    <div onclick = "spinAnim();removeOneFirework()" id="deleteBtn"><img id="Anim" src="AnimRot.png" alt="NoPic">Sterge una</div>
+	<a href="index.html" id="backBtn">Back</a>
+</body>
+
+<script>
+
+var animRef = document.getElementById('Anim'),spinVal=0;
+
+var canvRef = document.getElementById('myCanvas');
+canvRef.width = window.innerWidth;
+canvRef.height = window.innerHeight;
+
+var canvCtx = canvRef.getContext('2d');
+
+canvCtx.fillStyle = "black";
+canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+canvCtx.fillStyle = "white";
+
+var artificie = new firework();
+var fireworkCount = 0;
+var viteza=5;
+var timer=0;
+var grad = 0;
+var r=20;
+
+function firework()
+{
+    this.x = 50+ Math.floor(Math.random()*(canvRef.width-100));
+    this.y = canvRef.height;
+
+    this.destX = this.x;
+    this.destY = 50 + Math.floor(Math.random()*(canvRef.height-100));
+	
+    this.fadeValue = 1;
+	
+	this.fireworkColorR = Math.floor(Math.random()*255);
+	this.fireworkColorG = Math.floor(Math.random()*255);
+	this.fireworkColorB = Math.floor(Math.random()*255);
+	
+    this.show = function(){
+		canvCtx.fillStyle = "rgb("+this.fireworkColorR+","+this.fireworkColorG+","+this.fireworkColorB+")";
+	    canvCtx.fillRect(this.x,this.y,5,20);
+	}
+	
+	this.check = 0;
+	
+	this.move = function(){
+	    if(this.y > this.destY)
+		{
+		    this.y -= viteza;
+		}
+		
+		if(this.y == this.destY || this.y < this.destY)
+        {
+		    this.addSparkles(this.x,this.y);
+			this.debugSparkle();
+			this.check = 1;
+			removeOneFirework();
+		    addOneFirework();
+			return;
+		}		
+	}
+	
+	this.sparkle = new sprite();
+	
+	this.addSparkles = function(x,y){
+	    var g=0,q = this.sparkle;
+		
+		while (g!=50)
+		{
+		    g ++;
+		    q.next = new sprite(x,y);
+			
+			q = q.next;
+		    /*console.log("Am adaugat particula cu destinatia -  X : "+q.destX+"  Y : "+q.destY);*/
+		}
+	}
+	
+	this.moveSparkles = function(){
+	    var q = this.sparkle;
+		
+		while(q)
+		{   
+		    if(q.x < q.destX)
+			{
+			    q.x ++;
+			}
+			
+			if(q.y < q.destY)
+			{
+			    q.y ++;
+			}
+			
+			if(q.x > q.destX)
+			{
+			    q.x --;
+			}
+			
+			if(q.y > q.destY)
+			{
+			    q.y --;
+			}
+			
+			q = q.next;
+		}
+	}
+	
+	this.moveSparkles2 = function (){
+	    var q = this.sparkle;
+		var pasX,pasY,distX,distY;
+		
+		
+		while(q)
+		{
+		    distX = Math.sqrt(Math.pow(q.x-q.destX,2));
+			distY = Math.sqrt(Math.pow(q.y-q.destY,2));
+		
+		    if(distX < distY)
+			{
+			    pasX = distX/distY;
+				pasy = 1;
+			}
+			
+			if(distY < distX)
+			{
+			    pasY = distY/distX;
+				pasX = 1;
+			}
+			
+			if(q.x < q.destX)
+			{
+			    q.x += pasX*2;
+			}
+			
+			if(q.y < q.destY)
+			{
+			    q.y += pasY*2;
+			}
+			
+			if(q.x > q.destX)
+			{
+			    q.x -= pasX*2;
+			}
+			
+			if(q.y > q.destY)
+			{
+			    q.y -= pasY*2;
+			}
+		
+		    q = q.next;
+		}
+	}
+		
+	this.showSparkles = function(){
+	    var q = this.sparkle;
+		canvCtx.fillStyle = "rgba("+this.fireworkColorR+","+this.fireworkColorG+","+this.fireworkColorB+","+this.fadeValue+")";
+		
+		while(q)
+		{
+		    /*canvCtx.fillStyle = "rgba("+this.fireworkColorR+","+this.fireworkColorG+","+this.fireworkColorB+","+this.fadeValue+")";*/
+		    canvCtx.fillRect(q.x,q.y,3,3);;
+		    
+			/*canvCtx.fillStyle="white";
+			canvCtx.fillRect(q.destX,q.destY,2,2);*/
+			
+		    q = q.next;
+		}
+	}
+	
+	this.debugSparkle = function(){
+	    var q = this.sparkle;
+		
+		while(q)
+		{
+		    /*console.log("Avem scanteie la coordonatele X = "+q.x+"  Y = "+q.y);*/
+		
+		    q = q.next;
+		}
+	}
+	
+    this.fadeSparkle = function	(){
+	    this.fadeValue -= 0.015;
+	}
+	
+	this.previous = null;
+	this.next = null;
+}
+
+function deleteAndAdd(){
+    addFiveFireworks();
+    removeFiveFireworks();
+}
+
+function sprite(x,y)
+{
+    this.x = x;
+    this.y = y;
+
+    /*this.destX = (x-200) + Math.random()*400;
+    this.destY = (y-200) + Math.random()*400;*/
+	
+	
+	
+    this.destX =  x + Math.floor(Math.sin(Math.random()*(Math.PI*2))*100);
+    this.destY =  y + Math.floor(Math.cos(Math.random()*(Math.PI*2))*100);
+	
+	this.next = null;
+}
+
+function countEm(){
+    var q = artificie;
+	fireworkCount = 0;
+	
+	while(q)
+	{
+        fireworkCount ++;        
+	    q = q.next;
+	}
+	
+	console.log("Numar artificii : "+fireworkCount);
+	
+	setTimeout('countEm()',500);
+}
+
+function addFireworks(){
+    var q=0,z = artificie;
+	
+	while(q!=20)
+	{
+	    q++;
+		
+		z.next = new firework();
+		z.next.previous = z;
+		z = z.next;
+	}
+}
+
+function addOneFirework(){
+	var g = new firework();
+	g.previous = null;
+	g.next = artificie;
+	artificie.previous = g;
+	artificie = g;
+}
+
+function addFiveFireworks(){
+    var q ;
+	var i = 0;
+	
+	while(i<10)
+	{
+	    q = new firework();
+		q.next = artificie;
+		q.previous = null;
+		artificie.previous = q;
+		artificie = q;
+		
+		i++;
+	}
+}
+
+function removeOneFirework(){
+    var z = artificie;
+	
+    while(z.next.next)
+	{
+	    z = z.next;
+	}
+	
+	delete z.next;
+	z.next = null;
+}
+
+function removeFiveFireworks(){
+    var z = artificie,x;
+	
+	while(z.next)
+	{
+	    console.log("Artificie la :  X = "+z.x+"  Y ="+z.y);
+	    z = z.next;
+	}
+	
+	for(var i =0;i<10;i++)
+	{
+	    console.log("Incerc sa sterg artificia de la X = "+z.x+"  Y = "+z.y);
+	    x = z;
+		z = z.previous;
+		z.next = null;
+		delete x;
+	}
+}
+
+function draw()
+{
+
+    
+    if(timer == 30)
+	{
+	    timer = 0;
+	}
+	
+    var fireRef = artificie;
+    
+    canvCtx.fillStyle = "black";
+	canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+	canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+    canvCtx.fillStyle = "white";
+    
+	
+	while(fireRef)
+	{
+	    if(fireRef.check == 0)
+	    {
+	        fireRef.show();
+            fireRef.move();
+	    }
+	
+	    if(fireRef.check == 1)
+	    {
+		    
+	        fireRef.moveSparkles2();
+			fireRef.fadeSparkle();
+		    fireRef.showSparkles();
+	    }
+		
+		fireRef = fireRef.next;
+	}
+	
+	timer++;
+    setTimeout('draw()',10);   
+}
+
+function spinAnim()
+{
+    if(spinVal != 360)
+	{
+        spinVal+=10;
+		animRef.style.transform = "rotate("+spinVal+"deg)";
+    }
+	else
+	{
+	    spinVal = 0;
+	    return 0;
+	}
+	
+	setTimeout('spinAnim()',10);
+}
+
+</script>
+
+</html>
