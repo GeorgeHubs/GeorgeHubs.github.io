@@ -15,10 +15,11 @@
 
 <script>
 
+body.style.margin = 0;
 document.getElementById('myCanvas').style.cursor = "none";
 var canvRef = document.getElementById('myCanvas');
-canvRef.width = window.innerWidth-10;
-canvRef.height = window.innerHeight-10;
+canvRef.width = window.innerWidth;
+canvRef.height = window.innerHeight;
 var canvCtx = canvRef.getContext('2d');
 canvCtx.fillStyle = "black";
 
