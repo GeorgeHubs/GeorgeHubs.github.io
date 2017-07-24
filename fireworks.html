@@ -12,7 +12,6 @@
     <canvas onclick = "addOneFirework()" width="800px" height="400px" id="myCanvas"></canvas>
     <div onclick = "spinAnim();removeOneFirework()" id="deleteBtn"><img id="Anim" src="AnimRot.png" alt="NoPic">Sterge una</div>
 	<a href="index.html" id="backBtn">Back</a>
-	<img id="trail" src="smoke.png" style="position:absolute;top:-50px;left:-50px;width:10px;height:10px;" alt="NoPic">
 </body>
 
 <script>
@@ -388,7 +387,6 @@ function draw()
 		
 		fireRef = fireRef.next;
 	}
-	canvCtx.drawImage(smokeTrailImg,0,0,10,10);
 	
 	timer++;
     setTimeout('draw()',10);   
