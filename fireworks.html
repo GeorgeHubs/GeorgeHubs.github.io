@@ -7,11 +7,12 @@
 	<link rel="stylesheet" href="Styles/Style.css">
 </head>
 
-<body onload="countEm();addFireworks();draw()" style="bakcground-color:black;">
+<body onload="countEm();addFireworks();draw()">
 
     <canvas onclick = "addOneFirework()" width="800px" height="400px" id="myCanvas"></canvas>
     <div onclick = "spinAnim();removeOneFirework()" id="deleteBtn"><img id="Anim" src="AnimRot.png" alt="NoPic">Sterge una</div>
 	<a href="index.html" id="backBtn">Back</a>
+	<img id="trail" src="smoke.png" style="position:absolute;top:-50px;left:-50px;width:10px;height:10px;" alt="NoPic">
 </body>
 
 <script>
@@ -23,6 +24,9 @@ canvRef.width = window.innerWidth;
 canvRef.height = window.innerHeight;
 
 var canvCtx = canvRef.getContext('2d');
+var smokeTrailImg = document.getElementById('trail');
+smokeTrailImg.width = 10;
+smokeTrailImg.height = 10;
 
 canvCtx.fillStyle = "black";
 canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
@@ -60,6 +64,7 @@ function firework()
 	    if(this.y > this.destY)
 		{
 		    this.y -= viteza;
+			this.modifyTrail();
 		}
 		
 		if(this.y == this.destY || this.y < this.destY)
@@ -194,7 +199,56 @@ function firework()
 	    this.fadeValue -= 0.015;
 	}
 	
+	this.trail = null;
+	this.modifyTrail = function(){
+	    this.Count=0;
+		
+	    if(!this.trail)
+		{
+		    this.trail = new trailNode(this.x,this.y+20);
+		}
+		else
+		{
+		    this.aux = new trailNode(this.x,this.y+20);
+			this.aux.next = this.trail;
+			this.trail = this.aux;
+		}
+		
+		this.aux = this.trail;
+		while(this.aux.next)
+		{
+		    this.aux.next.opac = this.aux.opac - 0.1;
+		    this.Count++;
+			canvCtx.fillStyle = "rgba("+255+","+255+","+255+","+this.aux.opac+")";
+		    canvCtx.fillRect(this.aux.x+1,this.aux.y,3,3);
+		    this.aux = this.aux.next;
+		}
+		
+		if(this.Count > 10)
+		{
+		    this.aux = this.trail;
+			
+			while(this.aux)
+			{
+			    if(!this.aux.next.next)
+				{
+				    delete this.aux.next;
+					this.aux.next = null;
+				}
+				this.aux = this.aux.next;
+			}
+		}
+	}
+	
 	this.previous = null;
+	this.next = null;
+}
+
+function trailNode(x,y){
+    this.x = x;
+	this.y = y;
+	this.opac = 0.8;
+	
 	this.next = null;
 }
 
@@ -304,8 +358,6 @@ function removeFiveFireworks(){
 
 function draw()
 {
-
-    
     if(timer == 30)
 	{
 	    timer = 0;
@@ -315,7 +367,6 @@ function draw()
     
     canvCtx.fillStyle = "black";
 	canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
-	canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
     canvCtx.fillStyle = "white";
     
 	
@@ -337,6 +388,7 @@ function draw()
 		
 		fireRef = fireRef.next;
 	}
+	canvCtx.drawImage(smokeTrailImg,0,0,10,10);
 	
 	timer++;
     setTimeout('draw()',10);   
