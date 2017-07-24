@@ -21,11 +21,8 @@ var animRef = document.getElementById('Anim'),spinVal=0;
 var canvRef = document.getElementById('myCanvas');
 canvRef.width = window.innerWidth;
 canvRef.height = window.innerHeight;
-
 var canvCtx = canvRef.getContext('2d');
-var smokeTrailImg = document.getElementById('trail');
-smokeTrailImg.width = 10;
-smokeTrailImg.height = 10;
+
 
 canvCtx.fillStyle = "black";
 canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
@@ -366,6 +363,7 @@ function draw()
     
     canvCtx.fillStyle = "black";
 	canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+	canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
     canvCtx.fillStyle = "white";
     
 	
