@@ -4,25 +4,58 @@
 
     <head>
 	    <title>Meniu</title>
-		<link rel="stylesheet" href="Styles/Style.css">
+		<link rel="stylesheet" media="screen and (min-width:500px)" href="Styles/Style.css">
+		<link rel="stylesheet" media="screen and (max-width:500px)" href="Styles/Style2.css">
 	</head>
 
-	<body>
-	    
-	    <div id="mainMenu" style="position:absolute;top:0;left:0;">
-		    <img src = "topS.png" alt = "NoPic" style="position:absolute;top:0;left:0;width:100%;height:auto;">
-			<div style="position:relative;width:100%;">
-			<div id="mainMenuBtn" style="border-right:1px solid white;top:5px;left:10%;">Ceva vine aici</div>
-			<div id="mainMenuBtn" style="top:5px;left:22%;">Ceva vine aici</div>
-			<div id="mainMenuBtn" style="border-right:1px solid white;top:5px;left:65%;">Ceva vine aici</div>
-			<div id="mainMenuBtn" style="top:5px;left:77%;">Ceva vine aici</div>			
-			</div>
+	<body onload="moveText();">
+		
+	    <div id="mainMenu" style="width:100%;">
+		    
+			<div id="mainMenuBtn" >Ceva vine aici</div>
+			<div id="mainMenuBtn" >Ceva vine aici</div>
+			<div id="mainMenuBtn" >Ceva vine aici</div>
+			<div id="mainMenuBtn" >Ceva vine aici</div>			
+			
 		</div>
 		
-	    <div id="mainContainer" style="margin-top:200px;">
+	    <div id="mainContainer" style="margin-top:5%;">
 		    <a href="arcade.html"><div id="proiect1"><img id="imgProiect" src="ArcadePic.png" alt="NoPic"></div></a>
 			<a href="fireworks.html"><div id="proiect2"><img id="imgProiect" src="FirePic.png" alt="NoPic"></div></a>
+					    <a href="arcade.html"><div id="proiect1"><img id="imgProiect" src="ArcadePic.png" alt="NoPic"></div></a>
+			<a href="fireworks.html"><div id="proiect2"><img id="imgProiect" src="FirePic.png" alt="NoPic"></div></a>
+					    <a href="arcade.html"><div id="proiect1"><img id="imgProiect" src="ArcadePic.png" alt="NoPic"></div></a>
+			<a href="fireworks.html"><div id="proiect2"><img id="imgProiect" src="FirePic.png" alt="NoPic"></div></a>
+					    <a href="arcade.html"><div id="proiect1"><img id="imgProiect" src="ArcadePic.png" alt="NoPic"></div></a>
+			<a href="fireworks.html"><div id="proiect2"><img id="imgProiect" src="FirePic.png" alt="NoPic"></div></a>
+		</div>
+		
+		<div id="movingTextBar">
+		    <div id="movingText">Acesta este un test ! Bla Bla Bla Bla Bla Bla Bla Acesta este un test ! Bla Bla Bla Bla Bla Bla Bla Acesta este un test ! Bla Bla Bla Bla Bla Bla Bla Acesta este un test ! Bla Bla Bla Bla Bla Bla Bla Acesta este un test ! Bla Bla Bla Bla Bla Bla Bla</div> 
 		</div>
 	</body>
+	
+	<script>
+	    var textRef = document.getElementById('movingText');
+		var leftPos = window.innerWidth;
+		
+		function moveText(){
+
+			leftPos-=1;
+			textRef.style.left = leftPos+"px";
+
+	        if(leftPos > (-1 * textRef.offsetWidth))
+            {	
+                console.log(textRef.offsetWidth);			
+		        setTimeout('moveText()',10);
+			}
+			else
+            {
+				leftPos = window.innerWidth;
+				setTimeout('moveText()',10);
+			}
+		}
+		
+	</script>
 	
 </html>
