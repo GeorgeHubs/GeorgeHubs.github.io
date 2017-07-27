@@ -65,7 +65,9 @@
 				    { 
 				        aux.isPicked = false;
 						mouseCarry = false;
+						return;
 				    }
+					
 				    aux = aux.next;
 			    }
 			}
@@ -73,11 +75,13 @@
 			{
 			    while(aux)
 			    {
-			        if(Math.sqrt(Math.pow(aux.x-mouse.x,2)+Math.pow(aux.y-mouse.y,2)) < 5)
+			        if(Math.sqrt(Math.pow(aux.x-mouse.x,2)+Math.pow(aux.y-mouse.y,2)) < 10)
 				    {
 				        aux.isPicked = true;
 					    mouseCarry = true;
+						return;
 				    }
+					
 			        aux = aux.next;
 			    }
 			}	
@@ -108,22 +112,22 @@
 				{
 				    if(aux.y < aux.destY)
 					{
-					    aux.y ++;
+					    aux.y +=1;
 					}
 					
 					if(aux.y > aux.destY)
 					{
-					    aux.y --;
+					    aux.y -=1;
 					}
 					
 					if(aux.x > aux.destX)
 					{
-					    aux.x --;
+					    aux.x -=1;
 					}
 					
 					if(aux.x < aux.destX)
 					{
-					    aux.x ++;
+					    aux.x +=1;
 					}
 				}
 				
@@ -155,34 +159,15 @@
 		}
 		
 		function draw(){
-
-		    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+            
+			canvCtx.fillStyle="black";
+		    canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 		    
 		    var aux = myDots;
-		    canvCtx.fillStyle = "blue";
-			canvCtx.strokeStyle = "red";
+		    canvCtx.fillStyle = "rgb(200,200,200)";
+			canvCtx.strokeStyle = "white";
 			
-			while(aux)
-			{
-			    canvCtx.beginPath();
-				canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
-				canvCtx.fill();
-				canvCtx.closePath();
-				
-				canvCtx.fillStyle = "yellow";
-				canvCtx.beginPath();
-				canvCtx.arc(aux.destX,aux.destY,5,0,2*Math.PI);
-				canvCtx.fill();
-				canvCtx.closePath();
-				
-				canvCtx.fillStyle = "blue";
-				
-			    aux = aux.next;
-			}
-			
-			aux = myDots;
-			
-			while(aux.next)
+		    while(aux.next)
 			{
 			    canvCtx.beginPath();
 			    canvCtx.moveTo(aux.x,aux.y);
@@ -192,6 +177,27 @@
 				
 				aux = aux.next;
 			}
+			
+			aux = myDots;
+			
+			while(aux)
+			{				
+				canvCtx.fillStyle = "yellow";
+				canvCtx.beginPath();
+				canvCtx.arc(aux.destX,aux.destY,5,0,2*Math.PI);
+				canvCtx.fill();
+				canvCtx.closePath();
+				
+				canvCtx.fillStyle = "rgb(200,200,200)";
+				
+				canvCtx.beginPath();
+				canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
+				canvCtx.fill();
+				canvCtx.closePath();
+				
+			    aux = aux.next;
+			}
+			
 			
 			
 			setTimeout('draw()',10);
