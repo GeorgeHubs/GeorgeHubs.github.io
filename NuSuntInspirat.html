@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+	    <title>NodesTest</title>
+	</head>
+	
+	<body onload="moveIfFree();addNDots();move();" style="margin:0;">
+	    <canvas onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
+	</body>
+	
+	<script>
+	    var canvRef = document.getElementById('myCanvas');
+		canvRef.width = window.innerWidth-10;
+		canvRef.height = window.innerHeight-10;
+		var canvCtx = canvRef.getContext('2d');
+	
+	    var myDots = new dot();
+        var mouse = {x:0,y:0};         
+		var mouseCarry = false; 
+		 
+	    function dot(){
+		    this.x = 10 + Math.floor(Math.random()*(canvRef.width-20));
+			this.y = 10 + Math.floor(Math.random()*(canvRef.height-20));
+			
+			this.destX = 10 + Math.floor(Math.random()*(canvRef.width-20));
+			this.destY = 10 + Math.floor(Math.random()*(canvRef.height-20));
+			
+			this.isPicked = false;
+			this.connectedTo = null;
+			this.next = null;
+		}
+		
+		function addDot(){
+		    var aux = new dot();
+            			
+			aux.next = myDots;
+			myDots = aux;
+		}
+		
+		function addNDots(){
+		    var count = 5;
+			
+			while(count != 0)
+			{
+			    count --;
+				addDot();
+			}
+			connectEm();
+		}
+		
+		function getMousePos(event){
+		    mouse.x = event.clientX;
+			mouse.y = event.clientY;
+		}
+		
+		function pickCheck(){
+		    var aux = myDots;
+			
+            if(mouseCarry == true)
+            {			
+		        while(aux)
+			    {
+			        if(aux.isPicked == true)
+				    { 
+				        aux.isPicked = false;
+						mouseCarry = false;
+				    }
+				    aux = aux.next;
+			    }
+			}
+			else
+			{
+			    while(aux)
+			    {
+			        if(Math.sqrt(Math.pow(aux.x-mouse.x,2)+Math.pow(aux.y-mouse.y,2)) < 5)
+				    {
+				        aux.isPicked = true;
+					    mouseCarry = true;
+				    }
+			        aux = aux.next;
+			    }
+			}	
+		}
+		
+		function move(){
+		    var aux = myDots;
+		    
+			while(aux)
+			{
+			    if(aux.isPicked == true)
+				{
+				    aux.x = mouse.x;
+					aux.y = mouse.y;
+				}
+				aux = aux.next;
+			}
+			
+		    setTimeout('move()',10);
+		}
+		
+		function moveIfFree(){
+		    var aux = myDots;
+			
+			while(aux)
+			{
+			    if(aux.isPicked == false)
+				{
+				    if(aux.y < aux.destY)
+					{
+					    aux.y ++;
+					}
+					
+					if(aux.y > aux.destY)
+					{
+					    aux.y --;
+					}
+					
+					if(aux.x > aux.destX)
+					{
+					    aux.x --;
+					}
+					
+					if(aux.x < aux.destX)
+					{
+					    aux.x ++;
+					}
+				}
+				
+				if(aux.x == aux.destX && aux.y == aux.destY)
+				{
+				    console.log("Am ajuns la destinatie;");
+				    aux.destX = 10 + Math.floor(Math.random()*(canvRef.width-20));
+					aux.destY = 10 + Math.floor(Math.random()*(canvRef.height-20));
+				}
+				
+				aux = aux.next;
+			}
+			
+			setTimeout('moveIfFree()',10);
+		}
+		
+		function connectEm(){
+		    var aux = myDots;
+			
+			while(aux.next)
+			{
+			    if(aux.next.connectedTo == null)
+				{
+				    aux.next.connectedTo = aux;
+				}
+				aux = aux.next;
+			}
+			draw();
+		}
+		
+		function draw(){
+
+		    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+		    
+		    var aux = myDots;
+		    canvCtx.fillStyle = "blue";
+			canvCtx.strokeStyle = "red";
+			
+			while(aux)
+			{
+			    canvCtx.beginPath();
+				canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
+				canvCtx.fill();
+				canvCtx.closePath();
+				
+				canvCtx.fillStyle = "yellow";
+				canvCtx.beginPath();
+				canvCtx.arc(aux.destX,aux.destY,5,0,2*Math.PI);
+				canvCtx.fill();
+				canvCtx.closePath();
+				
+				canvCtx.fillStyle = "blue";
+				
+			    aux = aux.next;
+			}
+			
+			aux = myDots;
+			
+			while(aux.next)
+			{
+			    canvCtx.beginPath();
+			    canvCtx.moveTo(aux.x,aux.y);
+				canvCtx.lineTo(aux.next.x,aux.next.y);
+				canvCtx.stroke();
+				canvCtx.closePath();
+				
+				aux = aux.next;
+			}
+			
+			
+			setTimeout('draw()',10);
+		}
+		
+		
+	</script>
+</html>
