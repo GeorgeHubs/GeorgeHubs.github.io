@@ -6,13 +6,13 @@
 	</head>
 	
 	<body onload="moveIfFree();addNDots();move();" style="margin:0;">
-	    <canvas onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
+	    <canvas width="10px" height="10px" onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
 	</body>
 	
 	<script>
 	    var canvRef = document.getElementById('myCanvas');
-		canvRef.width = window.innerWidth-10;
-		canvRef.height = window.innerHeight-10;
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
 	
 	    var myDots = new dot();
@@ -199,8 +199,7 @@
 			}
 			
 			
-			
-			setTimeout('draw()',10);
+			setTimeout('draw()',33);
 		}
 		
 		
