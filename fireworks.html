@@ -324,13 +324,16 @@ function addFiveFireworks(){
 function removeOneFirework(){
     var z = artificie;
 	
-    while(z.next.next)
+	if(z.next)
 	{
-	    z = z.next;
+        while(z.next.next)
+	    {
+	        z = z.next;
+	    }
+	    delete z.next;
+	    z.next = null;
 	}
 	
-	delete z.next;
-	z.next = null;
 }
 
 function removeFiveFireworks(){
