@@ -68,8 +68,7 @@ function firework()
 		    this.addSparkles(this.x,this.y);
 			this.debugSparkle();
 			this.check = 1;
-			removeOneFirework();
-		    addOneFirework();
+			
 			return;
 		}		
 	}
@@ -117,17 +116,48 @@ function firework()
 			q = q.next;
 		}
 	}
+	this.lifeSpan = 3000;
+	
+    this.checkLife = function(){
+	    if(this.lifeSpan <= 0)
+		{
+		    if(this == artificie && this.next)
+	        {
+	            this.next.previous = null;
+		        artificie = this.next;
+		        delete this;
+	        }
+			else	
+	        if(this.next == null && this.previous)
+	        {			
+	            this.previous.next = null;
+		        delete this;
+            }
+			else	
+	        if(this.previous && this.next)
+	        {			
+		        this.previous.next = this.next;
+                this.next.previous = this.previous;
+                delete this;				
+	        }
+			addOneFirework();
+		}
+	}
 	
 	this.moveSparkles2 = function (){
 	    var q = this.sparkle;
-		var pasX,pasY,distX,distY;
-		
+		var pasX,pasY,distX,distY,test=1;
 		
 		while(q)
 		{
 		    distX = Math.sqrt(Math.pow(q.x-q.destX,2));
 			distY = Math.sqrt(Math.pow(q.y-q.destY,2));
-		
+		    
+			if(Math.sqrt(Math.pow(q.x-q.destX,2)+Math.pow(q.y-q.destY,2)) > 5)
+			{
+			    test = 0;
+			}
+			
 		    if(distX < distY)
 			{
 			    pasX = distX/distY;
@@ -162,6 +192,7 @@ function firework()
 		
 		    q = q.next;
 		}
+		
 	}
 		
 	this.showSparkles = function(){
@@ -192,7 +223,7 @@ function firework()
 	}
 	
     this.fadeSparkle = function	(){
-	    this.fadeValue -= 0.015;
+	    this.fadeValue -= 0.02;
 	}
 	
 	this.trail = null;
@@ -236,6 +267,7 @@ function firework()
 		}
 	}
 	
+	
 	this.previous = null;
 	this.next = null;
 }
@@ -260,8 +292,6 @@ function sprite(x,y)
 
     /*this.destX = (x-200) + Math.random()*400;
     this.destY = (y-200) + Math.random()*400;*/
-	
-	
 	
     this.destX =  x + Math.floor(Math.sin(Math.random()*(Math.PI*2))*100);
     this.destY =  y + Math.floor(Math.cos(Math.random()*(Math.PI*2))*100);
@@ -322,18 +352,14 @@ function addFiveFireworks(){
 }
 
 function removeOneFirework(){
-    var z = artificie;
-	
-	if(z.next)
+
+    var aux = artificie;
+	if(aux.next)
 	{
-        while(z.next.next)
-	    {
-	        z = z.next;
-	    }
-	    delete z.next;
-	    z.next = null;
+	    artificie = artificie.next;
+		artificie.previous = null;
+		delete aux;
 	}
-	
 }
 
 function removeFiveFireworks(){
@@ -380,13 +406,26 @@ function draw()
 	
 	    if(fireRef.check == 1)
 	    {
-		    
+		    fireRef.lifeSpan -= 30;
 	        fireRef.moveSparkles2();
 			fireRef.fadeSparkle();
 		    fireRef.showSparkles();
 	    }
 		
 		fireRef = fireRef.next;
+	}
+	
+	fireRef = artificie;
+	
+	while(fireRef)
+	{
+	    fireRef.checkLife();
+		
+		if(!fireRef)
+		{
+		    break;
+		}
+	    fireRef = fireRef.next;
 	}
 	
 	timer++;

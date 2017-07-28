@@ -147,9 +147,21 @@ body{
     height:40px;
     user-select:none;
     width:100%;
-    overflow:hidden;
+
 }
   
+#mainMenuBtn1{
+    position:relative;
+    margin-bottom:10px;
+    top:8px;
+    width:10%;
+    display:inline;
+    padding:10px;
+    color:white;
+    font-size:20px;
+    text-align:center;
+}
+
 #mainMenuBtn{
     position:relative;
     margin-bottom:10px;
@@ -160,7 +172,6 @@ body{
     color:white;
     font-size:20px;
     text-align:center;
-    overflow:hidden;
 }
 
 #mainMenuBtn:hover{
@@ -182,4 +193,27 @@ body{
     position:absolute;
     width:auto;
     left:0;
+}
+
+#drop1{
+    position:absolute;
+    top:40px;
+    background-color:black;
+    width:100%;
+    left:0;
+    font-size:15px;
+    display:none;
+    color:white;
+}
+
+#drop1 > div{
+    padding:5px;
+}
+
+#mainMenuBtn1:hover{
+    background-color:grey;
+}
+
+#mainMenuBtn1:hover #drop1{
+    display:block;
 }
