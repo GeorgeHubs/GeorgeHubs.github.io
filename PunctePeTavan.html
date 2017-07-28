@@ -5,7 +5,7 @@
 	    <title>NodesTest</title>
 	</head>
 	
-	<body onload="moveIfFree();addNDots();move();" style="margin:0;">
+	<body onload="moveIfFree();addNDots();move();" style="margin:0;overflow:hidden;">
 	    <canvas width="10px" height="10px" onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
 	</body>
 	
@@ -39,7 +39,7 @@
 		}
 		
 		function addNDots(){
-		    var count = 5;
+		    var count = 2;
 			
 			while(count != 0)
 			{
@@ -177,6 +177,12 @@
 				
 				aux = aux.next;
 			}
+			
+				canvCtx.beginPath();
+			    canvCtx.moveTo(aux.x,aux.y);
+				canvCtx.lineTo(myDots.x,myDots.y);
+				canvCtx.stroke();
+				canvCtx.closePath();
 			
 			aux = myDots;
 			

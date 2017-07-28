@@ -88,6 +88,7 @@ body{
     width:95%;
     left:5%;
     height:auto;
+    margin-bottom:200px;
 }
 
 #proiect1{
@@ -109,6 +110,16 @@ body{
     background-color:black;
 }
 
+#proiect3{
+    overflow:hidden;
+    width:47%;
+    height:auto;
+    margin-right:3%;
+    float:left;
+    background-color:black;
+    border:1px solid black;
+}
+
 #imgProiect{
     width:100%;
     height:auto;
@@ -122,6 +133,10 @@ body{
 #proiect2:hover #imgProiect{
     opacity:1;
 }   
+
+#proiect3:hover #imgProiect{
+    opacity:1;
+} 
 
 #mainContainer{
     position:relative;
