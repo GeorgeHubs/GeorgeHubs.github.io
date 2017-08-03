@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>UndaSin</title>
+	</head>
+	
+	<body onload = "drawSin();" style="margin:0;">
+	    <div style="min-width:1000px">
+	    <canvas id="myCanv" width = "800px" height = "400px" style="background-color:rgb(100,100,100);"></canvas>
+		  <div id="control" style="position:absolute;left:800px;top:0;width:200px;height:400px;background-color:rgb(150,150,150);">
+		  
+		    <fieldset>
+			    <label>Amplitudine</label>
+		        <input id="ampValueRange" type="range" min="30" max ="180" step="10" value="30" style="width:130px;">
+			    <div id="ampValue" style="display:inline;width:30px;height:10px;"></div>
+				<div id="setAmp" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(1);">Schimba</div>
+			</fieldset>
+			
+			<fieldset>
+				<label>Fregventa</label>
+		        <input id="fregValueRange" type="range" min="1" max ="7" step="1"value="5"style="width:130px;">
+			    <div id="fregValue" style="display:inline;width:30px;height:10px;"></div>		
+				<div id="setFreg" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(2);">Schimba</div> 
+			</fieldset>
+			
+			<fieldset>
+				<label>Perioada</label>
+		        <input id="perValueRange" type="range" min="0.1" max ="1.0" step="0.1" value="0.1" style="width:130px;">
+			    <div id="perValue" style="display:inline;width:30px;height:10px;"></div>		
+				<div id="setPer" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(3);">Schimba</div>				
+			</fieldset>	
+			
+		  </div>
+		</div>
+	</body>
+	
+	<script>
+	    
+		var myCanvas = document.getElementById('myCanv');
+		var canvCtx = myCanvas.getContext("2d");
+		
+		var stop = false;
+	    var center = {x:0,y:200};
+	    var sin = 0,cos = 0.0;
+		var amplitudine = 30,fregventa = 3,perioada = 0.1;
+		var ampd = true,ampu = false;
+		
+		canvCtx.fillStyle = "rgba(250,0,0,0.3)";
+		canvCtx.fillRect(0,center.y-1,myCanvas.width,2);
+		
+		var nodes = new node(center.x + Math.sin(sin)*amplitudine,center.y + Math.floor(Math.cos(cos)*amplitudine));
+		var lastNode = nodes;
+		var nodeCount = 1;
+		
+		var inter = setInterval('drawSin()',20);
+		
+		function node(x,y){
+		    this.x = x;
+			this.y = y;
+			
+			this.opacity = 1;
+			
+			this.next = null;
+			this.previous = null;
+		}
+		
+		function drawSin()
+		{
+		
+		    canvCtx.fillStyle = "yellow";
+		    /*
+		    if(amplitudine > 50)
+			{
+			    ampd = true;
+				ampu = false;
+			}
+
+		    if(amplitudine < 20)
+			{
+			    ampd = false;
+				ampu = true;
+			}
+			
+			if(ampd)
+			{
+			    amplitudine -= 0.05;
+			}
+			
+			if(ampu)
+			{
+                amplitudine += 0.05;			
+			}
+            */
+		    sin += 0;
+			cos += perioada;
+			
+			if(cos > 6.28)
+			{
+			    cos = 0;
+				sin = 0;
+			}
+			
+			canvCtx.beginPath();
+			canvCtx.arc(center.x + Math.sin(sin)*amplitudine,center.y + Math.floor(Math.cos(cos)*amplitudine),5,0,2*Math.PI);
+			canvCtx.closePath();
+		    canvCtx.fill();
+			
+            center.x += fregventa;
+			
+			var aux;
+			aux = new node(center.x + Math.sin(sin)*amplitudine,center.y + Math.floor(Math.cos(cos)*amplitudine));
+			aux.next = nodes;
+			nodes.previous = aux;
+			nodes = aux;
+			nodes.opacity = 1;
+			
+			aux = nodes;
+			while(aux.next)
+			{
+			    aux.next.opacity = aux.opacity - 0.008;
+				if(aux.next.opacity < 0.001)
+			    {
+			        aux.next.opacity = 0.01;
+			    }
+				
+			    aux = aux.next;
+			}
+			
+			nodeCount ++;
+			
+			
+		    aux = nodes;
+			canvCtx.clearRect(0,0,myCanvas.width,myCanvas.height);
+			canvCtx.fillStyle = "rgba(250,0,0,0.3)";
+		    canvCtx.fillRect(0,center.y-1,myCanvas.width,2);
+			
+			while(aux)
+			{ 
+			    canvCtx.fillStyle = "rgba(255,255,0,"+ aux.opacity +")";
+			    canvCtx.beginPath();
+			    canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
+			    canvCtx.closePath();
+		        canvCtx.fill();
+			    
+			    aux = aux.next;
+			}
+			
+			if(nodeCount >= 150)
+			{
+			    lastNode = lastNode.previous;
+				delete lastNode.next;
+				lastNode.next = null;
+				nodeCount --;
+			}
+			
+			canvCtx.fillStyle="purple";
+			canvCtx.fillRect(center.x,center.y,5,5);
+			
+
+			if(center.x < myCanvas.width)
+			{
+			    valueDisplay(0);
+		    }
+			else
+			{
+				center.x = 0 ;
+			}
+		}
+		
+		function valueDisplay(x){
+		    var aux = nodes;
+			
+		    document.getElementById('ampValue').innerHTML = document.getElementById('ampValueRange').value;
+		    document.getElementById('fregValue').innerHTML = document.getElementById('fregValueRange').value;			
+		    document.getElementById('perValue').innerHTML = document.getElementById('perValueRange').value;
+				
+		    if(x == 1)
+			{
+			    clearInterval(inter);
+			    while(lastNode != nodes)
+				{
+				    lastNode = lastNode.previous;
+					delete lastNode.next;
+					lastNode.next = null;
+				}
+                nodeCount = 1;
+                cos = 0.0; 				
+			    amplitudine = document.getElementById('ampValueRange').value;
+				center.x = 0;	
+                inter = setInterval('drawSin()',20);				
+            }
+			
+			if(x == 2)
+			{
+			    clearInterval(inter);			
+			    while(lastNode != nodes)
+				{
+				    lastNode = lastNode.previous;
+					delete lastNode.next;
+					lastNode.next = null;
+				}			
+				nodeCount = 1;
+                cos = 0.0; 				
+			    fregventa = document.getElementById('fregValueRange').value;
+				center.x = 0;	
+                inter = setInterval('drawSin()',20);				
+			}
+             
+            if(x == 3)
+            {	
+			    clearInterval(inter);			
+			    while(lastNode != nodes)
+				{
+				    lastNode = lastNode.previous;
+					delete lastNode.next;
+					lastNode.next = null;
+				}
+				nodeCount = 1;
+                cos = 0.0; 			
+			    perioada = document.getElementById('perValueRange').value;		
+				center.x = 0;
+				inter = setInterval('drawSin()',20);
+            }		
+		}
+		
+		
+	</script>
+
+</html>

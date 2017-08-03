@@ -7,7 +7,7 @@
 	
 	<body onload="moveIfFree();addNDots();move();" style="margin:0;overflow:hidden;">
 	    <canvas width="10px" height="10px" onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
-		<div id ="showSurfBtn" onclick="if(showSurface){this.style.backgroundColor='red';showSurface = false;}else {showSurface = true;this.style.backgroundColor='green';}" style="position:absolute;top:10px;right:10px;width:150px;height:auto;padding:10px;background-color:red;color:white;">Evidentiaza suprafata delimitata de puncte</div>
+		<div id ="showSurfBtn" onclick="if(showSurface){this.style.backgroundColor='red';showSurface = false;}else {showSurface = true;this.style.backgroundColor='green';}" style="position:absolute;top:10px;right:10px;width:150px;height:auto;padding:10px;background-color:red;opacity:0.8;color:white;">Evidentiaza suprafata delimitata de puncte</div>
 	</body>
 	
 	<script>
@@ -162,7 +162,7 @@
 		
 		function draw(){
             
-			canvCtx.fillStyle="black";
+            canvCtx.fillStyle="black";
 		    canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 		    
 		    var aux = myDots;
@@ -186,24 +186,6 @@
 				canvCtx.stroke();
 				canvCtx.closePath();
 			
-			if(showSurface == true)
-			{
-			    canvCtx.fillStyle = "rgba(200,200,200,0.5)";
-			    aux = myDots;
-				
-			    canvCtx.beginPath();
-			    canvCtx.moveTo(aux.x,aux.y);
-			
-			    while(aux.next)
-			    {
-				    canvCtx.lineTo(aux.next.x,aux.next.y);
-
-				    aux = aux.next;
-			    }
-			    canvCtx.lineTo(myDots.x,myDots.y);
-			    canvCtx.fill();			
-			}
-			
 			aux = myDots;
 			
 			while(aux)
@@ -224,7 +206,23 @@
 			    aux = aux.next;
 			}
 			    
+            if(showSurface == true)
+			{
+			    canvCtx.fillStyle = "rgba(200,200,200,0.5)";
+			    aux = myDots;
+				
+			    canvCtx.beginPath();
+			    canvCtx.moveTo(aux.x,aux.y);
+			
+			    while(aux.next)
+			    {
+				    canvCtx.lineTo(aux.next.x,aux.next.y);
 
+				    aux = aux.next;
+			    }
+			    canvCtx.lineTo(myDots.x,myDots.y);
+			    canvCtx.fill();			
+			}  
 			
 			setTimeout('draw()',10);
 		}
