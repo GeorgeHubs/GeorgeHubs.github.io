@@ -20,7 +20,7 @@
 			
 			<fieldset>
 				<label>Fregventa</label>
-		        <input id="fregValueRange" type="range" min="1" max ="7" step="1"value="5"style="width:130px;">
+		        <input id="fregValueRange" type="range" min="1" max ="7" step="1" value="3" style="width:130px;">
 			    <div id="fregValue" style="display:inline;width:30px;height:10px;"></div>		
 				<div id="setFreg" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(2);">Schimba</div> 
 			</fieldset>
@@ -32,6 +32,13 @@
 				<div id="setPer" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(3);">Schimba</div>				
 			</fieldset>	
 			
+			<fieldset>
+			    <label>Valoare sinus</label>
+		        <input id="sinValueRange" type="range" min="0" max ="1.0" step="0.1" value="0" style="width:130px;">
+			    <div id="sinValue" style="display:inline;width:30px;height:10px;"></div>		
+				<div id="setSin" onmouseover="this.style.backgroundColor = 'rgba(255,255,255,.5)';" onmouseleave="this.style.backgroundColor = null;" style="padding:3px;width:auto;border:1px solid rgb(220,220,220);" onclick="valueDisplay(4);">Schimba</div>				
+			</fieldset>
+			
 		  </div>
 		</div>
 	</body>
@@ -40,17 +47,17 @@
 	    
 		var myCanvas = document.getElementById('myCanv');
 		var canvCtx = myCanvas.getContext("2d");
-		
+		canvCtx.strokeStyle = "yellow" ;
 		var stop = false;
 	    var center = {x:0,y:200};
-	    var sin = 0,cos = 0.0;
+	    var sin = 0,cos = 0,cosaux = 0,sinaux = 0,sinIncreaseValue = 0;
 		var amplitudine = 30,fregventa = 3,perioada = 0.1;
 		var ampd = true,ampu = false;
 		
 		canvCtx.fillStyle = "rgba(250,0,0,0.3)";
 		canvCtx.fillRect(0,center.y-1,myCanvas.width,2);
 		
-		var nodes = new node(center.x + Math.sin(sin)*amplitudine,center.y + Math.floor(Math.cos(cos)*amplitudine));
+		var nodes = new node((center.x + Math.sin(sin)*amplitudine),(center.y + Math.floor(Math.cos(cos)*amplitudine)));
 		var lastNode = nodes;
 		var nodeCount = 1;
 		
@@ -93,12 +100,14 @@
                 amplitudine += 0.05;			
 			}
             */
-		    sin += 0;
-			cos += perioada;
+			cosaux += perioada;
+			cos = parseFloat(cosaux).toFixed(2);
+			console.log("GradCos = "+cos);
+			sin += sinIncreaseValue;
 			
 			if(cos > 6.28)
 			{
-			    cos = 0;
+			    cosaux = 0;
 				sin = 0;
 			}
 			
@@ -106,6 +115,7 @@
 			canvCtx.arc(center.x + Math.sin(sin)*amplitudine,center.y + Math.floor(Math.cos(cos)*amplitudine),5,0,2*Math.PI);
 			canvCtx.closePath();
 		    canvCtx.fill();
+			/*console.log("Prim nod desenat la :  X = " + (center.x + Math.sin(sin)*amplitudine) + " Y = "+ (center.y + Math.floor(Math.cos(cos)*amplitudine))) +" "+ typeof((center.y + Math.floor(Math.cos(cos)*amplitudine)));*/
 			
             center.x += fregventa;
 			
@@ -138,6 +148,7 @@
 			
 			while(aux)
 			{ 
+			    canvCtx.strokeStyle = "rgba(255,255,0,"+ aux.opacity +")";
 			    canvCtx.fillStyle = "rgba(255,255,0,"+ aux.opacity +")";
 			    canvCtx.beginPath();
 			    canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
@@ -145,7 +156,17 @@
 		        canvCtx.fill();
 			    
 			    aux = aux.next;
+				
+				if(aux && Math.sqrt(Math.pow(aux.x - aux.previous.x,2)+Math.pow(aux.y - aux.previous.y,2)) < (myCanvas.width-20))
+				{
+				    canvCtx.beginPath();
+			        canvCtx.moveTo(aux.previous.x,aux.previous.y);				
+			        canvCtx.lineTo(aux.x,aux.y,5,0,2*Math.PI);
+                    canvCtx.closePath();					
+                    canvCtx.stroke();					
+				}
 			}
+		
 			
 			if(nodeCount >= 150)
 			{
@@ -159,13 +180,18 @@
 			canvCtx.fillRect(center.x,center.y,5,5);
 			
 
-			if(center.x < myCanvas.width)
+			if(center.x < (myCanvas.width + myCanvas.width/2))
 			{
 			    valueDisplay(0);
 		    }
 			else
 			{
-				center.x = 0 ;
+			    if(sin > 0.1)
+				{
+				    center.x = -80;
+				}
+                else
+                center.x = 0;				
 			}
 		}
 		
@@ -175,7 +201,8 @@
 		    document.getElementById('ampValue').innerHTML = document.getElementById('ampValueRange').value;
 		    document.getElementById('fregValue').innerHTML = document.getElementById('fregValueRange').value;			
 		    document.getElementById('perValue').innerHTML = document.getElementById('perValueRange').value;
-				
+			document.getElementById('sinValue').innerHTML = document.getElementById('sinValueRange').value;	
+			
 		    if(x == 1)
 			{
 			    clearInterval(inter);
@@ -186,8 +213,8 @@
 					lastNode.next = null;
 				}
                 nodeCount = 1;
-                cos = 0.0; 				
-			    amplitudine = document.getElementById('ampValueRange').value;
+                cosaux = 0; 				
+			    amplitudine = document.getElementById('ampValueRange').value;				
 				center.x = 0;	
                 inter = setInterval('drawSin()',20);				
             }
@@ -202,8 +229,8 @@
 					lastNode.next = null;
 				}			
 				nodeCount = 1;
-                cos = 0.0; 				
-			    fregventa = document.getElementById('fregValueRange').value;
+                cosaux = 0; 				
+			    fregventa = parseInt(document.getElementById('fregValueRange').value);
 				center.x = 0;	
                 inter = setInterval('drawSin()',20);				
 			}
@@ -218,11 +245,28 @@
 					lastNode.next = null;
 				}
 				nodeCount = 1;
-                cos = 0.0; 			
-			    perioada = document.getElementById('perValueRange').value;		
+                cosaux = 0; 			
+			    perioada = parseFloat(document.getElementById('perValueRange').value);				
 				center.x = 0;
 				inter = setInterval('drawSin()',20);
-            }		
+            }
+
+            if(x == 4)
+            {
+			    clearInterval(inter);			
+			    while(lastNode != nodes)
+				{
+				    lastNode = lastNode.previous;
+					delete lastNode.next;
+					lastNode.next = null;
+				}
+				nodeCount = 1;
+				sin = 0;
+                sinIncreaseValue = parseFloat(document.getElementById('sinValueRange').value);				
+				center.x = 0;
+				inter = setInterval('drawSin()',20);			    
+			}
+			
 		}
 		
 		
