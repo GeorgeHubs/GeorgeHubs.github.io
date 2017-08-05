@@ -7,11 +7,11 @@
 	<link rel="stylesheet" href="Styles/Style.css">
 </head>
 
-<body onload = "auxMove();draw();cronometruRunda1();" style="background-color:white;">
+<body onload = "auxMove();draw();cronometruRunda1();" style="user-select:none;background-color:white;">
    
     <canvas onclick = "jucator.fire();" onmousemove="getMouseLoc(event);jucator.updatePos();" width="800px" height="400px" id="myCanvas"></canvas>
-    <a href="index.html" id="backBtn">Back</a>
-	
+	<!-- <a href="index.html" id="backBtn">Back</a> -->
+	<p id="res" onclick="if(timeUp == 1){timeUp = 0;globalTimer = 31000;auxMove();draw();cronometruRunda1();}" style="z-index:5;position:absolute;top:10px;right:0;padding:10px;font-size:20px;background-color:rgb(50,100,200);">Restart</p>	
 </body>
 
 <script>
@@ -42,6 +42,7 @@ function cronometruRunda1(){
 	}
 	else
 	{
+	    globalTimer = 31000;
 	    timeUp = 1;
 	}
 }
@@ -322,6 +323,11 @@ function auxMove(){
 		enemyAux = enemyAux.next;
 	}
 	
+	if(timeUp == 1)
+	{
+	    return;
+	}
+	
 	jucator.removeBullets();
 	jucator.moveBullets();
 	setTimeout('auxMove()',10);
@@ -486,12 +492,13 @@ function draw()
 	
 	if(timeUp == 1)
 	{
-	    canvCtx.font = "100px Arial";
+	    canvCtx.font = "50px Arial";
 		canvCtx.fillStyle = "rgba("+0+","+0+","+0+","+0.8+")";
 		canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 	    canvCtx.fillStyle = "rgba("+255+","+255+","+255+","+0.8+")";
 		canvCtx.fillText("Runda 1 este gata!",canvRef.width/5,canvRef.height/2.5);
-	
+		
+		
 	    return;
 	}
 	
