@@ -6,14 +6,16 @@
 	</head>
 	
 	<body onload="moveIfFree();addNDots();move();" style="margin:0;overflow:hidden;">
-	    <canvas width="10px" height="10px" onmousemove="getMousePos(event);" onclick="pickCheck();" id="myCanvas"></canvas>
-		<div id ="showSurfBtn" onclick="if(showSurface){this.style.backgroundColor='red';showSurface = false;}else {showSurface = true;this.style.backgroundColor='green';}" style="position:absolute;top:10px;right:10px;width:150px;height:auto;padding:10px;background-color:red;opacity:0.8;color:white;">Evidentiaza suprafata delimitata de puncte</div>
+	    <canvas style="position:absolute;top:22px;left:0" width="10px" height="10px" onmousemove="getMousePos(event);" onclick="if(isActive){pickCheck();}" id="myCanvas"></canvas>
+		<div id ="showSurfBtn" onclick="if(showSurface){this.style.backgroundColor='red';showSurface = false;}else {showSurface = true;this.style.backgroundColor='green';}" style="position:absolute;top:25px;right:10px;width:150px;height:auto;padding:10px;background-color:red;opacity:0.8;color:white;">Evidentiaza suprafata delimitata de puncte</div>
+	    <div id="startStop" onclick="if(isActive == true){isActive = false;this.innerHTML = 'Porneste';}else {isActive = true;this.innerHTML = 'Opreste';this.style.height = 22 + 'px';}" style="z-index:5;color:white;position:absolute;width:100%;height:22px;top:0;left:0;background-color:rgba(150,150,150,0.8);text-align:center;font-size:20px;">Porneste</div>
 	</body>
 	
 	<script>
+	    var isActive = false;
 	    var canvRef = document.getElementById('myCanvas');
 		canvRef.width = window.innerWidth;
-		canvRef.height = window.innerHeight;
+		canvRef.height = window.innerHeight-22;
 		var canvCtx = canvRef.getContext('2d');
 	
 	    var myDots = new dot();
@@ -53,7 +55,7 @@
 		
 		function getMousePos(event){
 		    mouse.x = event.clientX;
-			mouse.y = event.clientY;
+			mouse.y = event.clientY - 22;
 		}
 		
 		function pickCheck(){
@@ -90,6 +92,8 @@
 		}
 		
 		function move(){
+		    if(isActive)
+			{
 		    var aux = myDots;
 		    
 			while(aux)
@@ -103,11 +107,17 @@
 			}
 			
 		    setTimeout('move()',10);
+			}
+			else{
+			    setTimeout('move()',1000);
+			}
 		}
 		
 		function moveIfFree(){
 		    var aux = myDots;
 			
+			if(isActive)
+			{
 			while(aux)
 			{
 			    if(aux.isPicked == false)
@@ -144,6 +154,11 @@
 			}
 			
 			setTimeout('moveIfFree()',10);
+			}
+			else
+			{
+			    setTimeout('moveIfFree()',1000);
+			}
 		}
 		
 		function connectEm(){

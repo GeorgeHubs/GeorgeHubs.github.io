@@ -7,18 +7,19 @@
 	<link rel="stylesheet" href="Styles/Style.css">
 </head>
 
-<body onload = "auxMove();draw();cronometruRunda1();" style="user-select:none;background-color:white;">
+<body onload = "auxMove();cronometruRunda1();" style="user-select:none;background-color:white;">
    
-    <canvas onclick = "jucator.fire();" onmousemove="getMouseLoc(event);jucator.updatePos();" width="800px" height="400px" id="myCanvas"></canvas>
+    <canvas style="position:absolute;top:22px;left:0;" onclick = "if(isActive){jucator.fire();}" onmousemove="if(isActive){getMouseLoc(event);jucator.updatePos();}" width="800px" height="422px" id="myCanvas"></canvas>
 	<!-- <a href="index.html" id="backBtn">Back</a> -->
 	<p id="res" onclick="if(timeUp == 1){timeUp = 0;globalTimer = 31000;auxMove();draw();cronometruRunda1();}" style="z-index:5;position:absolute;top:10px;right:0;padding:10px;font-size:20px;background-color:rgb(50,100,200);">Restart</p>	
+	<div id="startStop" onclick="if(isActive){isActive = false;this.innerHTML = 'Porneste';}else {isActive = true;this.innerHTML = 'Opreste';this.style.height = 22 + 'px';draw();}" style="z-index:5;color:white;position:absolute;width:100%;height:22px;top:0;left:0;background-color:rgba(150,150,150,0.8);text-align:center;font-size:20px;">Porneste</div>
 </body>
 
 <script>
 
 var canvRef = document.getElementById('myCanvas');
 canvRef.width = window.innerWidth;
-canvRef.height = window.innerHeight;
+canvRef.height = window.innerHeight-22;
 var canvCtx = canvRef.getContext('2d');
 canvCtx.fillStyle = "black";
 
@@ -30,11 +31,14 @@ var ammoPack = new ammo();
 var jucator = new nava();
 var enemy = new inamic();
 var timeUp = 0;
+var isActive = false;
 
 /*document.addEventListener('keydown',function(e){if(e.keyCode == 32) canvCtx.fillRect(200,10,20,20);console.log("Ai apasat space!");});*/
 
 function cronometruRunda1(){
-
+    if(isActive)
+	{
+    
     if(globalTimer!=0)
 	{
 	    globalTimer -= 1000;
@@ -45,9 +49,14 @@ function cronometruRunda1(){
 	    globalTimer = 31000;
 	    timeUp = 1;
 	}
+	}
+	else{setTimeout('cronometruRunda1()',1000);}
 }
 
 function getMouseLoc(ent){
+    if(isActive)
+	{
+
     if(ent.clientY > 80)
 	{
 	    canvRef.style.cursor = "none";
@@ -61,6 +70,8 @@ function getMouseLoc(ent){
 	{
         mouseLocY = ent.clientY;
     }
+	
+	}
 }
 
 function nava()
@@ -330,7 +341,12 @@ function auxMove(){
 	
 	jucator.removeBullets();
 	jucator.moveBullets();
-	setTimeout('auxMove()',10);
+	
+	if(isActive)
+	{
+	    setTimeout('auxMove()',10);
+	}
+    else{setTimeout('auxMove()',1000);}	
 }
 
 function ammo(){
@@ -502,7 +518,11 @@ function draw()
 	    return;
 	}
 	
-    setTimeout('draw()',10);
+	if(isActive)
+	{
+        setTimeout('draw()',10);
+	}
+    else{return;}	
 }
 
 </script>

@@ -7,15 +7,18 @@
 	<link rel="stylesheet" href="Styles/Style.css">
 </head>
 
-<body onload="countEm();addFireworks();draw()">
+<body onload="countEm();addFireworks();draw();">
 
-    <canvas onclick = "addOneFirework()" width="800px" height="400px" id="myCanvas"></canvas>
-    <div onclick = "spinAnim();removeOneFirework()" id="deleteBtn"><img id="Anim" src="AnimRot.png" alt="NoPic">Sterge una</div>
+    <canvas onclick = "if(isActive){addOneFirework();}" width="800px" height="400px" id="myCanvas"></canvas>
+    <div onclick = "if(isActive){spinAnim();removeOneFirework();}" id="deleteBtn"><img id="Anim" src="AnimRot.png" alt="NoPic">Sterge una</div>
+	<div id="startStop" onclick="if(isActive == true){isActive = false;this.innerHTML = 'Porneste';}else {isActive = true;this.innerHTML = 'Opreste';this.style.height = 22 + 'px';}" style="z-index:5;color:white;position:absolute;width:100%;height:22px;top:0;left:0;background-color:rgba(150,150,150,0.8);text-align:center;font-size:20px;">Porneste</div>
 	<!-- <a href="index.html" id="backBtn">Back</a> -->
 
 </body>
 
 <script>
+
+var isActive = false;
 
 var animRef = document.getElementById('Anim'),spinVal=0;
 
@@ -23,8 +26,6 @@ var canvRef = document.getElementById('myCanvas');
 canvRef.width = window.innerWidth;
 canvRef.height = window.innerHeight;
 var canvCtx = canvRef.getContext('2d');
-
-
 canvCtx.fillStyle = "black";
 canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 canvCtx.fillStyle = "white";
@@ -301,6 +302,8 @@ function sprite(x,y)
 }
 
 function countEm(){
+    if(isActive == true)	
+    {
     var q = artificie;
 	fireworkCount = 0;
 	
@@ -313,9 +316,16 @@ function countEm(){
 	console.log("Numar artificii : "+fireworkCount);
 	
 	setTimeout('countEm()',500);
+	}
+	else
+	{
+	    setTimeout('countEm()',1000);
+	}
 }
 
 function addFireworks(){
+    if(isActive == true)
+	{
     var q=0,z = artificie;
 	
 	while(q!=20)
@@ -326,14 +336,20 @@ function addFireworks(){
 		z.next.previous = z;
 		z = z.next;
 	}
+	}
+	else{return;}
 }
 
 function addOneFirework(){
+    if(isActive == true)
+	{
 	var g = new firework();
 	g.previous = null;
 	g.next = artificie;
 	artificie.previous = g;
 	artificie = g;
+	}
+	else{return;}
 }
 
 function addFiveFireworks(){
@@ -353,7 +369,7 @@ function addFiveFireworks(){
 }
 
 function removeOneFirework(){
-
+    if(isActive == true){
     var aux = artificie;
 	if(aux.next)
 	{
@@ -361,6 +377,8 @@ function removeOneFirework(){
 		artificie.previous = null;
 		delete aux;
 	}
+	}
+	else{return;}
 }
 
 function removeFiveFireworks(){
@@ -384,6 +402,7 @@ function removeFiveFireworks(){
 
 function draw()
 {
+    if(isActive == true){
     if(timer == 30)
 	{
 	    timer = 0;
@@ -430,11 +449,14 @@ function draw()
 	}
 	
 	timer++;
-    setTimeout('draw()',10);   
+    setTimeout('draw()',10);
+    }
+    else{setTimeout('draw()',1000)};
 }
 
 function spinAnim()
 {
+    if(isActive == true){
     if(spinVal != 360)
 	{
         spinVal+=10;
@@ -445,8 +467,11 @@ function spinAnim()
 	    spinVal = 0;
 	    return 0;
 	}
-	
 	setTimeout('spinAnim()',10);
+	}
+	else
+	{setTimeout('spinAnim()',1000);}
+	
 }
 
 </script>
