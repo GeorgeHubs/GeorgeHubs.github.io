@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+	    <title>Some</title>
+	</head>
+	
+	<body>
+	    <div id="mainCont" style="position:relative; width: 90%; min-width:850px; height:auto; margin:auto;">
+		    <div id="categories" style="background-color:rgb(150,150,150);padding-top:10px;padding-bottom:10px;position:absolute;width:20%;min-width:200px;height:auto;border:1px solid black;border-radius : 10px;">
+			    
+			</div>
+
+            <div id="shop" style="width:75%;min-width:500px;height:auto;position:absolute;top:0;left:25%;border:1px solid black;border-radius:10px;">
+			
+			</div>			
+		</div>
+		
+		<div style="background-color:rgb(50,100,200);position:fixed;right:5px;bottom:5px;width:200px;min-width:150px;height:auto;">
+		    <fieldset>
+		    <label>Category name</label>
+		    <input id="catNameIn" type="text">
+			<input onclick="addCat(document.getElementById('catNameIn').value);categoryCount ++;" type="button" value="Add">
+			</fieldset>
+		</div>
+	</body>
+	
+	<script>
+	
+	    var catRef = document.getElementById('categories');
+		var shopRef = document.getElementById('shop');
+	
+	    var shopCategories = null;
+	    var categoryCount = 0;
+		
+	    function Item(){
+		    this.name = null;
+		    this.price = null;
+			this.id = null;
+			this.categoryRef = null;
+			
+			this.next = null;
+			this.previous = null;
+		}
+	
+	    function category(){
+		    this.categoryName = null;
+		    this.items = null;
+			
+			this.addItems = function (){
+                var aux,iCount = Math.floor(Math.random()*20);
+				for(var i=0;i < iCount;i++)
+				{
+				    if(!this.items)
+			        {
+					    this.items = new Item();
+					    this.items.categoryRef = this;
+					    this.items.id = 'itemNr'+(i+1);
+					    this.items.name = "ItemWithId"+ this.items.id;
+					    this.items.price = Math.floor(Math.random()*100);
+				    }
+				    else
+				    {
+					    aux = new Item();
+					    aux.next = this.items;
+					    this.items.previous = aux;
+					    this.items = aux;
+					    this.items.id = 'itemNr' + (i+1);
+					    this.items.name = "ItemWithId"+ this.items.id;
+					    this.items.price = Math.floor(Math.random()*100);
+				    }
+				}
+			}
+			
+			this.setName = function(name){
+			    this.categoryName = name;
+			}
+			
+			this.next = null;
+			this.previous = null;
+		}
+		
+		function addCat(name)
+		{
+		    var aux;
+			var divAux = document.createElement("div");
+			divAux.style.backgroundColor = 'rgb(150,200,100)';
+			divAux.onmouseover = function(){this.style.backgroundColor = 'rgb(100,250,100)';}
+			divAux.onmouseleave = function(){this.style.backgroundColor = 'rgb(150,200,100)';}
+			divAux.id = 'cat'+categoryCount;
+			divAux.style.textAlign = 'center';
+			divAux.style.height = "25px";
+			divAux.style.fontSize = "20px";
+			divAux.style.borderBottom = "1px dotted black";
+			divAux.innerHTML = name;
+	
+		    if(!shopCategories)
+			{
+			    shopCategories = new category();
+				shopCategories.setName(name);
+				shopCategories.addItems();
+				divAux.onclick = function(){shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
+			}
+			else
+			{
+			    aux = new category();
+				aux.setName(name);
+				aux.addItems();
+				
+                aux.next = shopCategories;
+                shopCategories.previous = aux;
+                shopCategories = aux;
+				
+				divAux.onclick = function(){shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
+			}
+			catRef.appendChild(divAux);
+		}
+		
+		function getCatRef(denCat){
+		    var catAux = shopCategories;
+			 
+			while(catAux)
+			{
+			    if(catAux.categoryName == denCat)
+				{
+				    addDinamicItems(catAux,catAux.items);
+				    break;
+				}
+			
+			    catAux = catAux.next;
+			}
+		}
+		
+		function addDinamicItems(y,z){
+			var auxCat = y;
+			var auxItem = z;
+		    var divAux;
+            
+			console.log("Adaug");
+		    if(auxItem)
+			{
+		        divAux = document.createElement("div");			
+			    divAux.style.float = 'left';
+			    divAux.style.width = 30+"%";
+				divAux.style.margin = "3px";
+				divAux.style.border = "1px solid rgb(100,200,50)";
+				divAux.style.borderRadius = "10px";
+				divAux.style.padding = "5px";
+				divAux.style.backgroundColor = "rgba(150,200,50,0.8)";
+                divAux.id = 'cat'+auxCat.categoryName+''+auxItem.id;
+                divAux.onclick = function(){console.log(this.id)}
+                divAux.onmousedown = function(){this.style.backgroundColor = "white";}
+                divAux.onmouseup = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}
+                divAux.onmouseleave = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}			        
+				divAux.innerHTML = 'ItemFromCat : '+ auxCat.categoryName + "<br>" + auxItem.id + "<br>" + auxItem.price + "lei";
+				shopRef.appendChild(divAux);
+				
+			    auxItem = auxItem.next;
+			    addDinamicItems(auxCat,auxItem);
+			}
+		}
+		
+		function displayStore(x){
+		    var auxCat = shopCategories,auxItems;
+			
+			/*catRef.innerHTML = "";*/
+			
+			while(auxCat)
+			{
+			    catRef.innerHTML += "<div id='" + auxCat.categoryName + "' onclick='this.style.opacity = 0.5;displayStore(this.id)'; style='opacity:1;background-color:rgb(180,180,180);border-bottom:1px dotted grey;text-align:center;padding:5px;font-size:15px;'>"+auxCat.categoryName+" "+this.id+"</div>";
+				auxItems = auxCat.items;
+				
+				
+				if(auxCat.categoryName == x)
+				{
+				shopRef.innerHTML = "";
+				while(auxItems)
+				{
+				    shopRef.innerHTML += "<div style='margin-top:5px;margin-bottom:5px;border:1px solid black;position:relative;float:left;width:23%;min-width:100px;margin-left:1%;height:150px;'><div style='position:absolute;top:0;margin:auto;'>"+auxItems.name+"</div><div style='position:absolute;bottom:10px;margin:auto;'>"+auxItems.price+"   "+"lei</div></div>";
+					
+				    auxItems = auxItems.next;
+				}
+				}
+				
+				if(x == 0)
+				{
+				shopRef.innerHTML = "";
+				while(auxItems)
+				{
+				    shopRef.innerHTML += "<div style='margin-top:5px;margin-bottom:5px;border:1px solid black;position:relative;float:left;width:23%;min-width:100px;margin-left:1%;height:150px;'><div style='position:absolute;top:0;margin:auto;'>"+auxItems.name+"</div><div style='position:absolute;bottom:10px;margin:auto;'>"+auxItems.price+"   "+"lei</div></div>";
+					
+				    auxItems = auxItems.next;
+				}				
+				}
+
+				auxCat = auxCat.next;
+			}
+			
+		}
+	
+	</script>
+	
+</html>
