@@ -11,7 +11,7 @@
 			    
 			</div>
 
-            <div id="shop" style="width:75%;min-width:500px;height:auto;position:absolute;top:0;left:25%;border:1px solid black;border-radius:10px;">
+            <div id="shop" style="background-color:rgb(150,150,150);width:75%;min-width:500px;height:auto;padding-top:10px;padding-bottom:10px;position:absolute;top:0;left:25%;border:1px solid black;border-radius:10px;">
 			
 			</div>			
 		</div>
@@ -32,6 +32,7 @@
 	
 	    var shopCategories = null;
 	    var categoryCount = 0;
+		var lastSelectedCategory = null;
 		
 	    function Item(){
 		    this.name = null;
@@ -99,7 +100,7 @@
 			    shopCategories = new category();
 				shopCategories.setName(name);
 				shopCategories.addItems();
-				divAux.onclick = function(){shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
+				divAux.onclick = function(){lastSelectedCategory = this.innerHTML;shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
 			}
 			else
 			{
@@ -111,7 +112,7 @@
                 shopCategories.previous = aux;
                 shopCategories = aux;
 				
-				divAux.onclick = function(){shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
+				divAux.onclick = function(){lastSelectedCategory = this.innerHTML;shopRef.innerHTML = "";getCatRef(this.innerHTML);console.log(this.id);}
 			}
 			catRef.appendChild(divAux);
 		}
@@ -134,30 +135,99 @@
 		function addDinamicItems(y,z){
 			var auxCat = y;
 			var auxItem = z;
-		    var divAux;
+		    var divAux,divDelBtn;
             
 			console.log("Adaug");
 		    if(auxItem)
 			{
-		        divAux = document.createElement("div");			
+		        divAux = document.createElement("div");
+                divAux.style.position = "relative";				
 			    divAux.style.float = 'left';
-			    divAux.style.width = 30+"%";
+			    divAux.style.width = 30.5+"%";
 				divAux.style.margin = "3px";
 				divAux.style.border = "1px solid rgb(100,200,50)";
 				divAux.style.borderRadius = "10px";
 				divAux.style.padding = "5px";
 				divAux.style.backgroundColor = "rgba(150,200,50,0.8)";
-                divAux.id = 'cat'+auxCat.categoryName+''+auxItem.id;
+				divAux.style.opacity = 1;
+				divAux.style.transition = "opacity 1s";
+                divAux.id = 'cat'+ auxCat.categoryName+""+auxItem.id;
                 divAux.onclick = function(){console.log(this.id)}
                 divAux.onmousedown = function(){this.style.backgroundColor = "white";}
                 divAux.onmouseup = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}
                 divAux.onmouseleave = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}			        
 				divAux.innerHTML = 'ItemFromCat : '+ auxCat.categoryName + "<br>" + auxItem.id + "<br>" + auxItem.price + "lei";
+				
+				divDelBtn = document.createElement("div");
+				divDelBtn.style.position = "absolute";
+				divDelBtn.id = divAux.id;
+				divDelBtn.style.right = "5px";
+				divDelBtn.style.top = "5px";
+				divDelBtn.style.width = "20px";
+				divDelBtn.style.height = "10px";
+				divDelBtn.style.backgroundColor = "rgb(200,50,50)";
+				divDelBtn.onclick = function(){divAux.style.opacity = 0; removeItem(divAux.id);}
+                
+                divAux.appendChild(divDelBtn);				
+				
 				shopRef.appendChild(divAux);
 				
 			    auxItem = auxItem.next;
 			    addDinamicItems(auxCat,auxItem);
 			}
+		}
+		
+		function removeItem(y){
+	        var catAux = shopCategories,x;
+            var itemID; 
+			 console.log(typeof y);
+            while(catAux)
+            {
+			    if(catAux.categoryName == lastSelectedCategory){
+				    x = catAux.items;
+					break;
+				}
+			
+			    catAux = catAux.next;
+			}			
+	        
+			while(x)
+			{
+			    if(y.slice(y.indexOf('item')) == x.id)
+				{
+			        itemID = y.slice(y.indexOf('item'));
+					break;
+			    }
+				
+			    x = x.next;
+			}
+			
+
+			    if (x.previous && x.next) {
+                                           console.log("Sters");				
+				                           x.previous.next = x.next;
+										   x.next.previous = x.previous;
+										   delete x;}
+										   
+				if (!x.previous && !x.next) {
+                                            delete x;											
+                                            catAux.items = null; }
+											
+				if (x.next && !x.previous) {
+                                            console.log("Sterg primul");				
+                                            catAux.items = x.next;
+											catAux.items.previous = null;
+                                            delete x; }											
+  				 
+                if (!x.next && x.previous) {
+				                             
+                                            console.log("Sterg");				
+                                            x.previous.next = null;
+                                            delete x; }															      
+
+			
+			shopRef.innerHTML = '';
+            addDinamicItems(catAux,catAux.items);				
 		}
 		
 		function displayStore(x){
