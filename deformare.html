@@ -1,0 +1,216 @@
+ <!DOCTYPE html>
+ 
+<html>
+     
+	<head>
+	    <title>Chestie cerc</title>
+	</head>
+	 
+	<body style="margin:0;overflow:hidden;"onload="incepe();">
+	    <canvas onclick ="fillValue = 'rgba(50,50,200,0.5)';" id="myCanvas" width="10px" height="10px"></canvas>
+	</body>
+	 
+	<script>
+	     
+		var canvRef = document.getElementById('myCanvas');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+		canvCtx.font = canvRef.height/10 +"px Arial";
+	
+		var deformValue = 0.5;
+        var cerculMeu = new cerc();
+		canvCtx.strokeStyle = "white";
+		cerculMeu.addPuncte();
+		
+		var fillValue = "rgba(255,255,255,.5)";
+		
+		function incepe (){
+		    console.log("Am inceput");
+		    cerculMeu.draw();
+			cerculMeu.moveABit();
+			cerculMeu.setPointsDirection();
+			
+			setTimeout('incepe()',50);
+		}
+		
+        function cerc(){
+		    this.puncte = null;
+			this.raza = canvRef.width/4;
+			
+			this.addPunct = function (x,y){
+			    var aux = new punct(x,y);
+				console.log("Punct nou adaugat");
+				
+				if(!this.puncte)
+				{
+				    this.puncte = aux;
+				}
+				else
+				{
+				    aux.next = this.puncte;
+				    this.puncte.previous = aux;
+				    this.puncte = aux;
+				}	
+			}
+			
+			this.addPuncte = function () {
+			    console.log("Adaug puncte");
+			    var aux;
+				var grad = 0.0;
+				var centerX = canvRef.width/2,centerY = canvRef.height/2;
+				
+				while(grad < 6.2)
+				{
+				    grad += 0.05;
+				    this.addPunct(centerX + (Math.sin(grad)* this.raza),centerY + (Math.cos(grad)*this.raza));
+				}
+			}
+			
+			this.moveABit = function () {
+			    var aux = this.puncte;
+				console.log("Misca");
+				while(aux)
+				{
+				    if(aux.moveAwayFromOrigin)
+					{
+				        switch(Math.floor(Math.random()*4))
+					    {
+					        case 0 : 
+						        aux.x -= deformValue;
+						        break;
+								
+					        case 1 : 
+						        aux.y += deformValue;
+						        break;
+								
+					        case 2 : 
+						        aux.y -= deformValue;
+								break;
+								
+					        case (3 || 4) :
+                                       aux.x += deformValue;
+                                       break;									   	        								
+					    }
+					}
+				    else
+					{
+					    if(aux.x < aux.originX)
+						{
+						    aux.x += deformValue;
+						}
+						
+						if(aux.x > aux.originX)
+						{
+						    aux.x -= deformValue;
+						}
+						
+						if(aux.y < aux.originY)
+						{
+						    aux.y += deformValue;
+						}
+						
+						if(aux.y > aux.originY)
+						{
+						    aux.y -= deformValue;
+						}
+					}
+				    aux = aux.next;
+				}
+			}
+			
+			this.setPointsDirection = function(){
+			    var aux = this.puncte;
+				
+				while(aux)
+				{
+				    if(aux.moveAwayFromOrigin && (Math.floor(Math.sqrt(Math.pow(aux.originX-aux.x,2) + Math.pow(aux.originY - aux.y,2))) > 10))
+				    {
+					    aux.moveAwayFromOrigin = false;   
+					}
+					
+					if(!aux.moveAwayFromOrigin && (Math.sqrt(Math.pow(aux.x-aux.originX,2) + Math.pow(aux.y - aux.originY,2)) <= deformValue))
+					{
+					    aux.moveAwayFromOrigin = true;
+					}
+					
+				    aux = aux.next;
+				}
+			}
+			
+			this.draw = function () {
+			    var aux = this.puncte;
+				console.log("Deseneaza");
+				canvCtx.fillStyle = "grey";
+				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+				canvCtx.fillStyle = "white";
+				/*
+				while(aux)
+				{
+				    canvCtx.beginPath();
+				    canvCtx.arc(aux.x,aux.y,5,0,2*Math.PI);
+					canvCtx.fill();
+					canvCtx.closePath();
+					aux = aux.next;
+				}
+				*/
+				aux = this.puncte;
+				
+				canvCtx.beginPath();
+				canvCtx.moveTo(aux.x,aux.y);
+				
+				
+				while(aux.next)
+				{
+
+				    canvCtx.lineTo(aux.next.x,aux.next.y);
+					
+					
+				    aux = aux.next;
+				}
+				canvCtx.closePath();
+                canvCtx.stroke();
+				
+				
+				
+				aux = this.puncte;
+				
+				canvCtx.beginPath();
+				canvCtx.moveTo(aux.x,aux.y);
+				
+			    canvCtx.fillStyle = fillValue;
+				while(aux.next)
+				{
+
+				    canvCtx.lineTo(aux.next.x,aux.next.y);
+					
+					
+				    aux = aux.next;
+				}
+				canvCtx.closePath();
+                canvCtx.fill();
+
+                canvCtx.fillStyle = "white";
+                canvCtx.fillText("Deformare",canvRef.width/2.6,canvRef.height/2);				
+		    }
+		}		
+		
+		function punct(x,y){
+		    this.moveAwayFromOrigin = true;
+		
+		    this.x = x;
+			this.y = y;
+			
+			this.originX = x;
+			this.originY = y;
+			
+			this.destX = 0;
+			this.destY = 0;
+			
+			this.next = null;
+			this.previous = null;
+		}
+		 
+	</script>
+ 
+ </html>
