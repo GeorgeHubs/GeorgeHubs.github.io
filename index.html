@@ -9,8 +9,7 @@
 	</head>
 
 	<body onload="moveText();autoRun();">
-	
-		<canvas style="position:fixed;top:0;left:0;" onclick="zapada.addMouseFlake();" id="panzaMea" width= "10px" height="10px"></canvas>
+		<canvas style="z-index:-1;position:fixed;top:0;left:0;" id="panzaMea" width= "10px" height="10px"></canvas>
 		
 	    <div id="mainMenu" style="width:100%;">
 		    
@@ -28,15 +27,16 @@
 		</div>
 		
 
-		<iframe scrolling="no" style="background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;margin-top:150px;width:1000px;min-width:999px;height:600px;" src="fireworks.html"></iframe>		
-        <iframe scrolling="no" style="background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="arcade.html"></iframe>
-		<iframe scrolling="no" style="background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="PunctePeTavan.html"></iframe>
+		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;margin-top:150px;width:1000px;min-width:999px;height:600px;" src="fireworks.html"></iframe>		
+        <iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="arcade.html"></iframe>
+		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="PunctePeTavan.html"></iframe>
  		
-		<iframe scrolling="no" style="background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:50px;width:1000px;min-width:999px;height:422px;" src="Sin.html"></iframe> 
+		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:50px;width:1000px;min-width:999px;height:422px;" src="Sin.html"></iframe> 
 		
 		<div id="movingTextBar">
 		    <div id="movingText"></div> 
 		</div>
+		
 	</body>
 	
 	<script>
