@@ -5,13 +5,14 @@
 	    <title>Some</title>
 	</head>
 	
-	<body>
+	<body style="overflow:hidden;">
+	    <div id="itemInfo" style="z-index:1;position:absolute;left:0;top:0;width:200px;height:auto;display:none;background-color:rgba(100,200,50,0.8);color:white;padding:5px;border:1px solid black;"></div>
 	    <div id="mainCont" style="position:relative; width: 90%; min-width:850px; height:auto; margin:auto;">
 		    <div id="categories" style="background-color:rgb(150,150,150);padding-top:10px;padding-bottom:10px;position:absolute;width:20%;min-width:200px;height:auto;border:1px solid black;border-radius : 10px;">
 			    
 			</div>
 
-            <div id="shop" style="background-color:rgb(150,150,150);width:75%;min-width:500px;height:auto;padding-top:10px;padding-bottom:10px;position:absolute;top:0;left:25%;border:1px solid black;border-radius:10px;">
+            <div id="shop" style="background-color:rgb(150,150,150);width:75%;min-width:500px;max-height:1080px;overflow-y:scroll;padding-top:10px;padding-bottom:10px;position:absolute;top:0;left:25%;border:1px solid black;border-radius:10px;">
 			
 			</div>			
 		</div>
@@ -20,7 +21,7 @@
 		    <fieldset>
 		    <label>Category name</label>
 		    <input id="catNameIn" type="text">
-			<input onclick="addCat(document.getElementById('catNameIn').value);categoryCount ++;" type="button" value="Add">
+			<input onclick="if(!checkDuplicate(document.getElementById('catNameIn').value)){addCat(document.getElementById('catNameIn').value);categoryCount ++;}else{window.alert('O categorie cu acest nume deja exista.');}" type="button" value="Add">
 			</fieldset>
 		</div>
 	</body>
@@ -33,6 +34,10 @@
 	    var shopCategories = null;
 	    var categoryCount = 0;
 		var lastSelectedCategory = null;
+		
+		function drawItemInfo(){
+		    
+		}
 		
 	    function Item(){
 		    this.name = null;
@@ -49,7 +54,7 @@
 		    this.items = null;
 			
 			this.addItems = function (){
-                var aux,iCount = Math.floor(Math.random()*20);
+                var aux,iCount = 2 + Math.floor(Math.random()*20);
 				for(var i=0;i < iCount;i++)
 				{
 				    if(!this.items)
@@ -79,6 +84,21 @@
 			
 			this.next = null;
 			this.previous = null;
+		}
+		
+		function checkDuplicate(x){
+		    var aux = this.shopCategories;
+			
+			while(aux)
+			{
+			    if(aux.categoryName == x)
+				{
+				    return true;
+				}
+				
+			    aux = aux.next;
+			}
+			return false;	
 		}
 		
 		function addCat(name)
@@ -155,8 +175,26 @@
                 divAux.onclick = function(){console.log(this.id)}
                 divAux.onmousedown = function(){this.style.backgroundColor = "white";}
                 divAux.onmouseup = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}
-                divAux.onmouseleave = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";}			        
+                divAux.onmouseleave = function(){this.style.backgroundColor = "rgba(150,200,50,0.8)";document.getElementById('itemInfo').style.display = "none";}			        
 				divAux.innerHTML = 'ItemFromCat : '+ auxCat.categoryName + "<br>" + auxItem.id + "<br>" + auxItem.price + "lei";
+				divAux.onmouseenter = function(){
+				    console.log("a intrat");
+				    document.getElementById('itemInfo').style.display = "block";				   				
+				}
+				divAux.onmousemove = function(event){		
+                    if(event.clientX > (window.innerWidth - 200))
+                    {
+				        document.getElementById('itemInfo').style.left = (event.clientX - 215) + "px";
+				        document.getElementById('itemInfo').style.top = (event.clientY + 15) + "px";
+                        document.getElementById('itemInfo').innerHTML = divAux.innerHTML;					    
+					}	
+                    else
+                    {					
+				        document.getElementById('itemInfo').style.left = (event.clientX + 15) + "px";
+				        document.getElementById('itemInfo').style.top = (event.clientY + 15) + "px";
+                        document.getElementById('itemInfo').innerHTML = divAux.innerHTML;	
+                    }						
+				}
 				
 				divDelBtn = document.createElement("div");
 				divDelBtn.style.position = "absolute";
@@ -177,7 +215,10 @@
 			}
 		}
 		
+		
+		
 		function removeItem(y){
+		    document.getElementById('itemInfo').style.display = "none";
 	        var catAux = shopCategories,x;
             var itemID; 
 			 console.log(typeof y);
