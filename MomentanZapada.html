@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	
+	    <title>Physics</title>
+	
+	</head>
+	
+	<body onload = "autoRun();" style="margin:0;overflow:hidden;">
+	  
+	    <canvas onclick="zapada.addMouseFlake();" id="panzaMea" width= "10px" height="10px"></canvas>  
+	  
+	</body>
+	
+	<script>
+	
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+	    
+		zapada = new snow();
+		
+		setInterval('zapada.addRandomPosFlake()',200);
+		setInterval('zapada.moveFlakes()',10);
+		
+		function autoRun(){
+			zapada.draw();
+			
+			setTimeout('autoRun()',10);
+		}
+		
+		function flake(x,y){
+		    this.x = x;
+			this.y = y;
+			
+			this.radius = 0;
+			
+			this.speed = 1;
+			
+			this.next = null;
+			this.previous = null;
+		}
+		
+		function snow(){
+		    this.flakes = null;
+			this.flakesCount = 0;
+			
+			this.addMouseFlake = function (){
+			    this.flakesCount ++;
+			    var aux;
+				var x = event.clientX ,y = event.clientY;
+				
+				console.log("Adaug la :  X = "+x+"  Y = "+y);
+				
+				aux = new flake(x,y);
+				aux.radius = Math.floor(1 + Math.random()*5);
+				
+				if(!this.flakes)
+				{
+				    this.flakes = aux;
+				}
+				else
+				{
+				    aux.next = this.flakes;
+					this.flakes.previous = aux;
+					this.flakes = aux;
+				}
+			}
+			
+			this.addRandomPosFlake = function (){
+			    this.flakesCount ++;
+			    var aux;
+				var x = Math.floor(Math.random()*canvRef.width) ,y = 0;
+				
+				console.log("Adaug la :  X = "+x+"  Y = "+y);
+				
+				aux = new flake(x,y);
+				aux.radius = Math.floor(1 + Math.random()*5);
+				
+				if(!this.flakes)
+				{
+				    this.flakes = aux;
+				}
+				else
+				{
+				    aux.next = this.flakes;
+					this.flakes.previous = aux;
+					this.flakes = aux;
+				}
+			}			
+			
+			this.moveFlakes = function(){
+			    if(this.flakesCount > 100)
+				{
+				    this.deleteFlake();
+				}
+			
+			    var aux = this.flakes;
+				var aux2 = this.flakes;
+				var colide = false;
+				
+				while(aux)
+				{
+				    
+				    colide = false;
+				    while(aux2)
+					{
+					    if((Math.floor(Math.sqrt(Math.pow(aux.x - aux2.x,2) + Math.pow(aux.y - aux2.y,2))) < (aux.radius + aux2.radius) && aux!= aux2) || aux.y >= canvRef.height)
+						{
+						    colide = true;
+						}
+						
+					    aux2 = aux2.next;
+					}
+					
+					if(!colide)
+					{
+					    aux.y += aux.speed;
+					}
+					
+					aux2 = this.flakes;
+		            aux = aux.next;
+				}
+			}
+			
+			this.deleteFlake = function (){
+			    this.flakesCount --;
+			    var aux = this.flakes;
+				
+				if(aux.next)
+				{
+				    while(aux.next)
+				    {
+				        aux = aux.next;
+				    }
+				
+				    aux.previous.next = null;
+				    delete aux;
+				}
+			}
+			
+			this.draw = function(){
+			    var aux = this.flakes;
+				
+				console.log("Desenez");
+				canvCtx.fillStyle = "black";
+				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+				canvCtx.fillStyle = "rgba(255,255,255,.8)";
+				while(aux)
+				{
+				    canvCtx.beginPath();
+				    canvCtx.arc(aux.x,aux.y,aux.radius/2,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+					
+				    aux = aux.next;
+				}
+
+			}
+		}
+	
+	</script>
+
+</html>
