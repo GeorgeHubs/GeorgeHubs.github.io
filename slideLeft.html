@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>TestSite</title>
+		<link rel="stylesheet" href="Styles2/Style.css">
+	</head>
+    
+	<body>
+	    <div id="slideShow" style="position:relative;width:50%;min-width:500px;margin:auto;height:300px;overflow:hidden;">
+		
+		    <div id="slide1" style="width:100%;height:100%;position:absolute;background-color:blue;left:0px;top:0;transition: left 1.5s;">
+			    <img style="width:100%;height:100%" id="stSlideImg" src="" alt="noPic">
+			</div>
+			<div id="slide2" style="width:100%;height:100%;position:absolute;background-color:red;left:-100%;top:0;transition: left 1.5s;">
+			    <img style="width:100%;height:100%" id="ndSlideImg" src="" alt="noPic">
+			</div>
+			<div id="bube" style="z-index:5;position:relative;top:97%;left:0;height:3%;width:100%;">
+			    <div id="buba1"></div>
+			    <div id="buba2"></div>
+			    <div id="buba3"></div>
+			    <div id="buba4"></div>
+			    <div id="buba5"></div>
+			    <div id="buba6"></div>
+			    <div id="buba7"></div>
+			    <div id="buba8"></div>				
+			</div>
+		</div>
+	</body>
+	
+	<script>
+	
+	    var slideRef = document.getElementById('slideShow');
+	    var st = document.getElementById('slide1'),nd = document.getElementById('slide2');
+		var stImg = document.getElementById('stSlideImg'),ndImg = document.getElementById('ndSlideImg');
+		var images = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg","8.jpg"];
+		var imageIndex = 0;
+			
+		stImg.src = images[0];
+        imageIndex ++;
+		setTimeout('moveSlide()',5000);
+		
+		
+		function moveSlide()
+		{
+		    if(st.style.left == "0px")
+			{ 
+			    nd.style.left = "0px";
+			    st.style.left = "100%";
+			    console.log("St = "+st.style.left);
+				console.log(nd.style.left);
+				setTimeout('aux(2)',1500);
+				console.log("St = "+st.style.left);
+			    st.style.zIndex = "0";
+			    console.log("I work!");
+				
+
+				if(imageIndex == 8)
+				{
+				    imageIndex = 0;
+				}
+                ndImg.src = images[imageIndex];				
+				switch(imageIndex)
+				{
+				    case 0 : 
+					        document.getElementById('buba1').style.backgroundColor = "white";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+					case 1 :
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "white";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";					        
+                        break;	
+						
+				    case 2 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "white";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 3 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "white";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+				    case 4 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "white";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 5 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "white";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+				    case 6 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "white";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 7 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "white";							
+					    break;					
+				}
+				
+				imageIndex ++;
+				
+                setTimeout('moveSlide()',6500);
+				return;
+			}
+	        
+			if(nd.style.left == "0px")
+			{
+			    st.style.left = "0px";
+			    nd.style.left = "100%";
+			    console.log("Nd = "+nd.style.left);
+				console.log(st.style.left);
+				setTimeout('aux(1)',1500);
+			    console.log("Nd = "+nd.style.left);				
+			    st.style.zIndex = "2";
+			    console.log("I work too!");
+				
+				if(imageIndex == 8)
+				{
+				    imageIndex = 0;
+				}
+				stImg.src = images[imageIndex];
+				
+                switch(imageIndex)
+				{
+				    case 0 : 
+					        document.getElementById('buba1').style.backgroundColor = "white";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+					case 1 :
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "white";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";					        
+                        break;	
+						
+				    case 2 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "white";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 3 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "white";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+				    case 4 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "white";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 5 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "white";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+				    case 6 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "white";
+					        document.getElementById('buba8').style.backgroundColor = "rgba(255,255,255,0.5)";							
+					    break;
+						
+				    case 7 : 
+					        document.getElementById('buba1').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba2').style.backgroundColor = "rgba(255,255,255,0.5)";
+						    document.getElementById('buba3').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba4').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba5').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba6').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba7').style.backgroundColor = "rgba(255,255,255,0.5)";
+					        document.getElementById('buba8').style.backgroundColor = "white";							
+					    break;					
+				} 
+						
+				imageIndex ++;
+				
+                setTimeout('moveSlide()',6500);
+				return;
+			}
+		}
+		
+		function aux(x){
+		    if(x == 1)
+			{
+				nd.style.left = "-100%";
+			}
+			else
+			{
+				st.style.left = "-100%";			
+			}
+		}
+
+	    
+	</script>
+	
+</html>
