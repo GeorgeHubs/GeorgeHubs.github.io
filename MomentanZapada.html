@@ -9,8 +9,22 @@
 	</head>
 	
 	<body onload = "autoRun();" style="margin:0;overflow:hidden;">
-	  
-	    <canvas onclick="zapada.addMouseFlake();" id="panzaMea" width= "10px" height="10px"></canvas>  
+	    <div id="menuShow" onmouseenter = "this.style.opacity = 1;" onmouseleave = "this.style.opacity = 0.5;" onclick="this.style.opacity = 1;if(showMenu){document.getElementById('menu').style.right = -220 + 'px';showMenu = false;this.innerHTML = '<<';}else{document.getElementById('menu').style.right = 0;showMenu = true;this.innerHTML = '>>';}" style="position:fixed;top:50px;right:0;width:40px;height:30px;background-color:grey;font-size:30px;font-weight:bold;opacity:0.5;"><<</div>
+	    <div id="menu" style="position:fixed;top:90px;right:-220px;width:220px;height:500px;background-color:rgb(200,200,200);opacity:0.8;transition:right .2s linear;">
+		    <div id="menuHead" style="position:absolute;top:0;left:0;width:210px;padding:5px;background-color:rgb(150,150,150);text-align:center;font-size:20px;border-bottom:2px solid white;">Meniu</div>
+			<div id="menuBody" style="position:absolute;top:35px;left:0;height:465px;width:220px;background-color:rgb(170,170,170);">
+			    <fieldset><legend>Marime fulgi</legend>
+			    Min<input id="minSizeIn" type="number" min="1" max="10">
+				Max<input id="maxSizeIn" type="number" min="1" max="10">
+				<input style="width:185px;padding:3px;" type="button" value="Seteaza" onclick="checkSizeIn();">
+				</fieldset>
+				<fieldset><legend>Viteza vant</legend>
+				<input oninput ="document.getElementById('windSpeedValue').innerHTML = this.value;" id="windSpeedController" type="range" min="0" max="1" value="0.1" step="0.1"><div style="padding:5px;border:1px solid grey;display:inline;" id="windSpeedValue"></div>
+				<input style="width:185px;padding:3px;" type="button" value="Seteaza" onclick="changeWindSpeed();">				
+				</fieldset>
+			</div>
+		</div>
+	    <canvas onmousemove="if(event.clientX < canvRef.width/2){zapada.windDirection = -1;}else{zapada.windDirection = 1;}" onclick="zapada.addMouseFlake();" id="panzaMea" width= "10px" height="10px"></canvas>  
 	  
 	</body>
 	
@@ -20,11 +34,50 @@
 		canvRef.width = window.innerWidth;
 		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
-	    
-		var zapada = new snow();
+	    var minFlakeSize = 1,maxFlakeSize = 3 ;
+		document.getElementById('minSizeIn').value = minFlakeSize;
+        document.getElementById('maxSizeIn').value = maxFlakeSize;
+		var windSpeed = 0.1;
 		
-		setInterval('zapada.addRandomPosFlake()',200);
-		setInterval('zapada.moveFlakes()',10);
+		
+		zapada = new snow();
+		
+		var showMenu = false;
+		
+		var intAdd,intMove;
+		intAdd = setInterval('zapada.addRandomPosFlake()',100);
+		intMove = setInterval('zapada.moveFlakes()',10);
+		
+		function changeWindSpeed(){
+		    clearInterval(intAdd);
+			clearInterval(intMove);
+		
+		    windSpeed = parseFloat(document.getElementById('windSpeedController').value);
+		
+		    intAdd = setInterval('zapada.addRandomPosFlake()',100);
+		    intMove = setInterval('zapada.moveFlakes()',10);
+		}
+		
+		
+		function checkSizeIn(){
+		    clearInterval(intAdd);
+			clearInterval(intMove);
+		
+		    if(document.getElementById('minSizeIn').value <= document.getElementById('maxSizeIn').value){
+			    console.log("MinValueToBeSet = " + document.getElementById('minSizeIn').value);
+				console.log("MaxValueToBeSet = " + document.getElementById('maxSizeIn').value);
+			
+			    minFlakeSize = parseInt(document.getElementById('minSizeIn').value);
+				maxFlakeSize = parseInt(document.getElementById('maxSizeIn').value);
+			}
+			else
+			{
+			    window.alert("\nValoarea maxima nu poate fi mai mica decat valoarea minima.\n");
+			}
+			
+			intAdd = setInterval('zapada.addRandomPosFlake()',200);
+		    intMove = setInterval('zapada.moveFlakes()',10);
+		}
 		
 		function autoRun(){
 			zapada.draw();
@@ -40,6 +93,7 @@
 			
 			this.speed = 1;
 			
+			this.plane = 0;
 			this.next = null;
 			this.previous = null;
 		}
@@ -48,15 +102,20 @@
 		    this.flakes = null;
 			this.flakesCount = 0;
 			
+			this.windDirection = 1;
+			this.windIntensity = 0;
+			
 			this.addMouseFlake = function (){
 			    this.flakesCount ++;
 			    var aux;
 				var x = event.clientX ,y = event.clientY;
-				
-				console.log("Adaug la :  X = "+x+"  Y = "+y);
+
 				
 				aux = new flake(x,y);
-				aux.radius = Math.floor(1 + Math.random()*5);
+				aux.radius = minFlakeSize + Math.floor(Math.random()*maxFlakeSize);
+				console.log(aux.radius);
+				aux.plane = aux.radius;
+				aux.speed= aux.plane / 1.5;
 				
 				if(!this.flakes)
 				{
@@ -73,12 +132,15 @@
 			this.addRandomPosFlake = function (){
 			    this.flakesCount ++;
 			    var aux;
-				var x = Math.floor(Math.random()*canvRef.width) ,y = 0;
+				var x = Math.floor(Math.random()*(canvRef.width)) ,y = 0;
 				
-				console.log("Adaug la :  X = "+x+"  Y = "+y);
+
 				
 				aux = new flake(x,y);
-				aux.radius = Math.floor(1 + Math.random()*5);
+				aux.radius = minFlakeSize + Math.floor(Math.random()*maxFlakeSize);
+				console.log("Min = "+minFlakeSize+"   Max = "+maxFlakeSize+"  Raza = "+aux.radius);
+				aux.plane = aux.radius;
+				aux.speed= aux.plane / 1.5;				
 				
 				if(!this.flakes)
 				{
@@ -93,7 +155,7 @@
 			}			
 			
 			this.moveFlakes = function(){
-			    if(this.flakesCount > 10000)
+			    if(this.flakesCount > 500)
 				{
 				    this.deleteFlake();
 				}
@@ -108,7 +170,7 @@
 				    colide = false;
 				    while(aux2)
 					{
-					    if((Math.floor(Math.sqrt(Math.pow(aux.x - aux2.x,2) + Math.pow(aux.y - aux2.y,2))) < (aux.radius + aux2.radius) && aux!= aux2) || aux.y >= canvRef.height)
+					    if((Math.floor(Math.sqrt(Math.pow(aux.x - aux2.x,2) + Math.pow(aux.y - aux2.y,2))) < (aux.radius + aux2.radius) && aux!= aux2 && aux.plane == aux2.plane) || aux.y >= canvRef.height)
 						{
 						    colide = true;
 						}
@@ -116,9 +178,13 @@
 					    aux2 = aux2.next;
 					}
 					
-					if(!colide)
+					if(!colide && this.windDirection != null)
 					{
-					    aux.y += aux.speed;
+					    switch(this.windDirection)
+					    {
+					        case -1 :  aux.y += aux.speed;aux.x -= windSpeed;break;
+						    case 1 : aux.y += aux.speed;aux.x += windSpeed;break;
+					    } 
 					}
 					
 					aux2 = this.flakes;
@@ -145,14 +211,15 @@
 			this.draw = function(){
 			    var aux = this.flakes;
 				
-				console.log("Desenez");
 				canvCtx.fillStyle = "black";
 				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
-				canvCtx.fillStyle = "rgba(255,255,255,.8)";
+				
 				while(aux)
 				{
+				    canvCtx.fillStyle = "rgba(255,255,255,"+ (aux.plane/20 + 0.4) +")";
+				
 				    canvCtx.beginPath();
-				    canvCtx.arc(aux.x,aux.y,aux.radius/2,0,2*Math.PI);
+				    canvCtx.arc(aux.x,aux.y,aux.radius,0,2*Math.PI);
 					canvCtx.closePath();
 					canvCtx.fill();
 					
