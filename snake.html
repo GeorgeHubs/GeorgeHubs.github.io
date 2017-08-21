@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Snake :)</title>
+</head>
+
+<body onkeypress="tastaApasata(event)" style="margin:0;overflow:hidden;">
+    <canvas id="panzaMea" width='10px' height='10px'></canvas>
+</body>
+
+<script>
+    var canvRef = document.getElementById('panzaMea');
+	canvRef.width = window.innerWidth;
+	canvRef.height = window.innerHeight;
+	var canvCtx = canvRef.getContext('2d');
+	canvCtx.strokeStyle = 'rgba(0,0,0,0.5)';
+	var ultimaTastaApasata = 119;
+	var nrPatratePeLatime=25, nrPatratePeLungime=50;
+	var pasY = window.innerHeight/nrPatratePeLatime,pasX = window.innerWidth/nrPatratePeLungime;
+	var particule = null;
+	var mancare = {x:1,y:1};
+    mancare.x = Math.floor(Math.random()*nrPatratePeLungime);
+	mancare.y = Math.floor(Math.random()*nrPatratePeLatime);
+	
+	var sarpeleMeu = new snake();
+	sarpeleMeu.head = new bodyPart();
+	
+	setInterval('ruleazaJoc()',150);
+	setInterval('deseneaza()',50);
+	
+	function ruleazaJoc(){
+	    sarpeleMeu.move();
+	}
+	
+	function tastaApasata(event){
+	    if(event.keyCode != ultimaTastaApasata)
+		{
+		    ultimaTastaApasata = event.keyCode;
+		}
+		console.log(event.keyCode);
+	}
+	
+	function snake(){
+	    this.head = null;
+		
+		this.bodyPartCount = 1;
+		this.getBodyPartCount = function(){
+		    var aux = this.head;
+			
+			this.bodyPartCount = 0; 
+			while(aux.next)
+			{
+			    this.bodyPartCount ++;
+			    aux = aux.next;
+			}
+			
+			console.log("Nr noduri : "+this.bodyPartCount);
+		}
+		
+		this.move = function(){
+		    var aux = this.head;
+			
+			while(aux.next){
+			    aux = aux.next;
+			}
+			
+			while(aux != this.head)
+			{
+			    aux.x = aux.previous.x;
+				aux.y = aux.previous.y;
+			
+			    aux = aux.previous;
+			}
+		
+			switch(ultimaTastaApasata)
+		    {
+			    case 97 : 
+					this.head.x -= 1;
+					break;
+					
+			    case 100 :
+                    this.head.x += 1;
+                    break;
+					
+                case 115 : 
+                    this.head.y += 1;
+				    break;
+					
+                case 119 : 
+                    this.head.y -= 1;
+                    break;						   				
+			}
+			
+			this.eat();
+		}
+		
+		this.eat = function(){
+		    if( this.head.x == mancare.x && this.head.y == mancare.y )
+			{
+			    addEatEffect();
+				particleControl();
+			
+			    mancare.x = Math.floor(Math.random()*nrPatratePeLungime);
+				mancare.y = Math.floor(Math.random()*nrPatratePeLatime);
+				
+				this.grow();
+			}
+		}
+		
+		this.grow = function(){
+		    var aux = this.head;
+		   
+		    while(aux.next)
+			{
+			    aux = aux.next;
+			}
+			
+			aux.next = new bodyPart();
+			aux.next.previous = aux;
+			aux.next.x = aux.x;
+			aux.next.y = aux.y;
+			
+		}
+	}
+	
+	function bodyPart(){
+	    this.x = 25;
+		this.y = 12;
+		
+		this.urmator = null;
+		this.precedent = null;
+	}
+	
+	function particleControl(){
+	    moveParticles();
+		
+		if(!particule)
+		{
+		    return;
+		}
+		else
+		{
+		    setTimeout('particleControl()',50);
+		}
+	}
+	
+	function particle(){
+	    this.x = Math.floor(sarpeleMeu.head.x*pasX);
+		this.y = Math.floor(sarpeleMeu.head.y*pasY + pasY/2);
+		console.log("Particula generata la :  X = "+this.x+"   Y = "+this.y);
+		this.destX = 0;
+		this.destY = 0;
+		
+		this.opacity = 1;
+		
+		this.action = function(){
+		    this.opacity -= 0.01;
+		
+		    if(this.x < this.destX)
+			{
+			    this.x ++;
+			}
+			
+			if(this.x > this.destX)
+			{
+			    this.x --;				
+			}
+			
+			if(this.y < this.destY)
+			{
+			    this.y ++;
+			}
+			
+			if(this.y > this.destY)
+			{
+			    this.y --;				
+			}
+		}
+		
+		this.urmator = null;
+		this.precedent = null;
+	}
+	
+	function addEatEffect(){
+		deleteParticles();
+		particule = new particle();
+		particule.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100;
+		particule.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100;
+		
+		var aux = particule;
+		var i = 0;
+		
+        while(i!=4)
+		{
+		    i++;
+		    aux.next = new particle();
+			aux = aux.next;
+			aux.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100;
+			aux.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100;
+			console.log("Destinatia :  X = "+aux.destX+"   Y = "+aux.destY);
+		}
+	}
+	
+	function moveParticles(){
+	    var aux = particule;	
+		
+		while(aux)
+		{
+            aux.action();
+			aux = aux.next;
+	    }
+	}
+	
+	function deleteParticles(){
+	    var aux = particule;
+		
+		if(aux)
+		{
+		    while(aux.urmator)
+			{
+			    aux = aux.urmator;
+				delete aux.precedent;
+			}
+			delete aux;
+			
+			particule = null;
+		}	
+	}
+	
+	function deseneaza(){
+	    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+	
+	    //afisam plasa/sita/reteaua/grila sau cum vrei sa ii spui  <-- primul pas (background-ul)
+	    canvCtx.fillStyle = "rgb(50,100,200)";
+		canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+		
+		canvCtx.fillStyle = "rgba(0,0,0,.5)";
+		for(var i = 0;i<nrPatratePeLungime;i++)
+		{
+		    canvCtx.fillRect(i*pasX,0,1,canvRef.height);
+		}
+		
+		for(var i = 0;i<nrPatratePeLatime;i++)
+		{
+		    canvCtx.fillRect(0,i*pasY,canvRef.width,1);		    
+		}
+		
+		
+		//afisam sarpele
+		var aux;
+		aux = sarpeleMeu.head;
+		canvCtx.fillStyle = "rgb(50,200,50)";
+		canvCtx.fillRect(aux.x*pasX,aux.y*pasY,pasX,pasY);
+		canvCtx.strokeRect(aux.x*pasX,aux.y*pasY,pasX,pasY);
+        aux = aux.next;  
+		canvCtx.fillStyle = "rgb(60,200,100)";
+		while(aux)
+		{
+		    canvCtx.fillRect(aux.x*pasX,aux.y*pasY,pasX,pasY);
+			canvCtx.strokeRect(aux.x*pasX,aux.y*pasY,pasX,pasY);			
+			aux = aux.next;
+		}
+		
+		//afisam mancarea
+		canvCtx.fillStyle = "rgb(200,60,100)";
+        
+		canvCtx.fillRect(mancare.x*pasX,mancare.y*pasY,pasX,pasY);
+		
+		//afisam particule(daca exista)
+		var pAux = particule;
+		if(pAux)
+		{
+		    canvCtx.fillStyle = "rgba(200,60,100,"+pAux.opacity+")";
+		    while(pAux)
+			{
+		        canvCtx.fillRect(pAux.x,pAux.y,pasX/2,pasY/2);
+				
+				pAux = pAux.next;
+			}
+			
+			//afiseaza destinatia particulelor
+			/*
+			canvCtx.fillStyle = "yellow";
+			pAux = particule;
+			while(pAux)
+			{
+			    canvCtx.fillRect(pAux.destX,pAux.destY,5,5);
+				
+				pAux = pAux.next;
+			}*/
+		}
+	}
+</script>
+
+</html>
