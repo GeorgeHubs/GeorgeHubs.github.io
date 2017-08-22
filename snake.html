@@ -6,7 +6,7 @@
     <title>Snake :)</title>
 </head>
 
-<body onkeypress="tastaApasata(event)" style="margin:0;overflow:hidden;">
+<body onload="moveParticles();" onkeypress="tastaApasata(event)" style="margin:0;overflow:hidden;">
     <canvas id="panzaMea" width='10px' height='10px'></canvas>
 </body>
 
@@ -20,6 +20,7 @@
 	var nrPatratePeLatime=25, nrPatratePeLungime=50;
 	var pasY = window.innerHeight/nrPatratePeLatime,pasX = window.innerWidth/nrPatratePeLungime;
 	var particule = null;
+	var maxParticleCount = 5;
 	var mancare = {x:1,y:1};
     mancare.x = Math.floor(Math.random()*nrPatratePeLungime);
 	mancare.y = Math.floor(Math.random()*nrPatratePeLatime);
@@ -35,7 +36,7 @@
 	}
 	
 	function tastaApasata(event){
-	    if(event.keyCode != ultimaTastaApasata)
+	    if(event.keyCode != ultimaTastaApasata && (event.keyCode == 97 || event.keyCode == 100 || event.keyCode == 115 || event.keyCode == 119))
 		{
 		    ultimaTastaApasata = event.keyCode;
 		}
@@ -100,7 +101,6 @@
 		    if( this.head.x == mancare.x && this.head.y == mancare.y )
 			{
 			    addEatEffect();
-				particleControl();
 			
 			    mancare.x = Math.floor(Math.random()*nrPatratePeLungime);
 				mancare.y = Math.floor(Math.random()*nrPatratePeLatime);
@@ -133,19 +133,6 @@
 		this.precedent = null;
 	}
 	
-	function particleControl(){
-	    moveParticles();
-		
-		if(!particule)
-		{
-		    return;
-		}
-		else
-		{
-		    setTimeout('particleControl()',50);
-		}
-	}
-	
 	function particle(){
 	    this.x = Math.floor(sarpeleMeu.head.x*pasX);
 		this.y = Math.floor(sarpeleMeu.head.y*pasY + pasY/2);
@@ -153,29 +140,32 @@
 		this.destX = 0;
 		this.destY = 0;
 		
+		this.pasX = 0;
+		this.pasY = 0;
+		
 		this.opacity = 1;
 		
 		this.action = function(){
-		    this.opacity -= 0.01;
-		
+		    
+		    this.opacity -= 0.02;
 		    if(this.x < this.destX)
 			{
-			    this.x ++;
+			    this.x += this.pasX * 2;
 			}
 			
 			if(this.x > this.destX)
 			{
-			    this.x --;				
+			    this.x -= this.pasX * 2;				
 			}
 			
 			if(this.y < this.destY)
 			{
-			    this.y ++;
+			    this.y += this.pasY * 2;
 			}
 			
 			if(this.y > this.destY)
 			{
-			    this.y --;				
+			    this.y -= this.pasY * 2;				
 			}
 		}
 		
@@ -186,19 +176,44 @@
 	function addEatEffect(){
 		deleteParticles();
 		particule = new particle();
-		particule.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100;
-		particule.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100;
+		particule.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100 + 10;
+		particule.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100 + 10;
+		
+		if(Math.sqrt(Math.pow(particle.x - particle.destX,2)) < Math.sqrt(Math.pow(particle.y - particle.destY,2)))
+		{
+		    particle.pasX = Math.sqrt(Math.pow(particle.x - particle.destX,2))/Math.sqrt(Math.pow(particle.y - particle.destY,2));
+			particle.pasY = 1;
+		}
+		
+		if(Math.sqrt(Math.pow(particle.y - particle.destY,2)) < Math.sqrt(Math.pow(particle.x - particle.destX,2)))
+		{
+		    particle.pasY = Math.sqrt(Math.pow(particle.y - particle.destY,2))/Math.sqrt(Math.pow(particle.x - particle.destX,2));
+			particle.pasX = 1;
+		}		
 		
 		var aux = particule;
 		var i = 0;
 		
-        while(i!=4)
+        while(i!= maxParticleCount)
 		{
 		    i++;
 		    aux.next = new particle();
 			aux = aux.next;
-			aux.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100;
-			aux.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100;
+			aux.destX = Math.floor(sarpeleMeu.head.x*pasX) + Math.sin(Math.random()*6.28)* 100 + 10;
+			aux.destY = Math.floor(sarpeleMeu.head.y*pasY) + Math.cos(Math.random()*6.28)* 100 + 10;
+			
+		    if(Math.sqrt(Math.pow(aux.x - aux.destX,2)) < Math.sqrt(Math.pow(aux.y - aux.destY,2)))
+		    {
+				aux.pasX = Math.sqrt(Math.pow(aux.x - aux.destX,2))/Math.sqrt(Math.pow(aux.y - aux.destY,2));
+			    aux.pasY = 1;
+		    }
+			
+		    if(Math.sqrt(Math.pow(aux.y - aux.destY,2)) < Math.sqrt(Math.pow(aux.x - aux.destX,2)))
+		    {
+		        aux.pasY = Math.sqrt(Math.pow(aux.y - aux.destY,2))/Math.sqrt(Math.pow(aux.x - aux.destX,2));
+			    aux.pasX = 1;
+		    }			
+			
 			console.log("Destinatia :  X = "+aux.destX+"   Y = "+aux.destY);
 		}
 	}
@@ -211,6 +226,8 @@
             aux.action();
 			aux = aux.next;
 	    }
+		
+		setTimeout('moveParticles()',50);
 	}
 	
 	function deleteParticles(){
@@ -251,7 +268,7 @@
 		//afisam sarpele
 		var aux;
 		aux = sarpeleMeu.head;
-		canvCtx.fillStyle = "rgb(50,200,50)";
+		canvCtx.fillStyle = "rgb(50,250,50)";
 		canvCtx.fillRect(aux.x*pasX,aux.y*pasY,pasX,pasY);
 		canvCtx.strokeRect(aux.x*pasX,aux.y*pasY,pasX,pasY);
         aux = aux.next;  
@@ -270,12 +287,13 @@
 		
 		//afisam particule(daca exista)
 		var pAux = particule;
+		pAux = pAux.next;
 		if(pAux)
 		{
 		    canvCtx.fillStyle = "rgba(200,60,100,"+pAux.opacity+")";
 		    while(pAux)
 			{
-		        canvCtx.fillRect(pAux.x,pAux.y,pasX/2,pasY/2);
+		        canvCtx.fillRect(pAux.x,pAux.y,pasX/(maxParticleCount/2),pasY/(maxParticleCount/2));
 				
 				pAux = pAux.next;
 			}
@@ -284,6 +302,7 @@
 			/*
 			canvCtx.fillStyle = "yellow";
 			pAux = particule;
+			pAux = pAux.next;
 			while(pAux)
 			{
 			    canvCtx.fillRect(pAux.destX,pAux.destY,5,5);
