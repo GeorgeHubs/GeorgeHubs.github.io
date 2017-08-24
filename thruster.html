@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Nice</title>
+	</head>
+    
+	<body style="margin:0;overflow-x:hidden;"onload= "getEntityNearTarget();">
+	    <div id="entity" style="transition:left 3s;position:absolute;top:0;left:-500px;width:500px;height:200px;"><img style="position:absolute;right:0;" id="frame" src="thrust1.png" alt="NoPic"></div>
+	
+	    <div id="div1" style="position:relative;transition:left 10s;margin-top:50px;width:80%;height:200px;left:10%;background-color:rgb(200,50,50);"></div>
+	    <div id="div2" style="position:relative;transition:left 10s;margin-top:50px;width:80%;height:200px;left:10%;background-color:rgb(150,50,50);"></div>
+	    <div id="div3" style="position:relative;transition:left 10s;margin-top:50px;width:80%;height:200px;left:10%;background-color:rgb(100,50,50);"></div>	
+        <div style="position:relative;margin-top:100px;margin-bottom:100px;width:100%;height:20px;background-color:rgb(150,100,50);"></div>		
+	</body>
+
+	<script>
+	 
+	    var entityRef = document.getElementById('entity');
+	    var id = Math.floor(Math.random()*3)+1;
+		console.log(id);
+	    var elemPos = document.getElementById('div'+id).getBoundingClientRect();
+		var bodyPos = document.body.getBoundingClientRect();
+		var elem = document.getElementById('div'+id);
+		var thrusterFrames = ['thrust1.png','thrust2.png','thrust3.png','thrust4.png'];
+		
+		
+		function getEntityNearTarget(){
+		    entityRef.style.top = (elemPos.top) + 'px';
+			entityRef.style.left = (document.body.offsetWidth/10-entityRef.offsetWidth+20) + 'px';
+			thrusterAnim(0);
+			setTimeout('move()',2100);
+		}
+		
+		function move(){
+		    
+            entityRef.style.transition = 'left 10s';
+		    entityRef.style.left = window.innerWidth + 'px';
+			elem.style.left = (window.innerWidth+500) + 'px';
+            setTimeout('delElement()',6000);		    
+		}
+		
+		function delElement(){
+		    elem.parentNode.removeChild(elem);
+		}
+		
+		function thrusterAnim(x){
+		    x++;
+		    if(x > 3)
+			{
+			    x = 0;
+			}
+		    document.getElementById('frame').src = thrusterFrames[x];
+			
+		    setTimeout('thrusterAnim('+x+')',100);
+		}
+	
+	</script>
+	
+</html>
