@@ -3,218 +3,47 @@
 <html>
 
     <head>
-	    <title>Meniu</title>
-		<link rel="stylesheet" media="screen and (min-width:500px)" href="Styles/Style.css">
-		<link rel="stylesheet" media="screen and (max-width:500px)" href="Styles/Style2.css">
+	
+	    <title>Main</title>
+	    <link rel="stylesheet" href="newStyle.css">
+	
 	</head>
-
-	<body onload="moveText();autoRun();">
-		<canvas style="z-index:-1;position:fixed;top:0;left:0;" id="panzaMea" width= "10px" height="10px"></canvas>
-		
-	    <div id="mainMenu" style="width:100%;">
-		    
-			<div id="mainMenuBtn1" >Proiecte
-			    <div id="drop1">
-				    <div>Arcade</div>
-					<div>Artificii</div>
-					<div>Puncte</div>					
-				</div>
+	
+	<body style="margin:0;overflow-x:hidden;">
+	
+	    <div id="menu">
+		    <div id="menuItem" ><a href="arcade.html">Arcade</a></div>
+		    <div id="artificii" >Artificii<img src="Down.png" style="position:absolute;top:5px;right:0;">
+                <div id="artificiiItems">
+				    <a href="fireworks.html"><div id="dropItem">V1</div></a>
+				    <a href="artificii_v2.html"><div id="dropItem">V2</div></a>					
+				</div>		
 			</div>	
-			<div id="mainMenuBtn" >Ceva vine aici</div>
-			<div id="mainMenuBtn" >Ceva vine aici</div>
-			<div id="mainMenuBtn" >Ceva vine aici</div>			
-			
+		    <div id="menuItem"><a href="MomentanZapada.html">Zapada</a></div>			
+		    <div id="menuItem"> <a href="PunctePeTavan.html">Puncte</a></div>
+            <div id="menuItem"><a href="Sin.html">Sin</a></div>	
+			<div id="menuItem"><a href="shopTest.html">Shop</a></div>
+            <div id="menuItem"><a href="snake.html">Snake</a></div>		
+			<div id="smallStuff">Small stuff<img src="Down.png" style="position:absolute;top:5px;right:0;">
+                <div id="smallStuffItems">
+				    <a href="thruster.html"><div id="dropItem">Thruster</div></a>
+				    <a href="slideLeft.html"><div id="dropItem">Slidesh left</div></a>
+				    <a href="scrollTest.html"><div id="dropItem">Auto-Scroll</div></a>
+				    <a href="deformare.html"><div id="dropItem">Deformare</div></a>					
+				</div>	
+			</div>	
 		</div>
 		
-
-		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;margin-top:150px;width:1000px;min-width:999px;height:600px;" src="fireworks.html"></iframe>		
-        <iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="arcade.html"></iframe>
-		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:100px;width:1000px;min-width:999px;height:600px;" src="PunctePeTavan.html"></iframe>
- 		
-		<iframe scrolling="no" style="z-index:1;background-color:grey;padding:5px;display:block;border:none;margin:auto;margin-bottom:50px;width:1000px;min-width:999px;height:422px;" src="Sin.html"></iframe> 
-		
-		<div id="movingTextBar">
-		    <div id="movingText"></div> 
-		</div>
-		
+		<iframe scrolling="yes" id="theFrame" src="arcade.html" style="position:absolute;margin-top:80px;width:80%;margin-left:10%;border:1px solid black;">
+		    
+		</iframe>
+	
 	</body>
 	
 	<script>
-	    var textRef = document.getElementById('movingText');
-		var leftPos = window.innerWidth;
-		
-		textRef.innerHTML = "Am adaugat proiectul cu numarul 3 . Il puteti accesa  <a href='PunctePeTavan.html' style='color:red;text-decoration:none;'>aici</a> sau de pe pagina principala (cea care e deschisa acum).";
-		
-		function moveText(){
-
-			leftPos-=1;
-			textRef.style.left = leftPos+"px";
-
-	        if(leftPos > (-1 * textRef.offsetWidth))
-            {	
-                console.log(textRef.offsetWidth);			
-		        setTimeout('moveText()',10);
-			}
-			else
-            {
-				leftPos = window.innerWidth;
-				setTimeout('moveText()',10);
-			}
-		}
-		/*
-		_____________________________________________________
-		/////////////////////////////////////////////////////
-		////////////////ZAPADA INCEPE AICI///////////////////
-		/////////////////////////////////////////////////////
-		`````````````````````````````````````````````````````
-		*/
-		
-		var canvRef = document.getElementById('panzaMea');
-		canvRef.width = window.innerWidth;
-		canvRef.height = window.innerHeight;
-		var canvCtx = canvRef.getContext('2d');
-	    
-		var zapada = new snow();
-		
-		setInterval('zapada.addRandomPosFlake()',200);
-		setInterval('zapada.moveFlakes()',10);
-		
-		function autoRun(){
-			zapada.draw();
-			
-			setTimeout('autoRun()',10);
-		}
-		
-		function flake(x,y){
-		    this.x = x;
-			this.y = y;
-			
-			this.radius = 0;
-			
-			this.speed = 1;
-			
-			this.next = null;
-			this.previous = null;
-		}
-		
-		function snow(){
-		    this.flakes = null;
-			this.flakesCount = 0;
-			
-			this.addMouseFlake = function (){
-			    this.flakesCount ++;
-			    var aux;
-				var x = event.clientX ,y = event.clientY;
-				/*
-				console.log("Adaug la :  X = "+x+"  Y = "+y);
-				*/
-				aux = new flake(x,y);
-				aux.radius = Math.floor(1 + Math.random()*5);
-				
-				if(!this.flakes)
-				{
-				    this.flakes = aux;
-				}
-				else
-				{
-				    aux.next = this.flakes;
-					this.flakes.previous = aux;
-					this.flakes = aux;
-				}
-			}
-			
-			this.addRandomPosFlake = function (){
-			    this.flakesCount ++;
-			    var aux;
-				var x = Math.floor(Math.random()*canvRef.width) ,y = 0;
-				
-				console.log("Adaug la :  X = "+x+"  Y = "+y);
-				
-				aux = new flake(x,y);
-				aux.radius = Math.floor(1 + Math.random()*5);
-				
-				if(!this.flakes)
-				{
-				    this.flakes = aux;
-				}
-				else
-				{
-				    aux.next = this.flakes;
-					this.flakes.previous = aux;
-					this.flakes = aux;
-				}
-			}			
-			
-			this.moveFlakes = function(){
-			    if(this.flakesCount > 100)
-				{
-				    this.deleteFlake();
-				}
-			
-			    var aux = this.flakes;
-				var aux2 = this.flakes;
-				var colide = false;
-				
-				while(aux)
-				{
-				    
-				    colide = false;
-				    while(aux2)
-					{
-					    if((Math.floor(Math.sqrt(Math.pow(aux.x - aux2.x,2) + Math.pow(aux.y - aux2.y,2))) < (aux.radius + aux2.radius) && aux!= aux2) || aux.y >= canvRef.height)
-						{
-						    colide = true;
-						}
-						
-					    aux2 = aux2.next;
-					}
-					
-					if(!colide)
-					{
-					    aux.y += aux.speed;
-					}
-					
-					aux2 = this.flakes;
-		            aux = aux.next;
-				}
-			}
-			
-			this.deleteFlake = function (){
-			    this.flakesCount --;
-			    var aux = this.flakes;
-				
-				if(aux.next)
-				{
-				    while(aux.next)
-				    {
-				        aux = aux.next;
-				    }
-				
-				    aux.previous.next = null;
-				    delete aux;
-				}
-			}
-			
-			this.draw = function(){
-			    var aux = this.flakes;
-				
-				console.log("Desenez");
-				canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
-				canvCtx.fillStyle = "rgba(255,255,255,.8)";
-				
-				while(aux)
-				{
-				    canvCtx.beginPath();
-				    canvCtx.arc(aux.x,aux.y,aux.radius/2,0,2*Math.PI);
-					canvCtx.closePath();
-					canvCtx.fill();
-					
-				    aux = aux.next;
-				}
-
-			}
-		}
+	    var iframeRef = document.getElementById('theFrame');
+		iframeRef.height = (window.innerHeight/10 * 8) + 'px';console.log(iframeRef.height);
 		
 	</script>
-	
+
 </html>

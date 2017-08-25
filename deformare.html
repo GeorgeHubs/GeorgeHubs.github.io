@@ -16,10 +16,15 @@
 		canvRef.width = window.innerWidth;
 		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
-		canvCtx.font = canvRef.height/10 +"px Arial";
+		if(canvRef.width > canvRef.height){
+		canvCtx.font = canvRef.height/10 +"px Arial";}else{canvCtx.font = canvRef.width/10 + 'px Arial';}
 	
 		var deformValue = 0.5;
         var cerculMeu = new cerc();
+		if(canvRef.width > canvRef.height)
+		{
+		    cerculMeu.raza = canvRef.width/5;
+		}else{cerculMeu.raza = canvRef.height/5;}
 		canvCtx.strokeStyle = "white";
 		cerculMeu.addPuncte();
 		
@@ -191,7 +196,8 @@
                 canvCtx.fill();
 
                 canvCtx.fillStyle = "white";
-                canvCtx.fillText("Deformare",canvRef.width/2.6,canvRef.height/2);				
+				if(canvRef.width>canvRef.height){
+                canvCtx.fillText("Deformare",canvRef.width/2.6,canvRef.height/2);}else{canvCtx.fillText("Deformare",canvRef.width/3.6,canvRef.height/2);}				
 		    }
 		}		
 		

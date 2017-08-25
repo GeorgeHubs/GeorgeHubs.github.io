@@ -14,8 +14,8 @@
 		    <div id="menuHead" style="position:absolute;top:0;left:0;width:210px;padding:5px;background-color:rgb(150,150,150);text-align:center;font-size:20px;border-bottom:2px solid white;">Meniu</div>
 			<div id="menuBody" style="position:absolute;top:35px;left:0;height:465px;width:220px;background-color:rgb(170,170,170);">
 			    <fieldset><legend>Marime fulgi</legend>
-			    Min<input id="minSizeIn" type="number" min="1" max="10">
-				Max<input id="maxSizeIn" type="number" min="1" max="10">
+			    Min<input id="minSizeIn" type="number" min=1 max=10>
+				Max<input id="maxSizeIn" type="number" min=1 max=10>
 				<input style="width:185px;padding:3px;" type="button" value="Seteaza" onclick="checkSizeIn();">
 				</fieldset>
 				<fieldset><legend>Viteza vant</legend>
@@ -63,7 +63,7 @@
 		    clearInterval(intAdd);
 			clearInterval(intMove);
 		
-		    if(document.getElementById('minSizeIn').value <= document.getElementById('maxSizeIn').value){
+		    if(parseInt(document.getElementById('minSizeIn').value) <= parseInt(document.getElementById('maxSizeIn').value)){
 			    console.log("MinValueToBeSet = " + document.getElementById('minSizeIn').value);
 				console.log("MaxValueToBeSet = " + document.getElementById('maxSizeIn').value);
 			

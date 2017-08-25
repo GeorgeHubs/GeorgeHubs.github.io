@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Artificii_V2</title>
+	</head>
+	
+	<body onload ="Run();deseneaza();"style="margin:0;overflow:hidden;">
+	    <canvas id="panzaMea"></canvas>
+		<div id="count" style="position:absolute;top:10px;right:10px;"></div>
+		<div id="opacityDebug" style="color:white;position:absolute;top:30px;right:10px;width:100px;height:auto;border:1px solid white;padding:5px;" ></div>
+	</body>
+	
+	<script>
+	
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+		canvCtx.fillStyle="black";
+		
+		var artificii = new fireworkShow();
+		
+		
+        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
+
+		setInterval('artificii.adauga()',2000);
+		setInterval('artificii.removeFirework()',2000);
+			
+		
+		function Run(){
+		    artificii.obtineNumarulArtificiilor();
+		    artificii.control();
+			
+			setTimeout('Run()',10);
+		}
+		
+		function fireworkShow()
+		{
+		    this.fireworks = null;
+			
+			this.numarArtificii = 0;
+			  
+			this.obtineNumarulArtificiilor = function(){
+			    var aux = this.fireworks;
+				this.numarArtificii = 0;
+				while(aux)
+				{
+				    this.numarArtificii ++;
+				  
+				    aux = aux.urmator;
+				}
+				
+				document.getElementById('count').innerHTML = this.numarArtificii;
+				document.getElementById('count').style.backgroundColor = 'green';
+			}
+			
+			this.removeFirework = function(){
+			    var aux = this.fireworks;
+				document.getElementById('count').style.backgroundColor = 'red';
+				
+				if(aux.urmator)
+				{
+				    this.fireworks = this.fireworks.urmator;
+					delete aux;
+				}
+				
+				/*while(aux)
+				{
+				    if(aux.particule && aux.particule.opacity == 0)
+					{
+					   
+					    if(!aux.precedent && aux.urmator)
+						{
+						    console.log("Sterg prima1");
+						    this.fireworks = this.fireworks.urmator;
+							delete aux;
+                            break;
+						}
+						
+						if(!aux.precedent && !aux.urmator)
+						{						
+						    console.log("Sterg prima2");
+							this.fireworks = null;
+                            delete aux;							
+                            break;							
+						}
+						
+						if(aux.precedent && !aux.urmator)
+						{					
+                            console.log("Sterg ultima");						
+						    aux.precedent.urmator = null;
+							delete aux;		
+                            break;							
+						}
+						
+						if(aux.precedent && aux.urmator)
+						{						
+						    console.log("Sterg prin mijloc");
+							console.log(aux.precedent.urmator);
+						    aux.precedent.urmator = aux.urmator;
+							aux.urmator.precedent = aux.precedent;
+							delete aux;		
+                            break;							
+						}
+					}
+					
+					aux = aux.urmator;
+				}*/
+			}
+			
+			this.adauga = function(){
+			    var aux = this.fireworks;
+				
+				if(aux)
+				{
+				    while(aux.urmator)
+					{
+					    aux = aux.urmator;
+					}
+					
+					aux.urmator = new firework();
+					aux.urmator.precedent = aux;
+				}
+				
+				if(!this.fireworks)
+				{
+				    this.fireworks = new firework();
+				}
+			}
+			
+			this.control = function(){
+	
+			    var aux = this.fireworks;
+				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+						aux.adaugaFum();
+						aux.gestioneazaFum();
+				    }
+					else{
+					    aux.miscaParticule();
+						aux.gestioneazaFum();
+					}
+					
+				    aux = aux.urmator;
+				}
+				
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					else{
+					    aux.miscaParticule();
+					}
+					
+				    aux = aux.urmator;
+				}	
+                
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					
+				    aux = aux.urmator;
+				}
+				
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					
+				    aux = aux.urmator;
+				}
+				
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					
+				    aux = aux.urmator;
+				}		
+			    
+			}
+		}
+		
+		function firework(){
+		    this.x = Math.floor(Math.random()*canvRef.width);
+			this.y = canvRef.height;
+			
+			this.destX = Math.floor(Math.random()*canvRef.width);
+			this.destY = Math.floor(Math.random()*(canvRef.height - 50));
+			this.pasX = 0;
+			this.pasY = 0;
+			
+			this.colorR = Math.floor(1 + (Math.random()*255));
+			this.colorG = Math.floor(1 + (Math.random()*255));
+			this.colorB = Math.floor(1 + (Math.random()*255));
+			
+			this.seteazaPas = function(){
+			    
+			    if(Math.sqrt(Math.pow(this.x - this.destX,2)) < Math.sqrt(Math.pow(this.y - this.destY,2)))
+				{
+				    this.pasX = Math.sqrt(Math.pow(this.x - this.destX,2)) / Math.sqrt(Math.pow(this.y - this.destY,2));
+					this.pasY = 1;
+				}
+				
+				if(Math.sqrt(Math.pow(this.y - this.destY,2)) < Math.sqrt(Math.pow(this.x - this.destX,2)))
+				{
+				    this.pasY = Math.sqrt(Math.pow(this.y - this.destY,2)) / Math.sqrt(Math.pow(this.x - this.destX,2));
+					this.pasX = 1;
+				}
+				
+			}
+			
+			this.explodat = false;
+			
+			this.tipArtificie = 1;
+			
+			this.fum = null;
+
+			this.foc = null;
+			
+			this.particule = null;
+			
+			this.adaugaFum = function(){
+			
+			    var aux = this.fum,aux2;
+				var count = 0;
+				
+				while(aux)
+				{
+				    count++;
+				    aux = aux.urmator;
+				}
+				
+				if(count > 30)
+				{
+				    aux = this.fum;
+					
+					while(aux.urmator)
+					{
+					    aux = aux.urmator;
+					}
+					
+					while(count > 30)
+					{
+					    aux2 = aux;
+					    aux = aux.precedent;
+						delete aux2;
+						aux.urmator = null;
+					
+					    count--;
+					}
+				}
+				
+				if(this.fum /*&& Math.sqrt(Math.pow(this.x - this.fum.x,2) + Math.pow(this.y - this.fum.y,2)) > 5*/)
+				{	
+                    aux = new particulaFum();
+                    aux.urmator = this.fum;
+                    this.fum.precedent = aux;
+                    aux.x = this.x;
+                    aux.y = this.y;
+                    aux.opacity = 1;
+                    aux.raza = 5;
+                    this.fum = aux;					
+
+				}
+				else{
+				    console.log("Adaug cap.");
+				    this.fum = new particulaFum();
+				    this.fum.x = this.x+2;
+					this.fum.y = this.y;
+					this.fum.opacity = 1;
+					this.fum.raza = 5;	
+                    this.ultimulFum = this.fum;					
+				}
+				
+			}
+			
+			this.gestioneazaFum = function(){
+			    var aux = this.fum;
+				
+				if(aux)
+				{document.getElementById('opacityDebug').innerHTML = '';
+				    while(aux)
+					{
+					    document.getElementById('opacityDebug').innerHTML += aux.opacity+"<br>";
+                        aux.opacity -= 0.03;
+						 
+					    aux = aux.urmator;
+					}
+				}
+			}
+			
+			this.miscaArtificie = function(){
+		        
+			    if(this.x < this.destX)
+				{
+				    this.x += this.pasX ;
+				}
+
+				if(this.x > this.destX)
+				{
+				    this.x -= this.pasX ;
+				}
+
+				if(this.y < this.destY)
+				{
+				    this.y += this.pasY ;
+				}
+
+				if(this.y > this.destY)
+				{
+				    this.y -= this.pasY ;
+				}
+
+				if(Math.sqrt(Math.pow(this.x - this.destX,2) + Math.pow(this.y - this.destY,2)) <= 2)
+				{
+				    this.explodat = true;
+					this.adaugaParticule();
+				}
+			}
+			
+			this.adaugaParticule = function(){
+			    var i = 0,aux;
+				aux = new particula();
+				aux.x = this.x;
+				aux.y = this.y;
+				aux.destX = aux.x-200 + (Math.floor(Math.random()*400)+10);
+				aux.destY = aux.y-200 + (Math.floor(Math.random()*400)+10);
+				
+				if( Math.sqrt(Math.pow(aux.x - aux.destX,2)) < Math.sqrt(Math.pow(aux.y - aux.destY,2)) )
+				{
+				    aux.pasX = Math.sqrt(Math.pow(aux.x - aux.destX,2))/Math.sqrt(Math.pow(aux.y - aux.destY,2));
+					aux.pasY = 1;
+				}
+				
+				if( Math.sqrt(Math.pow(aux.y - aux.destY,2)) < Math.sqrt(Math.pow(aux.x - aux.destX,2)) )
+				{
+				    aux.pasY = Math.sqrt(Math.pow(aux.y - aux.destY,2))/Math.sqrt(Math.pow(aux.x - aux.destX,2));
+					aux.pasX = 1;
+				}				
+				
+				this.particule = aux;
+				this.particule.adaugaUrma();
+				while(i < 10)
+				{
+				    aux.urmator = new particula();
+					aux = aux.urmator;
+					aux.x = this.x;
+				    aux.y = this.y;
+				    aux.destX = aux.x-200 + (Math.floor(Math.random()*400)+10);
+				    aux.destY = aux.y-200 + (Math.floor(Math.random()*400)+10);	
+
+				    if( Math.sqrt(Math.pow(aux.x - aux.destX,2)) < Math.sqrt(Math.pow(aux.y - aux.destY,2)) )
+				    {
+				        aux.pasX = Math.sqrt(Math.pow(aux.x - aux.destX,2))/Math.sqrt(Math.pow(aux.y - aux.destY,2));
+					    aux.pasY = 1;
+				    }
+				
+				    if( Math.sqrt(Math.pow(aux.y - aux.destY,2)) < Math.sqrt(Math.pow(aux.x - aux.destX,2)) )
+				    {
+				        aux.pasY = Math.sqrt(Math.pow(aux.y - aux.destY,2))/Math.sqrt(Math.pow(aux.x - aux.destX,2));
+					    aux.pasX = 1;
+				    }
+					
+					aux.adaugaUrma();
+					
+					i++;
+				}
+			}
+			
+			this.miscaParticule = function()
+			{
+			    var aux = this.particule;
+
+				while(aux)
+				{
+				    if(aux.opacity > 0){
+				    aux.opacity -= 0.01;}else{aux.opacity = 0;}
+			        if(aux.x < aux.destX)
+				    {
+				        aux.x += aux.pasX;
+				    }
+				
+				    if(aux.x > aux.destX)
+				    {
+				        aux.x -= aux.pasX;
+				    }
+				
+				    if(aux.y < aux.destY)
+				    {
+				        aux.y += aux.pasY;
+				    }
+				
+				    if(aux.y > aux.destY)
+				    {
+				        aux.y -= aux.pasY;
+				    }	
+			        aux.miscaUrma();
+					
+					aux = aux.urmator;					
+				}
+			}
+			
+			this.urmator = null;
+			this.precedent = null;
+		}
+		
+		function particula(){
+		    this.x = 0 ;
+			this.y = 0 ;
+			
+			this.destX = 0;
+			this.destY = 0;
+			
+			this.pasX = 0;
+			this.pasY = 0;
+			
+			this.opacity = 1;
+			
+			this.urma = null;
+			this.adaugaUrma = function(){
+			    var aux ;
+				this.urma = new particula();
+				this.urma.x = this.x;
+				this.urma.y = this.y;
+				this.urma.opacity = this.opacity - 0.01;
+				aux = this.urma;
+				
+				var i=0;
+				
+				while(i<=20)
+				{
+				    aux.urmator = new particula();
+					aux.urmator.precedent = aux;
+					aux.urmator.x = aux.x;
+					aux.urmator.y = aux.y;
+					aux.urmator.opacity = aux.opacity - 0.01;
+					aux = aux.urmator ;
+					
+					i++;
+				}
+			}
+
+            this.miscaUrma = function(){
+			
+			    this.urma.x = this.x;
+				this.urma.y = this.y;
+				
+				this.urma.opacity = this.opacity - 0.01;
+				
+			    var aux = this.urma;
+				
+				while(aux.urmator)
+				{
+				    aux.urmator .opacity = this.urma.opacity - 0.01;
+				    aux = aux.urmator ;
+				}
+				
+				while(aux.precedent)
+				{
+				    aux.x = aux.precedent.x;
+					aux.y = aux.precedent.y;
+					
+					aux.opacity = aux.precedent.opacity;
+					
+					aux = aux.precedent;
+				}
+			}			
+			
+			this.urmator = null;
+			this.precedent = null;
+		}
+		
+		function particulaFum(){
+		    this.x = 0;
+			this.y = 0;
+			
+			this.opacity = 1;
+			this.raza = 0;
+			
+			this.urmator = null;
+			this.precedent = null;
+		}
+		
+		function deseneaza(){
+		    var aux = artificii.fireworks;
+			var aux2,aux3,aux4;
+			canvCtx.fillStyle = "black";
+			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+			
+						
+			
+			while(aux)
+			{    
+			    aux4 = aux.fum;
+
+				while(aux4)
+				{ 
+				    canvCtx.fillStyle="rgba(220,220,220,"+aux4.opacity+")";
+					
+					canvCtx.fillRect(aux4.x,aux4.y,4,4);
+					
+					aux4 = aux4.urmator;
+				}
+			
+			    canvCtx.fillStyle = "rgb("+aux.colorR+","+aux.colorG+","+aux.colorB+")";
+			    if(aux.explodat)
+				{
+				    aux2 = aux.particule;
+					
+				    while(aux2)
+					{
+					    canvCtx.fillStyle="rgba("+aux.colorR+","+aux.colorG+","+aux.colorB+","+aux2.opacity+")";
+					    canvCtx.fillRect(aux2.x,aux2.y,3,3);
+
+						aux3 = aux2.urma;
+						while(aux3)
+						{
+							
+						    canvCtx.fillStyle="rgba("+aux.colorR+","+aux.colorG+","+aux.colorB+","+aux3.opacity+")";
+					        canvCtx.fillRect(aux3.x,aux3.y,2,2);
+							
+							aux3 = aux3.urmator;
+						}
+						
+						
+						aux2 = aux2.urmator;
+					}
+				}
+				else
+				{
+				    canvCtx.beginPath();
+				    canvCtx.arc(aux.x+2,aux.y,6,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+				}
+				
+				aux = aux.urmator;
+			}
+		
+		    setTimeout('deseneaza()',20);
+		}
+		
+	</script>
+
+</html>
