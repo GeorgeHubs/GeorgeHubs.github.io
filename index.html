@@ -56,10 +56,10 @@
 				    <div onclick="iframeRef.src = 'deformare.html'" id="dropItem">Deformare</div>					
 				</div>	
 			</div>
-			<div id="menuSwitch" onclick="switchMenu1();" ><img src="LinkIn.png" width="20px" height="25px"></div>
+			<div id="menuSwitch" onclick="switchMenu1();" ><img src="LinkIn.png" width="20px" height="20px"></div>
 		</div>
 		
-		<iframe scrolling="yes" id="theFrame" src="" style="transition:opacity 1s;opacity:1;position:absolute;margin-top:80px;width:80%;margin-left:10%;">
+		<iframe scrolling="yes" id="theFrame" src="" style="border:1px dotted black;transition:opacity 0.5s;opacity:0;position:absolute;margin-top:80px;width:80%;margin-left:10%;">
 		    
 		</iframe>
 	
@@ -99,8 +99,7 @@
 			
 			    if(menu2Ref.style.display == '')
 			    {
-					iframeRef.style.opacity = 1;				
-				    iframeRef.style.display = 'block';
+				    iframeRef.style.display = 'block';				
 				    menu1Ref.style.opacity = 0;
 				    setTimeout('switchMenu2(2)',500);
 			    }
@@ -109,8 +108,8 @@
 		
 		function switchMenu2(x){
 		    if(x == 1)
-			{		
-			    iframeRef.src = '';
+			{
+  			    iframeRef.src = '';
                 iframeRef.style.display = 'none';			
 			    menu2Ref.style.display = '';
 			    menu2Ref.style.top = -40+'px';
@@ -121,8 +120,8 @@
 			}
 			
 			if (x == 2)
-			{
-                iframeRef.style.display = 'block';			
+			{			
+			    iframeRef.style.opacity = 1;
 			    console.log("Al doilea apare");
 			    menu1Ref.style.display = '';
 		        menu1Ref.style.top = -40+'px';	

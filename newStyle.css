@@ -8,8 +8,8 @@ body{
     z-index:5;
     height:30px;
     position:absolute;
-    width:1018px;
-    min-width:1018px;
+    width:1001px;
+    min-width:1001px;
     background-color:black;
     border-bottom:1px dotted white;
     font-size:20px;
@@ -24,8 +24,8 @@ body{
     z-index:5;
     height:30px;
     position:absolute;
-    width:1018px;
-    min-width:1018px;
+    width:1001px;
+    min-width:1001px;
     background-color:black;
     border-bottom:1px dotted white;
     font-size:20px;
@@ -145,8 +145,8 @@ a{
 }
 
 #menuSwitch{
-    width:39px;
-    height:21px;  
+    width:26px;
+    padding:3px;  
     background-color:white;
     margin-right:0;
     border-top: 1px solid rgb(50,100,180);

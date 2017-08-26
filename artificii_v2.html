@@ -24,9 +24,11 @@
 		
 		
         artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
-
-		setInterval('artificii.adauga()',2000);
-		setInterval('artificii.removeFirework()',2000);
+        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();      
+        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
+		
+		setInterval('artificii.adauga()',500);
+		setInterval('artificii.removeFirework()',500);
 			
 		
 		function Run(){
@@ -194,7 +196,7 @@
 		}
 		
 		function firework(){
-		    this.x = Math.floor(Math.random()*canvRef.width);
+		    this.x = canvRef.width/2 - Math.floor(Math.random()*100) + Math.floor(Math.random()*100);
 			this.y = canvRef.height;
 			
 			this.destX = Math.floor(Math.random()*canvRef.width);
