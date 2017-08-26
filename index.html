@@ -11,7 +11,7 @@
 	
 	<body style="margin:0;overflow-x:hidden;">
 	
-	    <div id="menu">
+	    <div id="menu" >
 		    <div id="menuItem" ><a href="arcade.html">Arcade</a></div>
 		    <div id="artificii" >Artificii<img src="Down.png" style="position:absolute;top:5px;right:0;">
                 <div id="artificiiItems">
@@ -31,20 +31,107 @@
 				    <a href="scrollTest.html"><div id="dropItem">Auto-Scroll</div></a>
 				    <a href="deformare.html"><div id="dropItem">Deformare</div></a>					
 				</div>	
-			</div>	
+			</div>
+            <div id="menuSwitch" onclick="switchMenu1();"><img src="LinkOut.png" width="20px" height="20px"></div>			
 		</div>
 		
-		<!--
-		<iframe scrolling="yes" id="theFrame" src="arcade.html" style="position:absolute;margin-top:80px;width:80%;margin-left:10%;border:1px solid black;">
+		<div id="menu2">
+		    <div onclick="iframeRef.src = 'arcade.html'" id="menuItem" >Arcade</div>
+		    <div id="artificii" >Artificii<img src="Down.png" style="position:absolute;top:5px;right:0;">
+                <div id="artificiiItems2">
+				    <div onclick="iframeRef.src = 'fireworks.html'" id="dropItem">V1</div>
+				    <div onclick="iframeRef.src = 'artificii_v2.html'" id="dropItem">V2</div>					
+				</div>		
+			</div>	
+		    <div onclick="iframeRef.src = 'MomentanZapada.html'" id="menuItem">Zapada</div>			
+		    <div onclick="iframeRef.src = 'PunctePeTavan.html'" id="menuItem">Puncte</div>
+            <div onclick="iframeRef.src = 'Sin.html'" id="menuItem">Sin</div>	
+			<div onclick="iframeRef.src = 'shopTest.html'" id="menuItem">Shop</div>
+            <div onclick="iframeRef.src = 'snake.html'" id="menuItem">Snake</div>		
+			<div id="smallStuff">Small stuff<img src="Down.png" style="position:absolute;top:5px;right:0;">
+                <div id="smallStuffItems2">
+				    <div onclick="iframeRef.src = 'thruster.html'" id="dropItem">Thruster</div>
+				    <div onclick="iframeRef.src = 'slideLeft.html'" id="dropItem">Slidesh left</div>
+				    <div onclick="iframeRef.src = 'scrollTest.html'" id="dropItem">Auto-Scroll</div>
+				    <div onclick="iframeRef.src = 'deformare.html'" id="dropItem">Deformare</div>					
+				</div>	
+			</div>
+			<div id="menuSwitch" onclick="switchMenu1();" ><img src="LinkIn.png" width="20px" height="25px"></div>
+		</div>
+		
+		<iframe scrolling="yes" id="theFrame" src="" style="transition:opacity 1s;opacity:1;position:absolute;margin-top:80px;width:80%;margin-left:10%;">
 		    
 		</iframe>
-		-->
 	
 	</body>
 	
 	<script>
 	    var iframeRef = document.getElementById('theFrame');
 		iframeRef.height = (window.innerHeight/10 * 8) + 'px';console.log(iframeRef.height);
+	    iframeRef.style.display = 'none';
+	
+		var menu1Ref = document.getElementById('menu');
+	    var menu2Ref = document.getElementById('menu2');
+		
+		if((window.innerWidth - 1018)/2 > 0){
+		    menu1Ref.style.left = (window.innerWidth - 1018)/2 + 'px';
+		    console.log('[1] '+ menu1Ref.style.left);
+		    menu2Ref.style.left = (window.innerWidth - 1018)/2 + 'px';
+		}
+		menu1Ref.style.display = 'block';
+		menu2Ref.style.display = '';
+		menu2Ref.style.top = -40+'px';
+		
+		var switching = false;
+		
+		
+		function switchMenu1(){
+		    console.log("Am pornit");
+		    if(!switching)
+			{
+		        switching = true;
+		        if(menu1Ref.style.display == '')
+			    {
+					iframeRef.style.opacity = 0;
+				    menu2Ref.style.opacity = 0;
+				    setTimeout('switchMenu2(1)',500);
+			    }
+			
+			    if(menu2Ref.style.display == '')
+			    {
+					iframeRef.style.opacity = 1;				
+				    iframeRef.style.display = 'block';
+				    menu1Ref.style.opacity = 0;
+				    setTimeout('switchMenu2(2)',500);
+			    }
+			}
+		}
+		
+		function switchMenu2(x){
+		    if(x == 1)
+			{		
+			    iframeRef.src = '';
+                iframeRef.style.display = 'none';			
+			    menu2Ref.style.display = '';
+			    menu2Ref.style.top = -40+'px';
+				menu1Ref.style.top = 0;
+                menu1Ref.style.display = 'block';						
+			    menu1Ref.style.opacity = 1;				
+				switching = false;
+			}
+			
+			if (x == 2)
+			{
+                iframeRef.style.display = 'block';			
+			    console.log("Al doilea apare");
+			    menu1Ref.style.display = '';
+		        menu1Ref.style.top = -40+'px';	
+                menu2Ref.style.top = 0;				
+				menu2Ref.style.display = 'block';				
+				menu2Ref.style.opacity = 1;			
+				switching = false;
+			}
+		}
 		
 	</script>
 
