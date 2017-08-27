@@ -19,6 +19,7 @@ body{
 }
 
 #menu2{
+    cursor:pointer;
     display:block;
     top:0;
     z-index:5;

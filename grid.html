@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	  
+	    <title>Grid</title>   
+	
+	</head>
+	
+	<body onmousedown="seteazaPozitieDeformare(event);" style="margin:0;overflow:hidden;">
+	
+	    <canvas id="panzaMea"></canvas>
+	
+	</body>
+	
+	<script>
+	
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext("2d");
+		
+		var posCursor = {x:-1000,y:-1000};
+		var puncte = null;
+		var pasX,pasY;
+		
+		adaugaPuncte();
+		deseneazaLinii();
+		gestioneazaPuncte();
+		
+		function gestioneazaPuncte(){
+		    var aux=puncte;
+			console.log("Gestionez");
+			
+			while(aux)
+			{
+			    aux.preiaCoordonateDacaEsteInProximitate();
+				aux.misca();
+			
+			    aux = aux.next;
+			}
+			
+			setTimeout('gestioneazaPuncte()',50);
+		}
+		
+		function seteazaPozitieDeformare(event){
+		    posCursor.x = event.clientX;
+			posCursor.y = event.clientY;
+		}
+		
+		function Punct(){
+		    this.x = 0;
+			this.y = 0;
+			
+			this.initialX = 0;
+			this.initialY = 0;
+			
+			this.preiaCoordonateDacaEsteInProximitate = function(){
+			    if(Math.sqrt(Math.pow(this.x-posCursor.x,2) + Math.pow(this.y-posCursor.y,2)) < 20)
+				{
+				    this.destX = posCursor.x;
+					this.destY = posCursor.y;
+				}			    
+			}
+			
+			this.misca = function(){
+			    if(Math.sqrt(Math.pow(this.x-posCursor.x,2) + Math.pow(this.y-posCursor.y,2)) < 20)
+				{
+				    console.log("Misc");
+				    if(this.x < posCursor.x){this.x ++;}
+					if(this.y < posCursor.y){this.y ++;}
+					if(this.x > posCursor.x){this.x --;}
+					if(this.y > posCursor.y){this.y --;}
+				}
+			}
+			
+			this.urmator = null;
+			this.next = null;
+		}
+		
+		function adaugaPuncte(){
+			pasX = window.innerWidth/100;
+			pasY = window.innerHeight/50;
+		    puncte = new Punct();
+			puncte.x = 0;
+			puncte.y = 0;
+			puncte.initialX = 0;
+			puncte.initialY = 0;
+			var aux = puncte;
+			
+		    for(var i = 0;i<51;i++)
+			{
+		        for(var j = 0;j<101;j++)
+			    {
+			        aux.next = new Punct;
+					aux.next.x = pasX*j;
+					aux.next.initialX = pasX*j;
+					aux.next.y = pasY*i;
+					aux.next.initialY = pasY*i;
+					aux = aux.next;
+			    }    
+			}
+		}
+		
+		function deseneazaLinii(){
+		    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+	        console.log('desenez');	
+	
+		    canvCtx.fillStyle="black";
+			canvCtx.strokeStyle="black";
+			var aux = puncte;
+			
+			while(aux)
+			{
+			    canvCtx.fillRect(aux.x-1,aux.y-1,2,2);
+			
+			    aux = aux.next;
+			}
+			
+			aux = puncte;
+			
+			var auxOp = 0.5;
+			canvCtx.strokeStyle="rgba(0,0,0,"+auxOp+")";
+			canvCtx.beginPath();
+			canvCtx.moveTo(0,0);
+			while(aux.next)
+			{
+			    if(aux.next.x != 0){
+				    canvCtx.lineTo(aux.next.x,aux.next.y);
+				}
+				else
+				{
+				    canvCtx.moveTo(aux.next.x,aux.next.y);
+				}
+			    aux = aux.next;
+			}
+			canvCtx.stroke();
+			
+			
+		    canvCtx.beginPath();
+			for(var i = 0;i<100;i++)
+			{
+			    canvCtx.moveTo(pasX*i,0);
+				aux = puncte;
+		   	    while(aux.next)
+			    {
+			        if(aux.initialX == pasX*i){
+				        canvCtx.lineTo(aux.x,aux.y);
+				    }
+			        aux = aux.next;
+			    }
+            }		
+			canvCtx.stroke();	
+			
+			setTimeout('deseneazaLinii()',40);
+		}
+	
+	</script>
+
+</html>
