@@ -8,10 +8,10 @@
 	
 	</head>
 	
-	<body onmousedown="seteazaPozitieDeformare(event);" style="margin:0;overflow:hidden;">
+	<body onmousemove="seteazaPozitieDeformare(event)" style="margin:0;overflow:hidden;">
 	
 	    <canvas id="panzaMea"></canvas>
-	
+	    <div id="defInfo" style="position:fixed;top:1%;width:50%;padding:5px;margin-right:25%;margin-left:25%;text-align:center;background-color:rgb(200,100,100);color:white;opacity:0;transition: opacity 1s;">Deformare automata dezactivata.</div>
 	</body>
 	
 	<script>
@@ -24,10 +24,39 @@
 		var posCursor = {x:-1000,y:-1000};
 		var puncte = null;
 		var pasX,pasY;
+		var autoDraw = false;
+		var infoDiv = document.getElementById('defInfo');
 		
 		adaugaPuncte();
 		deseneazaLinii();
 		gestioneazaPuncte();
+		
+		document.body.onkeypress = function(){
+		    if(autoDraw == true)
+			{
+			    autoDraw = false;
+			    document.getElementById('defInfo').style.backgroundColor = 'rgb(200,100,100)';
+			    document.getElementById('defInfo').innerHTML = 'Deformare automata dezactivata.';
+				changeOpacity(document.getElementById('defInfo'),1);
+				setTimeout('changeOpacity()',3000);				
+			}
+			else
+			{
+			    document.getElementById('defInfo').style.backgroundColor = 'rgb(100,200,100)';
+			    document.getElementById('defInfo').innerHTML = 'Deformare automata activata.';			
+			    autoDraw = true;
+				changeOpacity(document.getElementById('defInfo'),1);
+				setTimeout('changeOpacity()',3000);
+			}
+		}
+		
+        function changeOpacity()
+		{
+		    if(infoDiv.style.opacity == 1)
+		    infoDiv.style.opacity = 0;
+			else
+			infoDiv.style.opacity = 1;
+		}
 		
 		function gestioneazaPuncte(){
 		    var aux=puncte;
@@ -45,8 +74,15 @@
 		}
 		
 		function seteazaPozitieDeformare(event){
-		    posCursor.x = event.clientX;
-			posCursor.y = event.clientY;
+		
+		    if(autoDraw){
+		        posCursor.x = event.clientX;
+			    posCursor.y = event.clientY;
+			}
+		    else{
+		        posCursor.x = -1000;
+			    posCursor.y = -1000;			
+			}
 		}
 		
 		function Punct(){
