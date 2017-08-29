@@ -6,7 +6,8 @@
 	    <title>Artificii_V2</title>
 	</head>
 	
-	<body onload ="Run();deseneaza();"style="margin:0;overflow:hidden;">
+	<body onload ="Run();deseneaza();"style="margin:0;overflow:hidden;background-color:black;">
+	    <!-- <img style="z-index:-1;position:fixed;left:0;top:0;width:100%;height:100%;" src="Lighthouse.jpg"> -->
 	    <canvas id="panzaMea"></canvas>
 		<div id="count" style="position:absolute;top:10px;right:10px;"></div>
 		<div id="opacityDebug" style="color:white;position:absolute;top:30px;right:10px;width:100px;height:auto;border:1px solid white;padding:5px;" ></div>
@@ -24,15 +25,18 @@
 		
 		
         artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
-        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();      
         artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
+        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();
+        artificii.adauga();artificii.adauga();artificii.adauga();artificii.adauga();	
 		
-		setInterval('artificii.adauga()',500);
-		setInterval('artificii.removeFirework()',500);
+		
+		setInterval('artificii.adauga()',300);
+
 			
 		
 		function Run(){
 		    artificii.obtineNumarulArtificiilor();
+			artificii.removeFirework();
 		    artificii.control();
 			
 			setTimeout('Run()',10);
@@ -62,15 +66,17 @@
 			    var aux = this.fireworks;
 				document.getElementById('count').style.backgroundColor = 'red';
 				
-				if(aux.urmator)
+				if(this.fireworks && this.fireworks.urmator && this.fireworks.particule && parseFloat(this.fireworks.particule.opacity) == 0)
 				{
+				    console.log("Sterg");
 				    this.fireworks = this.fireworks.urmator;
 					delete aux;
 				}
 				
-				/*while(aux)
+				/*
+				while(aux)
 				{
-				    if(aux.particule && aux.particule.opacity == 0)
+				    if(aux.particule && parseFloat(aux.particule.opacity) == 0)
 					{
 					   
 					    if(!aux.precedent && aux.urmator)
@@ -135,7 +141,6 @@
 			this.control = function(){
 	
 			    var aux = this.fireworks;
-				
 				while(aux)
 				{
 				    if(!aux.explodat)
@@ -151,23 +156,8 @@
 					}
 					
 				    aux = aux.urmator;
-				}
-				
-                aux = this.fireworks;				
-				while(aux)
-				{
-				    if(!aux.explodat)
-					{
-					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
-				        aux.miscaArtificie();
-				    }
-					else{
-					    aux.miscaParticule();
-					}
-					
-				    aux = aux.urmator;
 				}	
-				
+                
                 aux = this.fireworks;				
 				while(aux)
 				{
@@ -179,6 +169,30 @@
 					
 				    aux = aux.urmator;
 				}
+
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					
+				    aux = aux.urmator;
+				}
+
+                aux = this.fireworks;				
+				while(aux)
+				{
+				    if(!aux.explodat)
+					{
+					    if(aux.pasX == 0 && aux.pasY == 0){aux.seteazaPas();}
+				        aux.miscaArtificie();
+				    }
+					
+				    aux = aux.urmator;
+				}				
 				
                 aux = this.fireworks;				
 				while(aux)
@@ -196,11 +210,11 @@
 		}
 		
 		function firework(){
-		    this.x = canvRef.width/2 - Math.floor(Math.random()*100) + Math.floor(Math.random()*100);
+		    this.x = canvRef.width/2;
 			this.y = canvRef.height;
 			
 			this.destX = Math.floor(Math.random()*canvRef.width);
-			this.destY = Math.floor(Math.random()*(canvRef.height - 50));
+			this.destY = 50 + Math.floor(Math.random()*(canvRef.height - 150));
 			this.pasX = 0;
 			this.pasY = 0;
 			
@@ -278,7 +292,6 @@
 
 				}
 				else{
-				    console.log("Adaug cap.");
 				    this.fum = new particulaFum();
 				    this.fum.x = this.x+2;
 					this.fum.y = this.y;
@@ -499,7 +512,7 @@
 		    var aux = artificii.fireworks;
 			var aux2,aux3,aux4;
 			canvCtx.fillStyle = "black";
-			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+			canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
 			
 						
 			
