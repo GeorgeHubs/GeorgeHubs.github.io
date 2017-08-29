@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	 
+	    <title>Ceva</title> 
+	
+	</head>
+	<body onload="deseneaza();" style="margin:0;overflow:hidden;">
+	
+	    <canvas onmousemove="preiaCoordonateMouse(event);cercuri.seteazaUrma();" id="panzaMea"></canvas>
+	
+	</body>
+	
+	<script>
+	
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+		var cercuri = new aplicatie();
+		var mousePos = {x:canvRef.width/2,y:canvRef.height/2};
+		
+		cercuri.adaugaPuncte();
+		
+		setInterval('cercuri.numarPuncte()',500);
+		setInterval('cercuri.preiaDestinatiaPunctelor()',50);
+		setInterval('cercuri.miscaPuncte()',50);		
+		
+		function preiaCoordonateMouse(event){
+		    if(Math.sqrt(Math.pow(mousePos.x - event.clientX,2) + Math.pow(mousePos.y - event.clientY,2)) > 30)
+			{
+		        mousePos.x = event.clientX;
+			    mousePos.y = event.clientY;
+			}
+		}
+		
+		function urma(){
+		    this.x = 0;
+			this.y = 0;
+			
+			this.pasX = 0;
+			this.pasY = 0;
+			
+			this.destX = 0;
+			this.destY = 0;
+			
+			this.urmator = null;
+			this.precedent = null;
+		}
+		
+		function punct(){
+		    this.viteza = 0.01 + Math.random() / 50;
+		    this.raza = 100 + Math.floor(Math.random()*150);
+			this.grad = 0.01;
+		    this.x = (canvRef.width/2) + Math.sin(this.grad) * this.raza;
+			this.y = (canvRef.height/2) + Math.cos(this.grad) * this.raza;
+			this.destX = 0;
+			this.destY = 0;
+			this.pasX = 0;
+			this.pasY = 0;
+			
+			
+            this.preiaDestinatie = function(){
+			    this.grad += this.viteza;
+				this.destX = mousePos.x + Math.sin(this.grad) * this.raza;
+				this.destY = mousePos.y + Math.cos(this.grad) * this.raza;
+				if(Math.sqrt(Math.pow(this.x - this.destX,2)) < Math.sqrt(Math.pow(this.y - this.destY,2)))
+				{
+				    this.pasX = Math.sqrt(Math.pow(this.x - this.destX,2)) / Math.sqrt(Math.pow(this.y - this.destY,2));
+					this.pasY = 1;
+				}
+				
+				if(Math.sqrt(Math.pow(this.y - this.destY,2)) < Math.sqrt(Math.pow(this.x - this.destX,2)))
+				{
+				    this.pasY = Math.sqrt(Math.pow(this.y - this.destY,2)) / Math.sqrt(Math.pow(this.x - this.destX,2));
+					this.pasX = 1;
+				}				
+	
+				if(this.grad > 6.28)
+				{
+				    this.grad = 0;
+				}
+			}
+			
+			this.misca = function(){
+			    if(this.x < this.destX){this.x += this.pasX;}
+				if(this.x > this.destX){this.x -= this.pasX;}
+				if(this.y < this.destY){this.y += this.pasY;}
+				if(this.y > this.destY){this.y -= this.pasY;}	
+
+                this.miscaUrma();				
+			}
+			
+			this.urma = null;
+			
+			this.adaugaUrma = function(){
+			    this.urma = new urma();
+				this.urma.x = this.x;
+				this.urma.y = this.y;
+				var i = 0,aux = this.urma;
+				
+				while(i<20){
+				i++;
+				    aux.urmator = new urma();
+					aux.urmator.precedent = aux;
+					aux.urmator.x = this.x;
+					aux.urmator.y = this.y;
+					
+					aux = aux.urmator;
+				}
+			}
+			
+			this.miscaUrma = function(){
+			    var aux = this.urma;
+				if(aux){
+				    while(aux.urmator)
+				    {
+				        aux = aux.urmator;
+				    }
+				
+				    while(aux.precedent)
+				    {
+					    if(Math.sqrt(Math.pow(aux.x-aux.precedent.x,2) + Math.pow(aux.y-aux.precedent.y,2) > 5)){
+					        aux.destX = aux.precedent.x;
+							aux.destY = aux.precedent.y;
+							
+						    if( Math.sqrt(Math.pow(aux.x - aux.destX,2)) < Math.sqrt(Math.pow(aux.y - aux.destY,2)) )
+						    {
+						        aux.pasX = Math.sqrt(Math.pow(aux.x - aux.destX,2)) / Math.sqrt(Math.pow(aux.y - aux.destY,2));
+							    aux.pasY = 1;
+						    }
+						
+						    if( Math.sqrt(Math.pow(aux.y - aux.destY,2)) < Math.sqrt(Math.pow(aux.x - aux.destX,2)) )
+						    {
+						       aux.pasY = Math.sqrt(Math.pow(aux.y - aux.destY,2)) / Math.sqrt(Math.pow(aux.x - aux.destX,2));
+							   aux.pasX = 1;
+						    }
+						}						
+					
+				        aux = aux.precedent;
+				    }
+					
+					this.urma.x = this.x;
+					this.urma.y = this.y;					
+					
+                    aux = this.urma;  					
+					while(aux)
+					{
+					    if(aux.x < aux.destX){aux.x+= aux.pasX;}
+						if(aux.y < aux.destY){aux.y+= aux.pasY;}
+						if(aux.x > aux.destX){aux.x-= aux.pasX;}
+						if(aux.y > aux.destY){aux.y-= aux.pasY;}
+					
+					    aux = aux.urmator;
+					}
+			    }
+		    }
+			
+			this.urmator = null;
+			this.precedent = null;
+		}
+		
+		function aplicatie(){
+		    this.puncte = null;
+			this.miscaPuncte = function(){
+			    var aux = this.puncte;
+				var i = 0;
+	            while(aux)
+				{
+				    aux.misca();
+				    aux = aux.urmator;
+				}
+				aux = this.puncte;
+	            while(aux)
+				{
+				    aux.misca();
+				    aux = aux.urmator;
+				}
+                aux = this.puncte;
+	            while(aux)
+				{
+				    aux.misca();
+				    aux = aux.urmator;
+				}		
+				aux = this.puncte;
+				/*
+	            while(aux)
+				{
+				    aux.misca();
+				    aux = aux.urmator;
+				}
+				aux = this.puncte;
+	            while(aux)
+				{
+				    aux.misca();
+				    aux = aux.urmator;
+				}			*/
+			}
+			
+			this.numarPuncte = function(){
+			    var n = 0,aux = this.puncte;
+				
+				while(aux)
+				{
+				    n++;
+				    aux = aux.urmator;
+				}
+				console.log(n+" puncte");
+				
+			}
+			
+			this.adaugaPuncte = function(){
+			    var aux,i=0;
+				this.puncte = new punct();
+				this.puncte.adaugaUrma();
+				
+				while(i<20)
+				{i++;
+				    aux = new punct();
+					aux.urmator = this.puncte;
+					this.puncte.precedent = aux;
+					this.puncte = aux;
+					this.puncte.adaugaUrma();
+				}
+
+			}
+			
+			this.preiaDestinatiaPunctelor = function(){
+			    var aux = this.puncte;
+				
+				while(aux)
+				{
+				    aux.preiaDestinatie();
+				    
+				    aux = aux.urmator;
+				}
+			}
+			
+			this.miscaUrme = function(){
+			    var aux = this.puncte;
+				
+				while(aux)
+				{
+				    aux.miscaUrma();
+				
+				    aux = aux.urmator;
+				}
+			}
+			
+			this.seteazaUrma = function(){
+			    var aux = this.puncte;
+				
+				while(aux)
+				{
+				    aux.urma.destX = aux.x;
+					aux.urma.destY = aux.y;
+				
+				    aux = aux.urmator;
+				}
+			}
+		}
+		
+		function deseneaza(){
+		    canvCtx.fillStyle="black";
+            canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+		    canvCtx.fillStyle="white";
+			
+			var aux = cercuri.puncte,aux2,i=0;
+			if(aux){
+			    while(aux)
+			    {
+				    i=0;canvCtx.strokeStyle="white";
+					/*
+				    canvCtx.strokeStyle="rgba(255,255,255,0.2)";
+					canvCtx.beginPath();
+					canvCtx.arc(mousePos.x,mousePos.y,aux.raza,0,2*Math.PI);
+			        canvCtx.closePath();
+					canvCtx.stroke();
+					*/
+					aux2 = aux.urma;canvCtx.fillStyle="white";
+					canvCtx.beginPath();
+					canvCtx.arc(aux2.x,aux2.y,2,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+					aux2 = aux2.urmator;
+					canvCtx.beginPath();
+					canvCtx.moveTo(aux2.x,aux2.y);
+					while(aux2.urmator)
+					{
+					    i++;
+					    /*canvCtx.fillRect(aux2.x,aux2.y,2,2);*/
+					    canvCtx.lineTo(aux2.urmator.x,aux2.urmator.y);
+						
+					    aux2 = aux2.urmator;
+					}
+					canvCtx.stroke();
+					console.log("Numar bube urma : "+ i);
+			        aux = aux.urmator;
+			    }
+				
+			}
+			
+			
+			setTimeout('deseneaza()',50);
+		}
+		
+	
+	</script>
+
+</html>
