@@ -1,0 +1,96 @@
+body{
+	margin:0;
+}
+
+#mainMenu{
+	list-style-type:none;
+	position:absolute;
+	display:inline;
+	width:50%;
+	height:35px;
+	left:50%;
+	top:1px;
+}
+
+#menuItem{
+	position:relative;
+	display:inline-block;
+	margin-left:-5px;
+	border-right:1px dotted white;
+	width:25%;
+	height:30px;
+	text-align:center;
+	font-size:20px;
+	padding-top:5px;
+	color:black;
+	border:1px solid transparent;	
+}
+
+#menuItem:hover{
+    /*border:1px solid black;*/
+	border-right:1px dotted black;
+	border-left:1px dotted black;
+}
+
+#mainSlideShow{
+	position:relative;
+	top:39px;
+	width:100%;
+	height:auto;
+}
+
+#slideLeft{
+	z-index:2;
+	position:absolute;
+	width:4%;
+	height:5%;
+	background-color:rgba(220,220,200,0.5);
+	left:0;
+	top:50%;
+}
+
+#slideRight{
+	z-index:5;
+	position:absolute;
+	width:4%;
+	height:5%;
+	background-color:rgba(220,220,200,0.5);	
+	right:0;
+	top:50%;
+}
+
+#mainSlideImg{
+	transition:opacity .5s;
+	left:0;
+	width:100%;
+	height:100%;
+}
+
+#imageLibrary{
+	top:40px;
+	position:relative;
+	width:90%;
+	height:0;
+	margin-left:5%;
+	margin-bottom:50px;
+    margin-top:50px;
+	background-color:grey;
+}
+
+#galleryItem:hover{
+	outline:5px solid rgba(50,100,220,0.8);
+	outline-offset:5px;
+}
+
+#imagesContainer::-webkit-scrollbar{
+     width:5px;
+}
+          
+#imagesContainer::-webkit-scrollbar-thumb{
+    background-color:rgba(150,150,150,0.8);
+}
+
+#imagesContainer::-webkit-scrollbar-track{
+    background-color:white;
+}
+
