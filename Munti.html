@@ -3,18 +3,18 @@
 <html>
 
     <head>
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <link rel="icon" href="images/Icon.png">
 	    <title>Titlu site</title>
 	    <link rel="stylesheet" href="StyleMunti.css">
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		
 	</head>
 	
-	<body onload="setTimeout('addGallery()',500);" style="margin:0;">
-	
+	<body onload="setTimeout('autoMoveImg()',5000);setTimeout('addGallery()',1000);" style="margin:0;">
+	    
 	    <div id="imageViewerContainer" style="display:none;z-index:10;position:fixed;top:0;left:0;background-color:rgba(200,200,200,0.5);">
-		    <div id="imageViewer" style="position:relative;top:5%;width:80%;height:90%;margin-left:10%;border-radius:15px;background-color:white;">
-			    <img onclick="imgViewContRef.style.display = 'none';" src="images/exit.png" style="user-select:none;position:absolute;width:20px;height:20px;top:5px;right:5px;">
+		    <div id="imageViewer" style="border-radius:15px;background:linear-gradient(to left,rgb(70,100,130),rgb(130,200,250));position:relative;top:5%;width:80%;height:90%;margin-left:10%;background-color:white;">
+			    <img onclick="imgViewContRef.style.display = 'none';document.body.style.overflow = '';" src="images/exit.png" style="position:absolute;width:20px;height:20px;top:10px;right:10px;">
 			    <div id="imagesContainer" style="overflow-y:auto;overflow-x:hidden;position:absolute;top:5%;left:2%;width:13%;height:90%;border:1px dotted black;">
 				    
 				</div>
@@ -31,7 +31,7 @@
 		<div style="position:relative;top:40px;width:100%;height:600px;overflow:hidden;">
 		    <div onclick="moveImg(1)" id="slideLeft">Stanga</div>
 			<div onclick="moveImg(-1)" id="slideRight">Dreapta</div>
-		    <div id="imgBand" style="top:0;left:0;transition: left 0.5s;position:absolute;left:0;height:auto;">
+		    <div id="imgBand" style="top:0;left:0;transition: left 1s;position:absolute;left:0;height:auto;">
 			
 			</div>
 		</div>
@@ -39,11 +39,12 @@
 		<div id="imageLibrary">
 		
 		</div>
-		<div style="position:relative;width:100%;height:200px;background-color:rgb(0,80,150);">
+		<div style="width:100%;height:200px;background-color:rgb(0,80,150);">
 		     
 		</div>
 	</body>
 	<script>
+	    console.log(document);
 	    var imgViewContRef = document.getElementById('imageViewerContainer'),imgViewRef = document.getElementById('imageViewer');
 		var imgContRef = document.getElementById('imagesContainer');
 	    imgViewContRef.style.width = window.innerWidth + 'px';
@@ -84,7 +85,7 @@
 		
 		var galleryImages = [
 		                        ['CevaMunti1','images/gallery1/1.png','images/gallery1/2.png','images/gallery1/3.png'],
-								['CevaMunti2','images/gallery2/1.png','images/gallery2/2.png','images/gallery2/3.png'],
+								['CevaMunti2','images/gallery2/1.png','images/gallery2/2.png','images/gallery2/3.png','images/gallery2/4.png','images/gallery2/5.png','images/gallery2/6.png','images/gallery2/7.png'],
 								['CevaMunti3','images/gallery3/1.png','images/gallery3/2.png','images/gallery3/3.png']
 							];								
 		
@@ -125,15 +126,31 @@
 			console.log(bandPos);
 		}
 		
+		function autoMoveImg(){
+		
+	        console.log("Misc imaginea principala");
+			if(bandPos != -window.innerWidth*6)
+            {
+			    bandPos -= window.innerWidth;
+				document.getElementById('imgBand').style.left = bandPos + 'px';
+			}		    
+			else{
+			    bandPos = 0;
+				document.getElementById('imgBand').style.left = bandPos + 'px';
+			}
+		    
+		    setTimeout('autoMoveImg()',5000);
+		}
+		
 		function addGallery(){
 		    var aux = document.getElementById('imageLibrary'),newElement,newElementTitle;
 			var i=0;j=0;
-            var inaltimeContainer = 0;
-			aux.style.marginBottom = 400+ 'px';
+            var inaltimeContainer = (window.innerHeight/3) + 20;
+
 			console.log(aux);
 		
 			
-			while(typeof(galleryImages[i][0]) != 'undefined'){
+			while(galleryImages[i]){
 			    
 	            newElement = document.createElement("div");
 			
@@ -142,15 +159,20 @@
 			    newElement.style.float = "left";
 			    newElement.style.width = '30%';
 			    newElement.style.height = window.innerHeight/3 +'px';
-	            inaltimeContainer += (window.innerHeight/4) /3 + 5;
+				if((i+1)%3 == 0 && galleryImages[i+1])inaltimeContainer += (window.innerHeight/3) + 15;
 			    newElement.style.marginLeft = '2.5%';
+			    newElement.style.marginTop = "20px";
+				newElement.style.opacity = 0.9;
+				newElement.onmouseenter = function(){this.style.opacity = 1;}
+				newElement.onmouseleave = function(){this.style.opacity = 0.9;}
 				newElement.style.backgroundImage = 'url('+galleryImages[i][1]+')';
 				newElement.style.backgroundSize = 'cover';
-			    newElement.style.marginTop = "15px";
+				newElement.style.boxShadow = '0px 10px 10px rgba(0,0,0,0.5)';
 				newElement.onclick = function(){
 				    
 				    imgContRef.innerHTML = '';
 					var aux = this.children;
+					console.log(this.children);
 					
 					for(var l=0;l < galleryImages.length;l++){
 					    console.log('caut galeria buna');
@@ -166,15 +188,15 @@
 			                    imgAux.style.marginTop = 10 + 'px';
 			                    imgAux.src = galleryImages[l][g];
 			                    imgAux.onmouseenter = function(){
-								    if(this.style.outlineColor != 'rgba(50, 100, 200, 0.8)'){
-			                            this.style.outlineColor = 'rgb(50,100,200)';
+								    if(this.style.outlineColor != 'rgba(255, 255, 255, 0.8)'){
+			                            this.style.outlineColor = 'rgb(255,255,255)';
 									    this.style.outlineWidth = '2px';
 									    this.style.outlineStyle = 'solid';
 				                        this.style.outlineOffset = '2px';
 									}
 			                    }
 			                    imgAux.onmouseleave = function(){
-								    if(this.style.outlineColor != 'rgba(50, 100, 200, 0.8)'){
+								    if(this.style.outlineColor != 'rgba(255, 255, 255, 0.8)'){
 									    console.log(this.style.outlineColor+" rgba(50,100,200,0.8)");
 			                            this.style.outline = '';
 				                        this.style.outlineOffset = '';
@@ -186,7 +208,7 @@
 									    aux2[y].style.outline = '';
 				                        aux2[y].style.outlineOffset = '';
 									}
-			                        this.style.outlineColor = 'rgba(50,100,200,0.8)';
+			                        this.style.outlineColor = 'rgba(255, 255, 255, 0.8)';
 									this.style.outlineWidth = '2px';
 									this.style.outlineStyle = 'solid';
 				                    this.style.outlineOffset = '2px';								    
@@ -198,24 +220,20 @@
 						}
 					}
 					imgViewContRef.style.display = "block";
+					document.body.style.overflow = 'hidden';
 				}				
-				
-				/*
-				outline-color: a color
-                outline-width: a length
-                outline-style: discrete
-				*/
 				
 			    newElementTitle = document.createElement("p");
 			    newElementTitle.style.position = 'absolute';
 			    newElementTitle.style.bottom = 0;
 			    newElementTitle.style.left = 0;
 				newElementTitle.style.width = 100 + "%";
-				newElementTitle.style.height = 20 + "%";
-				newElementTitle.style.paddingTop = 5 + 'px';
+				newElementTitle.style.height = "auto";
 				newElementTitle.style.fontSize = window.innerHeight/30 + 'px';
 				newElementTitle.style.textAlign = "center";
 				newElementTitle.style.margin = 0;
+				newElementTitle.style.paddingTop = 5 + 'px';
+				newElementTitle.style.paddingBottom = 5 + 'px';				
 			    newElementTitle.innerHTML = galleryImages[i][0];
 				newElementTitle.style.backgroundColor = 'rgb(150,150,150)';
 				
@@ -225,7 +243,8 @@
 				i++;
 
 			}
-			 aux.style.height = inaltimeContainer + 15 + 'px';
+			aux.style.height = inaltimeContainer + 20 + 'px';console.log("Buna");
+			console.log("Inaltime container : "+aux.style.height);
 		}
 		
 		$(document).ready(function(){

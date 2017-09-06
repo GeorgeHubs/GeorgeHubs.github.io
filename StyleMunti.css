@@ -1,5 +1,6 @@
 body{
 	margin:0;
+	background:linear-gradient(to right,rgb(70,100,130),rgb(130,200,250));
 }
 
 #mainMenu{
@@ -8,7 +9,7 @@ body{
 	display:inline;
 	width:50%;
 	height:35px;
-	left:50%;
+	left:45%;
 	top:1px;
 }
 
@@ -68,18 +69,10 @@ body{
 
 #imageLibrary{
 	top:40px;
-	position:relative;
 	width:90%;
-	height:0;
 	margin-left:5%;
 	margin-bottom:50px;
     margin-top:50px;
-	background-color:grey;
-}
-
-#galleryItem:hover{
-	outline:5px solid rgba(50,100,220,0.8);
-	outline-offset:5px;
 }
 
 #imagesContainer::-webkit-scrollbar{
