@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>Select</title>
+
+    </head>
+	
+	<body style="margin:0;overflow:hidden;">
+	
+	    <canvas id="panzaMea"></canvas>
+	
+	</body>
+	
+	<script>
+	
+	    var canvRef = document.getElementById('panzaMea');
+        canvRef.width = window.innerWidth;
+        canvRef.height = window.innerHeight;
+        var canvCtx = canvRef.getContext("2d");
+        canvCtx.fillStyle = "rgba(200,100,100,0.7)";		
+		var mouseStartPos = {x:0,y:0},mouseEndPos = {x:0,y:0},currentMousePos = {x:0,y:0};
+		var drawSelection = false;		
+		
+		drawTimeout = setInterval('deseneaza()',50);
+		var lastSelectionResult = false;
+		
+		
+		canvRef.onclick = function(event){
+		    mousePosAuxX = event.clientX;
+			mousePosAuxY = event.clientY;
+		
+		    if(lastSelectionResult){
+			    var auxBaze = joculMeu.baze,auxPuncte;
+				while(auxBaze){
+				    auxPuncte = auxBaze.puncte;
+					while(auxPuncte){
+					    if(auxPuncte.selectat && auxPuncte.tip == 0){
+						    auxPuncte.destX = mousePosAuxX;
+							auxPuncte.destY = mousePosAuxY;
+							auxPuncte.moveToPosX = mousePosAuxX;
+							auxPuncte.moveToPosY = mousePosAuxY;
+					        auxPuncte.seMiscaSpreDestinatie = true;
+					    }
+						auxPuncte = auxPuncte.urmator;
+				    }
+				    auxBaze = auxBaze.urmator;
+				}
+			
+			    lastSelectionResult = false;
+				console.log("Comanda -- misca la :  X = "+event.clientX+"  Y = "+event.clientY);
+			}
+		    else
+		    if(!drawSelection){
+			    joculMeu.verificaSelectie();
+				canvRef.style.cursor = '';
+			    currentMousePos.x = event.clientX;
+				currentMousePos.y = event.clientY;
+			    mouseStartPos.x = event.clientX
+				mouseStartPos.y = event.clientY;
+				drawSelection = true;
+			}
+			else
+		    {
+			    
+			    joculMeu.verificaSelectie(mouseStartPos.x,mouseStartPos.y,currentMousePos.x,currentMousePos.y);
+			    mouseEndPos.x = event.clientX;
+				mouseEndPos.y = event.clientY;
+				drawSelection = false;
+			}			
+		}
+		
+		canvRef.onmousemove = function(event){
+		    if(drawSelection){
+			    currentMousePos.x = event.clientX;
+				currentMousePos.y = event.clientY;
+			}
+		}
+		
+		var joculMeu = new joc();
+		joculMeu.adaugaBaze();
+		joculMeu.repozitioneazaBaze();
+		
+		setInterval('joculMeu.miscaPuncte()',50);
+		setInterval('joculMeu.adaugaPunct()',2000);
+		
+	    function joc(){
+		    this.baze = null;
+			
+			this.adaugaBaze = function(){
+			    var i;
+				
+				for(var j=0;j<6;j++){
+				    if(this.baze){
+					    i = this.baze;
+						
+						while(i.urmator){
+						    i = i.urmator;
+						}
+						
+						i.urmator = new baza();
+						i.urmator.precedent = i;
+					}
+					else{
+					    this.baze = new baza();
+					}
+				}
+				this.baze.tip = 0;
+			}
+			
+			this.miscaPuncte = function(){
+			    var i = this.baze;
+				
+				while(i){
+				    i.miscaPuncte();
+				    i = i.urmator;
+				}
+			}
+			
+			this.repozitioneazaBaze = function(){
+			    var distOk = false,bazeAux = this.baze,bazeAux2,puncteAux,k=0;
+
+                while(!distOk){
+				    if(k == 1000){break;}
+					k++;
+				    distOk = true;
+					bazeAux = this.baze;
+				    while(bazeAux.urmator){
+					   
+						bazeAux2 = this.baze;
+						while(bazeAux2)
+						{					    
+					        if(Math.sqrt(Math.pow(bazeAux.x - bazeAux2.x,2) + Math.pow(bazeAux.y - bazeAux2.y,2)) < 300 && bazeAux != bazeAux2){
+						        distOk = false;
+						        bazeAux2.x = 50 + Math.floor(Math.random()*(canvRef.width-100));
+							    bazeAux2.y = 50 + Math.floor(Math.random()*(canvRef.height-100));
+						    }						
+						    bazeAux2 = bazeAux2.urmator;
+						}
+						
+						
+					    bazeAux = bazeAux.urmator;
+					}
+				}
+
+                bazeAux = this.baze;
+                while(bazeAux){
+				    bazeAux.adaugaPuncte();
+					
+					bazeAux = bazeAux.urmator;
+				}				
+			}
+			
+			this.adaugaPunct = function(){
+			    var bazeAux = this.baze;
+				 
+				bazeAux.adaugaPuncte();
+				bazeAux = bazeAux.urmator;
+				
+				while(bazeAux){
+				    if(Math.floor(Math.random()*3) == 1){bazeAux.adaugaPuncte();}
+					bazeAux = bazeAux.urmator;
+				}	
+			}
+			
+			this.verificaSelectie = function(x1=0,y1=0,x2=0,y2=0){
+			    var aux = this.baze,aux2;
+				var existaPuncte = false;
+				
+				while(aux){
+				    aux2 = aux.puncte;
+					while(aux2){
+					    if( ((aux2.x > x1 && aux2.x < x2 && aux2.y > y1 && aux2.y < y2) && aux2.tip == 0) ||
+						    ((aux2.x < x1 && aux2.x > x2 && aux2.y > y1 && aux2.y < y2) && aux2.tip == 0) || 
+						    ((aux2.x < x1 && aux2.x > x2 && aux2.y > y2 && aux2.y < y1) && aux2.tip == 0) ||
+   							((aux2.x > x1 && aux2.x < x2 && aux2.y > y2 && aux2.y < y1) && aux2.tip == 0) ){
+							
+							lastSelectionResult = true;
+						    aux2.selectat = true;
+							existaPuncte = true;
+						}
+						else{aux2.selectat = false;}
+					    aux2 = aux2.urmator;
+					}					
+				    aux = aux.urmator;
+				}
+				if(existaPuncte){canvRef.style.cursor = 'pointer';}
+			}
+		}
+		
+		function baza(){
+		    this.x = 100 + Math.floor(Math.random()*(canvRef.width-200));
+			this.y = 100 + Math.floor(Math.random()*(canvRef.height-200));
+			
+			this.culoareR = 50 + Math.floor(Math.random()*205);
+			this.culoareG = 50 + Math.floor(Math.random()*205);
+			this.culoareB = 50 + Math.floor(Math.random()*205);
+			
+            this.puncte = null;
+			
+			this.tip = 1;
+			
+			this.adaugaPuncte = function(){
+			    var y;
+	
+				if(this.puncte){
+					y = this.puncte;
+						
+				    while(y.urmator){
+						y = y.urmator;
+					}
+						
+					y.urmator = new punct(this.x,this.y,50 + Math.floor(Math.random()*50),this.culoareR,this.culoareG,this.culoareB);
+					y.urmator.precedent = y;
+					y.urmator.tip = this.tip;
+				}
+				else{
+					this.puncte = new punct(this.x,this.y,50 + Math.floor(Math.random()*50),this.culoareR,this.culoareG,this.culoareB);
+					this.puncte.tip = this.tip;
+		        }
+			}
+			
+			this.miscaPuncte = function(){
+			    var aux = this.puncte;
+				
+				while(aux){
+				    aux.misca();
+					aux = aux.urmator;
+				}
+			}
+			
+			this.precedent = null;			
+			this.urmator = null;
+		}
+		
+		function punct(cX,cY,r,colorR,colorG,colorB){
+		    this.centruX = cX;
+			this.centruY = cY;
+			
+		    this.grad = Math.random()*6.28;
+			this.raza = r;
+			
+		    this.x = this.centruX + Math.sin(this.grad)*this.raza;
+			this.y = this.centruY + Math.cos(this.grad)*this.raza;
+			
+			this.destX = this.centruX + Math.sin(this.grad + 0.01)*this.raza;
+			this.destY = this.centruY + Math.cos(this.grad + 0.01)*this.raza;
+			
+			this.pasX = 0;
+			this.pasY = 0;
+			this.viteza = 0.01 + Math.random()/50;
+			
+			this.tip = 0;
+			
+			this.culoareR = colorR;
+			this.culoareG = colorG;
+			this.culoareB = colorB;
+			
+			this.moveToPosX = 0;
+			this.moveToPosY = 0;
+			
+			this.selectat = false;
+			this.seMiscaSpreDestinatie = false;
+			
+			this.displayCoords = function(){
+			    console.log("X : "+this.x+"  Y : "+this.y);
+			}
+			
+			this.misca = function(){
+			    if(this.grad < 6.28){
+				    this.grad += this.viteza;
+				}
+				else{
+				    this.grad = 0;
+				}
+				
+				if( Math.sqrt(Math.pow(this.x - this.destX,2)) < Math.sqrt(Math.pow(this.y - this.destY,2)) ){
+				    this.pasX = Math.sqrt(Math.pow(this.x - this.destX,2)) / Math.sqrt(Math.pow(this.y - this.destY,2));
+					this.pasY = 1;
+				}
+				
+				if( Math.sqrt(Math.pow(this.y - this.destY,2)) < Math.sqrt(Math.pow(this.x - this.destX,2)) )
+				{
+				    this.pasY = Math.sqrt(Math.pow(this.y - this.destY,2)) / Math.sqrt(Math.pow(this.x - this.destX,2));
+					this.pasX = 1;
+				}
+				
+				if(this.x < this.destX){this.x += this.pasX;}
+				if(this.x > this.destX){this.x -= this.pasX;}
+				if(this.y < this.destY){this.y += this.pasY;}
+				if(this.y > this.destY){this.y -= this.pasY;}
+		        
+				if(!this.seMiscaSpreDestinatie){
+			        this.destX = this.centruX + Math.sin(this.grad + this.viteza)*this.raza;
+			        this.destY = this.centruY + Math.cos(this.grad + this.viteza)*this.raza;
+				}
+				else if(this.seMiscaSpreDestinatie){
+				        this.destX = this.moveToPosX;
+						console.log(this.moveToPosX, this.moveToPosY);
+						this.destY = this.moveToPosY;
+						if(Math.sqrt(Math.pow(this.x - this.destX,2) + Math.pow(this.y - this.destY,2)) < 20)
+						{this.seMiscaSpreDestinatie = false;}
+					 }
+			}
+			
+			this.precedent = null;			
+			this.urmator = null;
+		}
+		
+		
+		function deseneaza(){
+		    console.log("desenez");
+		    canvCtx.fillStyle = 'black';
+			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+
+			/*
+			if(draw){
+			canvCtx.beginPath();
+			canvCtx.arc(mouseStartPos.x,mouseStartPos.y,5,0,2*Math.PI);
+			canvCtx.closePath();
+			canvCtx.fill();
+			
+			canvCtx.beginPath();
+			canvCtx.arc(currentMousePos.x,currentMousePos.y,5,0,2*Math.PI);
+			canvCtx.closePath();
+			canvCtx.fill();}*/
+			
+			var jocAux = joculMeu,bazeAux,puncteAux;
+			bazeAux = jocAux.baze;
+			
+			var grd;
+			
+			while(bazeAux){
+			    puncteAux = bazeAux.puncte;
+				
+				if(bazeAux.tip == 0){canvCtx.fillStyle = 'green';}
+				if(bazeAux.tip == 1){canvCtx.fillStyle = 'red';}
+				canvCtx.beginPath();
+				canvCtx.arc(bazeAux.x,bazeAux.y,5,0,2*Math.PI);
+				canvCtx.closePath();
+				canvCtx.fill();
+				canvCtx.strokeStyle="rgba(255,255,255,0.3)";
+				
+				while(puncteAux){
+				    canvCtx.beginPath();
+				    canvCtx.moveTo(puncteAux.x,puncteAux.y);
+					canvCtx.lineTo(puncteAux.destX,puncteAux.destY);
+					canvCtx.closePath();
+					canvCtx.stroke();
+				
+				    if(puncteAux.selectat && puncteAux.tip == 0){
+					
+					    canvCtx.fillStyle = 'white';
+					
+				        canvCtx.beginPath();
+				        canvCtx.arc(puncteAux.x,puncteAux.y,2,0,2*Math.PI);
+					    canvCtx.closePath();
+                        canvCtx.fill();
+					}
+					else if(puncteAux.tip == 0){
+					    canvCtx.fillStyle = "green";
+					
+				        canvCtx.beginPath();
+				        canvCtx.arc(puncteAux.x,puncteAux.y,2,0,2*Math.PI);
+					    canvCtx.closePath();
+                        canvCtx.fill();
+					}
+					else if(puncteAux.tip == 1){
+					    canvCtx.fillStyle = "red";
+					
+				        canvCtx.beginPath();
+				        canvCtx.arc(puncteAux.x,puncteAux.y,2,0,2*Math.PI);
+					    canvCtx.closePath();
+                        canvCtx.fill();					     
+					}
+					
+				    puncteAux = puncteAux.urmator;
+				}
+	            canvCtx.fillStyle = "white";
+				canvCtx.beginPath();
+				canvCtx.arc(bazeAux.x,bazeAux.y,2,0,2*Math.PI);
+				canvCtx.closePath();
+				canvCtx.fill();				
+			    
+			    bazeAux = bazeAux.urmator;
+			}	
+			
+			canvCtx.fillStyle = 'rgba(100,200,100,0.1)';
+			canvCtx.strokeStyle = "green";
+			if(drawSelection)
+			{
+			    canvCtx.fillRect(mouseStartPos.x,mouseStartPos.y,(currentMousePos.x - mouseStartPos.x),(currentMousePos.y - mouseStartPos.y));
+			    canvCtx.beginPath();
+			    canvCtx.moveTo(mouseStartPos.x,mouseStartPos.y);
+			    canvCtx.lineTo(currentMousePos.x,mouseStartPos.y);
+			    canvCtx.lineTo(currentMousePos.x,currentMousePos.y);
+			    canvCtx.lineTo(mouseStartPos.x,currentMousePos.y);
+			    canvCtx.lineTo(mouseStartPos.x,mouseStartPos.y);
+			    canvCtx.closePath();
+                canvCtx.stroke();
+			}			
+	    }
+	  
+	</script>
+
+</html>
