@@ -39,9 +39,9 @@
 			}
 			
 			#someForm{
-			    display:none;
 				opacity : 0;
-				transition : opacity 1s;				
+				height:0;
+				transition : height 0.5s,opacity 1s;				
 			}
 			
 			#menuItem:hover {
@@ -55,7 +55,7 @@
 	    <div id="menuWrapper">
 		 
 		    <ul id="menu">
-			    <li id="menuItem" onmouseover="document.getElementById('someForm').style.display = 'block',document.getElementById('someForm').style.opacity = 1;"onmouseleave="document.getElementById('someForm').style.display = 'none',document.getElementById('someForm').style.opacity = 0;">Logheaza-te
+			    <li id="menuItem" onmouseover="document.getElementById('someForm').style.opacity = 1;document.getElementById('someForm').style.height = 120+'px'"onmouseleave="document.getElementById('someForm').style.opacity = 0;document.getElementById('someForm').style.height = 0;">Logheaza-te
 				    <div id="someForm">
 				    <label>Nume : <label><input type="text" onfocus="this.style.backgroundColor = 'rgba(100,100,200,0.1)'" onblur="this.style.backgroundColor = ''"><br>
 				    <label>Prenume : <label><input type="text" onfocus="this.style.backgroundColor = 'rgba(100,100,200,0.1)'" onblur="this.style.backgroundColor = ''">
