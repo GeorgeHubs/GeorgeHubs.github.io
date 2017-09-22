@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Ceva</title>
+	</head>
+    
+	<body style="margin:0;">
+	    <div id="wrapper" style="position:relative;top:0;left:0;width:100%;overflow:hidden;">
+		    <div style="position:fixed;z-index:-1;width:70%;height:20px;left:-12%;top:65%;font-size:100px;font-weight:bold;transform:rotate(60deg);">Transparent</div>
+	        <div id="meniu" style="position:fixed;height:100%;width:25%;left:-20%;top:0;background-color:rgba(210,210,250,0.9);transition:left 0.5s;" onmouseleave="document.getElementById('imgContainer').style.top = 0;document.getElementById('imgContainer').style.height = window.innerHeight + 'px';document.getElementById('imgContainer').style.width = 95 + '%';document.getElementById('imgContainer').style.left = 5 + '%'; this.style.left = -20+'%';var ceva = document.getElementsByTagName('img');for(var i=0;i<ceva.length;i++){ceva[i].style.left = 85+'%';}" onmouseenter="document.getElementById('imgContainer').style.top = 10 + '%';document.getElementById('imgContainer').style.height = window.innerHeight - window.innerHeight/8 - 40 + 'px';document.getElementById('imgContainer').style.width = 75 + '%';document.getElementById('imgContainer').style.left = 25 + '%';this.style.left = 0;console.log('Am intrat' + document.getElementById('imgItem').style.left);var ceva = document.getElementsByTagName('img');for(var i=0;i<ceva.length;i++){ceva[i].style.left = 0};">
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="1.jpg" id="imgItem"style="transition:left 0.4s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="2.jpg" id="imgItem"style="transition:left 0.5s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="3.jpg" id="imgItem"style="transition:left 0.6s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="4.jpg" id="imgItem"style="transition:left 0.7s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="5.jpg" id="imgItem"style="transition:left 0.8s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>
+		        <div class="menuItem" style="margin-left:2.5%;margin-top:5px;position:relative;width:90%;height:10%;padding:2px;" onmouseenter = "this.style.boxShadow = '0px 0px 5px 1px rgba(0,0,0,0.5)'" onmouseleave = "this.style.boxShadow = ''">
+				    <img src="6.jpg" id="imgItem"style="transition:left 0.9s;z-index:2;background-color:rgb(156,206,250);position:absolute;top:0;left:85%;top:20%;width:20%;height:60%;">
+					<div style="position:absolute;top:0;left:20%;width:80%;height:100%;overflow:hidden;text-align:center;">Ceva descriere</div>
+				</div>				
+		    </div>
+			<div id="imgContainer"  style="transition:width 0.5s,height 0.5s,top 0.5s,left 0.5s;position:absolute;z-index:-1;left:5%;top:0;width:95%;background-image:url('Imgs.png');background-color:black;background-repeat:none;background-size:100% 100%;"><div>
+		</div>
+	</body>
+	
+	<script>
+	    console.log(document.getElementById('meniu').style.backgroundColor);
+		document.getElementById('imgContainer').style.height = window.innerHeight + 'px';
+		document.getElementById('wrapper').style.height = window.innerHeight + 'px';
+		console.log("Wrapper height : "+document.getElementById('wrapper').style.height);
+	    
+		var item = document.getElementsByClassName('menuItem');
+		item[0].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('1.jpg')";}
+		item[1].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('2.jpg')";}
+		item[2].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('3.jpg')";}
+		item[3].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('4.jpg')";}
+		item[4].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('5.jpg')";}
+		item[5].onclick = function() {document.getElementById('imgContainer').style.backgroundImage = "url('6.jpg')";}		
+		
+	</script>
+	
+</html>
