@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Intrazneste</title>
+	</head>
+    <body>
+	    <div id="holder">
+		</div>
+	</body>
+	
+	<script>
+        function populatePre(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                document.getElementById('holder').textContent = this.responseText;
+            };
+            xhr.open('GET', url);
+            xhr.send();
+        }
+		
+        populatePre('file.txt');	
+	</script>
+</html>
