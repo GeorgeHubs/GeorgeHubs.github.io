@@ -5,7 +5,7 @@ var aux = "Miau!";
 
 var menPrim = [
                ["Clase si obiecte","Clase_si_obiecte.rar"],
-			   ["Controlul accesului","Controlul_accesului.rar"],
+			   ["Controlul accesului","Controlul_Accesului.rar"],
 			   ["Operatorul de rezolutie","Operatorul_de_rezolutie.rar"],
 			   ["Functii inline","Functii_inline.rar"],
 			   ["Functii cu param. impliciti","Functii_cu_parametrii_impliciti.rar"],
