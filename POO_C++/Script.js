@@ -188,4 +188,17 @@ contentContainer.appendChild(actualContent);
 
 document.body.appendChild(contentContainer);
 
+var lastUpdate = document.createElement("div");
+lastUpdate.style.position = 'absolute';
+lastUpdate.style.right = '1%';
+lastUpdate.style.top = 10 + 'px';
+lastUpdate.style.color = 'white';
+lastUpdate.style.padding = 5+'px';
+lastUpdate.style.borderRadius = '3px';
+lastUpdate.style.maxWidth = '50%';
+lastUpdate.style.zIndex = 2;
+lastUpdate.style.border = '1px solid rgb(70,220,100)';
+lastUpdate.innerHTML = 'Data ultimei actualizari : 02/10/2017 (2 Octombrie 2017)';
+document.body.appendChild(lastUpdate);
+
 
