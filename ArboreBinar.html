@@ -7,9 +7,10 @@
 	</head>
 	<body style="margin:0;overflow:hidden">
 	    <div id="meniuParcurgeri" style="z-index:2;position:absolute;width:10%;top:0;right:0;text-align:center;border:1px dotted black;">Parcurgeri
-		    <div onclick ="console.log('Incepe parcurgerea inordine :');startInordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Inordine</div>
-		    <div onclick ="console.log('Incepe parcurgerea preordine :');startPreordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Preordine</div>
-		    <div onclick ="console.log('Incepe parcurgerea postordine :');startPostordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;">Postordine</div>			
+		    <div onclick ="setTimeout('reseteazaTimer()',numarNoduri*1000);console.log('Incepe parcurgerea inordine :');document.getElementById('timerState').innerHTML = 'Timer not OK';document.getElementById('timerState').style.backgroundColor='rgb(200,100,100)';startInordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Inordine</div>
+		    <div onclick ="setTimeout('reseteazaTimer()',numarNoduri*1000);reseteazaTimer();console.log('Incepe parcurgerea preordine :');document.getElementById('timerState').innerHTML = 'Timer not OK';document.getElementById('timerState').style.backgroundColor='rgb(200,100,100)';startPreordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Preordine</div>
+		    <div onclick ="setTimeout('reseteazaTimer()',numarNoduri*1000);reseteazaTimer();console.log('Incepe parcurgerea postordine :');document.getElementById('timerState').innerHTML = 'Timer not OK';document.getElementById('timerState').style.backgroundColor='rgb(200,100,100)';startPostordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;">Postordine</div>			
+		    <div id="timerState" style="background-color:rgb(100,200,100);color:white;">Timer OK</div>
 		</div>
 	    <div style="overflow:hidden;position:absolute;left:0;top:0;width:20%;height:100%;border:1px dotted black;">
 		    <fieldset> <legend>Adauga Nod</legend>
@@ -28,13 +29,21 @@
 		canvRef.width = (window.innerWidth/10)*8;
 		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
-
+       
         var controlDistantaPeNivel = 4;
 	    var pozMouse = {x:0,y:0,deseneaza:function(){canvCtx.fillStyle="red";canvCtx.fillRect(this.x,this.y,5,5);}};
 		var razaNoduri = 20;
+		var numarNoduri=0;
 		canvCtx.font = razaNoduri/1.5+"px Arial";
 		canvCtx.fillStyle = 'rgb(80,80,200)';
+		var timpDeAsteptat = 500;
 		
+		function reseteazaTimer(){
+		    timpDeAsteptat = 1000;
+			document.getElementById('timerState').style.backgroundColor = 'rgb(100,200,100)';
+			document.getElementById('timerState').style.color = 'white';			
+			document.getElementById('timerState').innerHTML = 'Timer OK';
+	    }
 		
 		var nodRadacina = new nod();
 /*		nodRadacina.fiuDrept = new nod();
@@ -73,12 +82,13 @@
 		}
 		
 		function nod(){
+		    numarNoduri++;
+			console.log("Numar noduri : "+numarNoduri);
 		    this.x = canvRef.width/2;
 			this.y = razaNoduri;
 			this.nivel = 0;
 			this.fiuStang = null;
 			this.fiuDrept = null;
-			this.seParcurge = false;
 			this.tata = null;
 			this.selectat=false;
 			this.informatie = Math.floor(Math.random()*99);
@@ -96,7 +106,6 @@
 		}
 		
 		function selecteazaNod(x){
-
 		    if(Math.sqrt(Math.pow(x.x - pozMouse.x,2) + Math.pow(x.y - pozMouse.y,2)) < razaNoduri){
 			    x.selectat = true;
 				return;
@@ -119,19 +128,50 @@
 				}				
 		}
 		
+        function dormi(milisecunde) {
+            var currentTime = new Date().getTime();
+
+            while (currentTime + milisecunde >= new Date().getTime()) {
+            }
+        }		
+		
 		function startInordine(x){
 		    
 			if(x){
-				startInordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
-				x.seParcurge = true; 
+				startInordine(x.fiuStang);
+				
+				setTimeout(function(){
+			        deselecteazaNod(nodRadacina);
+					canvCtx.fillStyle='rgb(200,100,100)';
+					canvCtx.beginPath();
+					canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+					
+					canvCtx.fillStyle = 'white';
+					canvCtx.fillText(x.informatie,x.x-(razaNoduri/1.5/2),x.y+5);
+				},timpDeAsteptat);
+                timpDeAsteptat += 1000;
+			
 				console.log("Data : "+x.informatie);
-				startInordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+				startInordine(x.fiuDrept);
 			}
 		}
 		
 		function startPreordine(x){
 			if(x){
-			    x.seParcurge = true;
+				setTimeout(function(){
+			        deselecteazaNod(nodRadacina);
+					canvCtx.fillStyle='rgb(200,100,100)';
+					canvCtx.beginPath();
+					canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+					
+					canvCtx.fillStyle = 'white';
+					canvCtx.fillText(x.informatie,x.x-(razaNoduri/1.5/2),x.y+5);
+				},timpDeAsteptat);
+                timpDeAsteptat += 1000;
 				console.log("Data : "+x.informatie);
 				startPreordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
 				startPreordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
@@ -140,9 +180,20 @@
 	
 		function startPostordine(x){
 			if(x){
-				startPreordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
-				startPreordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
-			    x.seParcurge = true;
+				startPostordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
+				startPostordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+				setTimeout(function(){
+			        deselecteazaNod(nodRadacina);
+					canvCtx.fillStyle='rgb(200,100,100)';
+					canvCtx.beginPath();
+					canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();
+					
+					canvCtx.fillStyle = 'white';
+					canvCtx.fillText(x.informatie,x.x-(razaNoduri/1.5/2),x.y+5);
+				},timpDeAsteptat);
+                timpDeAsteptat += 1000;
 				console.log("Data : "+x.informatie);
 			}				
 		}	
@@ -248,8 +299,6 @@
 		function deseneazaArbore(x){
 		    if(x.selectat){canvCtx.fillStyle = 'rgb(100,200,100)';}
 			else if(!x.selectat){canvCtx.fillStyle = 'rgb(100,100,200)';}
-			
-			if(x.seParcurge){canvCtx.fillStyle = 'rgb(200,100,100)';}
 			
 	        canvCtx.beginPath();
             canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
