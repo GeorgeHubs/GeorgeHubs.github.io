@@ -5,7 +5,12 @@
     <head>
 
 	</head>
-	<body style="margin:0;overflow:hidden;">
+	<body style="margin:0;overflow:hidden">
+	    <div id="meniuParcurgeri" style="z-index:2;position:absolute;width:10%;top:0;right:0;text-align:center;border:1px dotted black;">Parcurgeri
+		    <div onclick ="console.log('Incepe parcurgerea inordine :');startInordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Inordine</div>
+		    <div onclick ="console.log('Incepe parcurgerea preordine :');startPreordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;border-bottom:1px dotted white;">Preordine</div>
+		    <div onclick ="console.log('Incepe parcurgerea postordine :');startPostordine(nodRadacina);" style="width:100%;background-color:rgb(100,100,200);color:white;">Postordine</div>			
+		</div>
 	    <div style="overflow:hidden;position:absolute;left:0;top:0;width:20%;height:100%;border:1px dotted black;">
 		    <fieldset> <legend>Adauga Nod</legend>
 			    <div>
@@ -73,13 +78,15 @@
 			this.nivel = 0;
 			this.fiuStang = null;
 			this.fiuDrept = null;
+			this.seParcurge = false;
 			this.tata = null;
 			this.selectat=false;
 			this.informatie = Math.floor(Math.random()*99);
 		}
         
 		function deselecteazaNod(x){
-            if(x.selectat){
+            if(x.selectat || x.seParcurge){
+			                  x.seParcurge = false;
                               x.selectat = false;
 						  }
             else{ 
@@ -111,6 +118,34 @@
 			        if(x.fiuDrept){verificaSelectie(x.fiuDrept);}
 				}				
 		}
+		
+		function startInordine(x){
+		    
+			if(x){
+				startInordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+				x.seParcurge = true; 
+				console.log("Data : "+x.informatie);
+				startInordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+			}
+		}
+		
+		function startPreordine(x){
+			if(x){
+			    x.seParcurge = true;
+				console.log("Data : "+x.informatie);
+				startPreordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
+				startPreordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+			}		    
+		}
+	
+		function startPostordine(x){
+			if(x){
+				startPreordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
+				startPreordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
+			    x.seParcurge = true;
+				console.log("Data : "+x.informatie);
+			}				
+		}	
 		
 		function activareAdaugareNod(){
 		
@@ -212,7 +247,9 @@
 		
 		function deseneazaArbore(x){
 		    if(x.selectat){canvCtx.fillStyle = 'rgb(100,200,100)';}
-			else{canvCtx.fillStyle = 'rgb(100,100,200)';}
+			else if(!x.selectat){canvCtx.fillStyle = 'rgb(100,100,200)';}
+			
+			if(x.seParcurge){canvCtx.fillStyle = 'rgb(200,100,100)';}
 			
 	        canvCtx.beginPath();
             canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
