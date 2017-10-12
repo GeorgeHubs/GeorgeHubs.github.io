@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+	</head>
+	<body style="margin:0;overflow:hidden;">
+	    <div style="overflow:hidden;position:absolute;left:0;top:0;width:20%;height:100%;border:1px dotted black;">
+		    <fieldset> <legend>Adauga Nod</legend>
+			    <div>
+				    <div id="noSelect" style="display:none;background-color:rgb(200,100,100);color:white;text-align:center;">Nu exista nod selectat</div>
+					<div id="addNode" style="display:block;">
+
+					</div>
+				</div>
+			</fieldset>
+		</div>
+        <canvas onclick="preiaPozMouse(event);evenimentClick();" id="panzaMea" style="position:absolute;left:20%;top:0;"></canvas>	
+	</body>
+	<script>
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = (window.innerWidth/10)*8;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+
+        var controlDistantaPeNivel = 4;
+	    var pozMouse = {x:0,y:0,deseneaza:function(){canvCtx.fillStyle="red";canvCtx.fillRect(this.x,this.y,5,5);}};
+		var razaNoduri = 20;
+		canvCtx.font = razaNoduri/1.5+"px Arial";
+		canvCtx.fillStyle = 'rgb(80,80,200)';
+		
+		
+		var nodRadacina = new nod();
+/*		nodRadacina.fiuDrept = new nod();
+		nodRadacina.fiuDrept.x = nodRadacina.x + razaNoduri*2;
+		nodRadacina.fiuDrept.y = nodRadacina.y + razaNoduri*4;
+		nodRadacina.fiuDrept.fiuStang = new nod();
+		nodRadacina.fiuDrept.fiuStang.x = nodRadacina.fiuDrept.x - 2*razaNoduri;
+		nodRadacina.fiuDrept.fiuStang.y = nodRadacina.fiuDrept.y + razaNoduri*4;		*/
+	    canvCtx.moveTo(nodRadacina.x,nodRadacina.y);
+		
+		deseneazaArbore(nodRadacina);
+		var nivelMaxim = 0;
+		var razaNoduri = 20;
+		var ultimulNodSelectat = null;
+		
+		function preiaPozMouse(event){
+		    pozMouse.x = event.clientX - (window.innerWidth/10)*2;
+			pozMouse.y = event.clientY;
+		}
+		
+		function evenimentClick(){
+		    deselecteazaNod(nodRadacina);
+			selecteazaNod(nodRadacina);
+			verificaSelectie(nodRadacina);
+			canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+			deseneazaLegaturi(nodRadacina);
+			canvCtx.stroke();
+			deseneazaArbore(nodRadacina);
+			activareAdaugareNod();
+			if(document.getElementById('inFiuStang')){
+			    document.getElementById('inFiuStang').value = Math.floor(Math.random()*99);
+			}
+			if(document.getElementById('inFiuDrept')){
+			    document.getElementById('inFiuDrept').value = Math.floor(Math.random()*99);
+			}        					
+		}
+		
+		function nod(){
+		    this.x = canvRef.width/2;
+			this.y = razaNoduri;
+			this.nivel = 0;
+			this.fiuStang = null;
+			this.fiuDrept = null;
+			this.tata = null;
+			this.selectat=false;
+			this.informatie = Math.floor(Math.random()*99);
+		}
+        
+		function deselecteazaNod(x){
+            if(x.selectat){
+                              x.selectat = false;
+						  }
+            else{ 
+			        if(x.fiuStang){deselecteazaNod(x.fiuStang);}
+			        if(x.fiuDrept){deselecteazaNod(x.fiuDrept);}
+				}		    
+		}
+		
+		function selecteazaNod(x){
+
+		    if(Math.sqrt(Math.pow(x.x - pozMouse.x,2) + Math.pow(x.y - pozMouse.y,2)) < razaNoduri){
+			    x.selectat = true;
+				return;
+			}
+			else {
+			         x.selectat = false;
+					 if(x.fiuStang){selecteazaNod(x.fiuStang);}
+					 if(x.fiuDrept){selecteazaNod(x.fiuDrept);}
+				 }
+		}
+		
+		function verificaSelectie(x){
+			
+            if(x.selectat){
+			                   ultimulNodSelectat = x; 
+						  }
+            else{ 
+			        if(x.fiuStang){verificaSelectie(x.fiuStang);}
+			        if(x.fiuDrept){verificaSelectie(x.fiuDrept);}
+				}				
+		}
+		
+		function activareAdaugareNod(){
+		
+		    ultimulNodSelectat = null;
+			//selecteazaNod();
+		    verificaSelectie(nodRadacina);
+		    
+			if(ultimulNodSelectat){
+				document.getElementById('addNode').innerHTML = '';
+                if(!ultimulNodSelectat.fiuStang){
+			        var aux1 = document.createElement('label'),aux2 = document.createElement('input');
+			        aux1.innerHTML = 'Fiu stang : ';
+				    aux2.type = 'number';
+					aux2.id = 'inFiuStang';
+                    
+				    document.getElementById('addNode').appendChild(aux1);
+				    document.getElementById('addNode').appendChild(aux2);
+					
+					console.log("Nu are fiu stang.");
+			    }
+			
+			    if(!ultimulNodSelectat.fiuDrept){
+			        var aux1 = document.createElement('label'),aux2 = document.createElement('input');
+			        aux1.innerHTML = 'Fiu drept : ';					
+				    aux2.type = 'number';	
+					
+                    aux2.id = 'inFiuDrept';			
+					document.getElementById('addNode').innerHTML += "<br>";					
+				    document.getElementById('addNode').appendChild(aux1);
+				    document.getElementById('addNode').appendChild(aux2);
+					
+					console.log("Nu are fiu drept.");					
+			    }
+			
+			    if(ultimulNodSelectat.fiuStang && ultimulNodSelectat.fiuDrept){
+			        var aux1 = document.createElement('div');
+				    aux1.innerHTML = 'Nodul selectat are ambii fii';
+				    aux1.style.backgroundColor = 'rgb(200,100,100)';
+				    aux1.style.color = 'white';
+					aux1.style.textAlign = 'center';
+				    document.getElementById('addNode').appendChild(aux1);
+					console.log("Are ambii fii.");					
+			    }else{
+			        var aux1 = document.createElement('button');
+				    aux1.innerHTML = 'Adauga';
+					aux1.onclick = function(){
+					    if(document.getElementById('inFiuDrept') && document.getElementById('inFiuDrept').value != ''){
+						    ultimulNodSelectat.fiuDrept = new nod();
+							ultimulNodSelectat.fiuDrept.informatie = document.getElementById('inFiuDrept').value;
+							ultimulNodSelectat.fiuDrept.x = ultimulNodSelectat.x + controlDistantaPeNivel*razaNoduri;
+							ultimulNodSelectat.fiuDrept.y = ultimulNodSelectat.y + 4*razaNoduri;
+							if(controlDistantaPeNivel > 4){controlDistantaPeNivel-=0;}
+						}
+						
+						if(document.getElementById('inFiuStang') && document.getElementById('inFiuStang').value != ''){
+						    ultimulNodSelectat.fiuStang = new nod();
+							ultimulNodSelectat.fiuStang.informatie = document.getElementById('inFiuStang').value;	
+							ultimulNodSelectat.fiuStang.x = ultimulNodSelectat.x - controlDistantaPeNivel*razaNoduri;
+							ultimulNodSelectat.fiuStang.y = ultimulNodSelectat.y + 4*razaNoduri;
+							if(controlDistantaPeNivel > 4){controlDistantaPeNivel-=0;}							
+						}
+                        
+						deselecteazaNod(nodRadacina);
+						ultimulNodSelectat = null;
+						document.getElementById('addNode').innerHTML = '';
+			            var aux1 = document.createElement('div');
+				        aux1.innerHTML = 'Nici un nod nu este selectat.';
+				        aux1.style.backgroundColor = 'rgb(200,100,100)';
+				        aux1.style.color = 'white';
+				        aux1.style.textAlign = 'center';
+				        document.getElementById('addNode').innerHTML = '';
+				        document.getElementById('addNode').appendChild(aux1);						
+			            deseneazaLegaturi(nodRadacina);
+						canvCtx.stroke();
+						deseneazaArbore(nodRadacina);
+					}
+					document.getElementById('addNode').innerHTML += "<br>";
+					document.getElementById('addNode').appendChild(aux1);
+					
+				    console.log("Adaug buton.");
+			    }	
+			}	
+            else
+            {
+			    var aux1 = document.createElement('div');
+				aux1.innerHTML = 'Nici un nod nu este selectat.';
+				aux1.style.backgroundColor = 'rgb(200,100,100)';
+				aux1.style.color = 'white';
+				aux1.style.textAlign = 'center';
+				document.getElementById('addNode').innerHTML = '';
+				document.getElementById('addNode').appendChild(aux1);
+			}			
+		}
+		
+		function deseneazaLegaturi(x){
+		    if(x.fiuStang){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuStang.x,x.fiuStang.y);deseneazaLegaturi(x.fiuStang);}
+			if(x.fiuDrept){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuDrept.x,x.fiuDrept.y);deseneazaLegaturi(x.fiuDrept);}
+		}
+		
+		function deseneazaArbore(x){
+		    if(x.selectat){canvCtx.fillStyle = 'rgb(100,200,100)';}
+			else{canvCtx.fillStyle = 'rgb(100,100,200)';}
+			
+	        canvCtx.beginPath();
+            canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
+			canvCtx.closePath();
+			canvCtx.fill();
+			canvCtx.fillStyle='white';
+			canvCtx.fillText(x.informatie,x.x-(razaNoduri/1.5/2),x.y+5);
+            if(x.fiuStang){deseneazaArbore(x.fiuStang);}
+            if(x.fiuDrept){deseneazaArbore(x.fiuDrept);}
+            pozMouse.deseneaza();			
+		}
+		
+	</script>
+
+</html>
