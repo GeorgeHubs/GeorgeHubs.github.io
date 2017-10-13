@@ -36,7 +36,7 @@
 		var numarNoduri=0;
 		canvCtx.font = razaNoduri/1.5+"px Arial";
 		canvCtx.fillStyle = 'rgb(80,80,200)';
-		var timpDeAsteptat = 500;
+		var timpDeAsteptat = 1000;
 		
 		function reseteazaTimer(){
 		    timpDeAsteptat = 1000;
@@ -65,20 +65,22 @@
 		}
 		
 		function evenimentClick(){
-		    deselecteazaNod(nodRadacina);
-			selecteazaNod(nodRadacina);
-			verificaSelectie(nodRadacina);
-			canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
-			deseneazaLegaturi(nodRadacina);
-			canvCtx.stroke();
-			deseneazaArbore(nodRadacina);
-			activareAdaugareNod();
-			if(document.getElementById('inFiuStang')){
-			    document.getElementById('inFiuStang').value = Math.floor(Math.random()*99);
-			}
-			if(document.getElementById('inFiuDrept')){
-			    document.getElementById('inFiuDrept').value = Math.floor(Math.random()*99);
-			}        					
+		    if(timpDeAsteptat==1000){
+		        deselecteazaNod(nodRadacina);
+			    selecteazaNod(nodRadacina);
+			    verificaSelectie(nodRadacina);
+			    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
+			    deseneazaLegaturi(nodRadacina);
+			    canvCtx.stroke();
+			    deseneazaArbore(nodRadacina);
+			    activareAdaugareNod();
+			    if(document.getElementById('inFiuStang')){
+			        document.getElementById('inFiuStang').value = Math.floor(Math.random()*99);
+			    }
+			    if(document.getElementById('inFiuDrept')){
+			        document.getElementById('inFiuDrept').value = Math.floor(Math.random()*99);
+			    }    
+			}    					
 		}
 		
 		function nod(){
