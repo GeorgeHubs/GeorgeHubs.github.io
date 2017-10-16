@@ -21,6 +21,11 @@
 					</div>
 				</div>
 			</fieldset>
+			<fieldset><legend>Sterge nod</legend>
+			<div>
+				<button id="deleteBtn" onclick="stergeNod(ultimulNodSelectat);">Sterge Nod</button>
+			</div>
+			</fieldset>			
 		</div>
         <canvas onclick="preiaPozMouse(event);evenimentClick();" id="panzaMea" style="position:absolute;left:20%;top:0;"></canvas>	
 	</body>
@@ -29,10 +34,9 @@
 		canvRef.width = (window.innerWidth/10)*8;
 		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
-       
-        var controlDistantaPeNivel = 4;
+       	var razaNoduri = 20;
+        var controlDistantaPeNivel = 8;
 	    var pozMouse = {x:0,y:0,deseneaza:function(){canvCtx.fillStyle="red";canvCtx.fillRect(this.x,this.y,5,5);}};
-		var razaNoduri = 20;
 		var numarNoduri=0;
 		canvCtx.font = razaNoduri/1.5+"px Arial";
 		canvCtx.fillStyle = 'rgb(80,80,200)';
@@ -46,6 +50,9 @@
 	    }
 		
 		var nodRadacina = new nod();
+		nodRadacina.distantaPeNivel = 8;
+		nodRadacina.tata = new nod();
+		nodRadacina.tata.informatie  = -1;
 /*		nodRadacina.fiuDrept = new nod();
 		nodRadacina.fiuDrept.x = nodRadacina.x + razaNoduri*2;
 		nodRadacina.fiuDrept.y = nodRadacina.y + razaNoduri*4;
@@ -56,8 +63,10 @@
 		
 		deseneazaArbore(nodRadacina);
 		var nivelMaxim = 0;
-		var razaNoduri = 20;
-		var ultimulNodSelectat = null;
+		var ultimulNodSelectat = nodRadacina;
+		
+		setInterval(function(){if(!ultimulNodSelectat){document.getElementById('deleteBtn').disabled = true;}
+				else{document.getElementById('deleteBtn').disabled = false;}},1000);
 		
 		function preiaPozMouse(event){
 		    pozMouse.x = event.clientX - (window.innerWidth/10)*2;
@@ -66,9 +75,38 @@
 		
 		function evenimentClick(){
 		    if(timpDeAsteptat==1000){
-		        deselecteazaNod(nodRadacina);
+			    if(document.getElementById('infoTab') != undefined){console.log("Sterg");document.getElementById('infoTab').parentNode.removeChild(document.getElementById('infoTab'));}
+		        ultimulNodSelectat = null;
+				deselecteazaNod(nodRadacina);
 			    selecteazaNod(nodRadacina);
 			    verificaSelectie(nodRadacina);
+				            if(ultimulNodSelectat!=null){
+                               var aux = document.createElement('div'),aux2 = document.createElement('div');
+                               aux.style.position = 'fixed';
+							   aux.id = 'infoTab';
+                               aux.style.left = pozMouse.x + window.innerWidth/10 * 2 + razaNoduri*2 + 'px';
+                               aux.style.top = pozMouse.y + 'px';	
+                               //aux.style.width = 'auto';
+                               //aux.style.height = '50px';
+                               aux.style.backgroundColor = 'rgba(100,200,100,0.8)';
+							   aux.style.padding = '5px';
+							   aux.style.border = '1px dotted black';
+							   
+							   aux2.innerHTML += "Informatii : <br><br> Cheie : "+ultimulNodSelectat.informatie+"<br>Nivel : "+ultimulNodSelectat.nivel;
+							   if(ultimulNodSelectat.tata!=null){
+							       aux2.innerHTML += "<br>Tata : "+ultimulNodSelectat.tata.informatie;
+							   }
+							   if(ultimulNodSelectat.fiuStang!=null){
+							       aux2.innerHTML += "<br>Fiu stang : "+ultimulNodSelectat.fiuStang.informatie;
+							   }
+							   if(ultimulNodSelectat.fiuDrept!=null){
+							       aux2.innerHTML += "<br>Fiu drept : "+ultimulNodSelectat.fiuDrept.informatie;
+							   }
+                               aux2.style.color = 'white';
+				
+                               aux.appendChild(aux2);							   
+                               document.body.appendChild(aux);			
+                            }							   
 			    canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
 			    deseneazaLegaturi(nodRadacina);
 			    canvCtx.stroke();
@@ -91,8 +129,10 @@
 			this.nivel = 0;
 			this.fiuStang = null;
 			this.fiuDrept = null;
+			this.sters = false;
 			this.tata = null;
 			this.selectat=false;
+			this.distantaPeNivel = 8;
 			this.informatie = Math.floor(Math.random()*99);
 		}
         
@@ -109,7 +149,7 @@
 		
 		function selecteazaNod(x){
 		    if(Math.sqrt(Math.pow(x.x - pozMouse.x,2) + Math.pow(x.y - pozMouse.y,2)) < razaNoduri){
-			    x.selectat = true;
+			    x.selectat = true;					
 				return;
 			}
 			else {
@@ -122,7 +162,7 @@
 		function verificaSelectie(x){
 			
             if(x.selectat){
-			                   ultimulNodSelectat = x; 
+			                   ultimulNodSelectat = x;							   
 						  }
             else{ 
 			        if(x.fiuStang){verificaSelectie(x.fiuStang);}
@@ -139,7 +179,7 @@
 		
 		function startInordine(x){
 		    
-			if(x){
+			if(x!=null){
 				startInordine(x.fiuStang);
 				
 				setTimeout(function(){
@@ -161,7 +201,7 @@
 		}
 		
 		function startPreordine(x){
-			if(x){
+			if(x!=null){
 				setTimeout(function(){
 			        deselecteazaNod(nodRadacina);
 					canvCtx.fillStyle='rgb(200,100,100)';
@@ -181,7 +221,7 @@
 		}
 	
 		function startPostordine(x){
-			if(x){
+			if(x!=null){
 				startPostordine(x.fiuStang);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina); 
 				startPostordine(x.fiuDrept);//canvCtx.clearRect(0,0,canvRef.width,canvRef.height);deselecteazaNod(nodRadacina);deseneazaLegaturi(nodRadacina);deseneazaArbore(nodRadacina);
 				setTimeout(function(){
@@ -206,7 +246,7 @@
 			//selecteazaNod();
 		    verificaSelectie(nodRadacina);
 		    
-			if(ultimulNodSelectat){
+			if(ultimulNodSelectat != null){
 				document.getElementById('addNode').innerHTML = '';
                 if(!ultimulNodSelectat.fiuStang){
 			        var aux1 = document.createElement('label'),aux2 = document.createElement('input');
@@ -233,7 +273,7 @@
 					console.log("Nu are fiu drept.");					
 			    }
 			
-			    if(ultimulNodSelectat.fiuStang && ultimulNodSelectat.fiuDrept){
+			    if(ultimulNodSelectat.fiuStang!= null && ultimulNodSelectat.fiuDrept !=null){
 			        var aux1 = document.createElement('div');
 				    aux1.innerHTML = 'Nodul selectat are ambii fii';
 				    aux1.style.backgroundColor = 'rgb(200,100,100)';
@@ -248,17 +288,31 @@
 					    if(document.getElementById('inFiuDrept') && document.getElementById('inFiuDrept').value != ''){
 						    ultimulNodSelectat.fiuDrept = new nod();
 							ultimulNodSelectat.fiuDrept.informatie = document.getElementById('inFiuDrept').value;
-							ultimulNodSelectat.fiuDrept.x = ultimulNodSelectat.x + controlDistantaPeNivel*razaNoduri;
+                            if(ultimulNodSelectat.distantaPeNivel > 2)							
+							ultimulNodSelectat.fiuDrept.distantaPeNivel = ultimulNodSelectat.distantaPeNivel - 2 ;
+                            else{ultimulNodSelectat.fiuDrept.distantaPeNivel = ultimulNodSelectat.distantaPeNivel;}	
+							ultimulNodSelectat.fiuDrept.x = ultimulNodSelectat.x + 3*razaNoduri;
 							ultimulNodSelectat.fiuDrept.y = ultimulNodSelectat.y + 4*razaNoduri;
-							if(controlDistantaPeNivel > 4){controlDistantaPeNivel-=0;}
+							ultimulNodSelectat.fiuDrept.tata = ultimulNodSelectat ;	
+							if(ultimulNodSelectat.tata!=null){console.log('Nu are tata');
+							ultimulNodSelectat.fiuDrept.nivel = ultimulNodSelectat.tata.nivel + 1;}
+                            else {console.log('Are tata');ultimulNodSelectat.fiuDrept.nivel = 1;}							
+							if(controlDistantaPeNivel > 2){controlDistantaPeNivel-=1;}
 						}
 						
 						if(document.getElementById('inFiuStang') && document.getElementById('inFiuStang').value != ''){
 						    ultimulNodSelectat.fiuStang = new nod();
-							ultimulNodSelectat.fiuStang.informatie = document.getElementById('inFiuStang').value;	
-							ultimulNodSelectat.fiuStang.x = ultimulNodSelectat.x - controlDistantaPeNivel*razaNoduri;
+							ultimulNodSelectat.fiuStang.informatie = document.getElementById('inFiuStang').value;						
+                            if(ultimulNodSelectat.distantaPeNivel > 2)							
+							ultimulNodSelectat.fiuStang.distantaPeNivel = ultimulNodSelectat.distantaPeNivel - 2;
+                            else{ultimulNodSelectat.fiuStang.distantaPeNivel = ultimulNodSelectat.distantaPeNivel;}						
+							ultimulNodSelectat.fiuStang.x = ultimulNodSelectat.x - 3*razaNoduri;
 							ultimulNodSelectat.fiuStang.y = ultimulNodSelectat.y + 4*razaNoduri;
-							if(controlDistantaPeNivel > 4){controlDistantaPeNivel-=0;}							
+							ultimulNodSelectat.fiuStang.tata = ultimulNodSelectat ;		
+							if(ultimulNodSelectat.tata!=null){ console.log('Nu are tata');
+							ultimulNodSelectat.fiuStang.nivel = ultimulNodSelectat.tata.nivel + 1;}
+                            else {console.log('Are tata.');ultimulNodSelectat.fiuStang.nivel = 1;}						
+							if(controlDistantaPeNivel > 2){controlDistantaPeNivel-=1;}							
 						}
                         
 						deselecteazaNod(nodRadacina);
@@ -293,24 +347,36 @@
 			}			
 		}
 		
+		function stergeNod(nodCurent){
+            if(nodCurent){
+			    stergeNod(nodCurent.fiuStang);
+				stergeNod(nodCurent.fiuDrept);
+				console.log("Sterg nodul cu valoare : "+nodCurent.informatie+"\nFiu al nodului cu informatie : "+nodCurent.tata.informatie);
+				if(nodCurent == nodCurent.tata.fiuStang){nodCurent.informatie = 0;nodCurent.tata.fiuStang = null;}
+				if(nodCurent == nodCurent.tata.fiuDrept){nodCurent.informatie = 0;nodCurent.tata.fiuDrept = null;}			
+			}
+			evenimentClick();
+		}
+		
 		function deseneazaLegaturi(x){
-		    if(x.fiuStang){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuStang.x,x.fiuStang.y);deseneazaLegaturi(x.fiuStang);}
-			if(x.fiuDrept){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuDrept.x,x.fiuDrept.y);deseneazaLegaturi(x.fiuDrept);}
+		    if(x.fiuStang && !x.sters){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuStang.x,x.fiuStang.y);deseneazaLegaturi(x.fiuStang);}
+			if(x.fiuDrept && !x.sters){canvCtx.moveTo(x.x,x.y);canvCtx.lineTo(x.fiuDrept.x,x.fiuDrept.y);deseneazaLegaturi(x.fiuDrept);}
 		}
 		
 		function deseneazaArbore(x){
 		    if(x.selectat){canvCtx.fillStyle = 'rgb(100,200,100)';}
 			else if(!x.selectat){canvCtx.fillStyle = 'rgb(100,100,200)';}
-			
+			if(!x.sters){
 	        canvCtx.beginPath();
             canvCtx.arc(x.x,x.y,razaNoduri,0,2*Math.PI);
 			canvCtx.closePath();
 			canvCtx.fill();
 			canvCtx.fillStyle='white';
 			canvCtx.fillText(x.informatie,x.x-(razaNoduri/1.5/2),x.y+5);
-            if(x.fiuStang){deseneazaArbore(x.fiuStang);}
-            if(x.fiuDrept){deseneazaArbore(x.fiuDrept);}
-            pozMouse.deseneaza();			
+            if(x.fiuStang != null){deseneazaArbore(x.fiuStang);}
+            if(x.fiuDrept != null){deseneazaArbore(x.fiuDrept);}
+			pozMouse.deseneaza();
+			}			
 		}
 		
 	</script>
