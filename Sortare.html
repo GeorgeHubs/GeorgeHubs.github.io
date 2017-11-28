@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Buna ziua</title>
+	</head>
+	<body style="margin:0;overflow:hidden;">
+	    <canvas id="panza"></canvas>
+	</body>
+
+	<script>
+	
+	    var canvRef = document.getElementById('panza');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+		
+		var start = new pixel;
+		start.x = x;
+		start.y = y;
+		start.red = Math.floor(Math.random()*255);
+		start.green = Math.floor(this.red/2);//Math.floor(Math.random()*255);
+		start.blue = Math.floor(this.green/2);//Math.floor(Math.random()*255);
+		start.sum = start.red + start.green + start.blue;		
+		
+		var laturaPatrat = 15;
+		function pixel(){
+		    this.x;
+			this.y;
+			this.red;
+			this.green;
+			this.blue;
+			this.sum;
+			this.next;
+		}
+		var aux = start;
+		
+		for(var y=0;y<canvRef.height;y+=laturaPatrat){
+		    for(var x=0;x<canvRef.width;x+=laturaPatrat){
+			    if(y > canvRef.height && x > canvRef.width){
+				    aux.next = null;
+				}
+				else{
+			        aux.next = new pixel;
+				    aux = aux.next;
+					aux.x = x;
+					aux.y = y;
+					aux.red = Math.floor(Math.random()*255);
+					aux.green = Math.floor(aux.red/2);//Math.floor(Math.random()*255);
+					aux.blue = Math.floor(aux.green/2);//Math.floor(Math.random()*255);
+					aux.sum = aux.red + aux.green + aux.blue;
+				}
+			}
+		}
+		
+        aux = start;	
+		while(aux != null){
+			canvCtx.fillStyle = "rgb("+aux.red+","+aux.green+","+aux.blue+")";
+		    canvCtx.fillRect(aux.x,aux.y,laturaPatrat,laturaPatrat);	
+            aux = aux.next;			
+		}
+		
+		sorteaza();
+		
+		//bubble sort
+		function sorteaza(){
+		var sortat = true;
+		    console.log("Sortez");
+			aux = start;
+			while(aux!=null){
+			    if(aux.next!=null && aux.sum > aux.next.sum){
+				    sortat = false;
+				    var auxP = new pixel;
+					
+					//auxP.x = aux.x;
+					//auxP.y = aux.y;
+					auxP.red = aux.red;
+					auxP.green = aux.green;
+					auxP.blue = aux.blue;
+					auxP.sum = aux.sum;
+					
+					//aux.x = aux.next.x;
+					//aux.y = aux.next.y;
+					aux.red = aux.next.red;
+					aux.green = aux.next.green;
+					aux.blue = aux.next.blue;
+					aux.sum = aux.next.sum;
+					
+					//aux.next.x = auxP.x;
+					//aux.next.y = auxP.y;
+					aux.next.red = auxP.red;
+					aux.next.green = auxP.green;
+					aux.next.blue = auxP.blue;
+					aux.next.sum = auxP.sum;
+				}
+			    aux = aux.next;
+			}
+		    setTimeout(function(){
+                aux = start;	
+			    console.log("Afisez sortat");
+		        while(aux != null){
+			       canvCtx.fillStyle = "rgb("+aux.red+","+aux.green+","+aux.blue+")";
+		           canvCtx.fillRect(aux.x,aux.y,laturaPatrat,laturaPatrat);			
+                   aux = aux.next;			
+		        }		    
+				
+		    },10);
+			
+			if(sortat == false){setTimeout('sorteaza()',10);}
+			else{
+			    setTimeout(function(){
+			    canvCtx.fillStyle = "black";
+                canvCtx.font = "50px Arial";
+                canvCtx.fillText("Gata",canvRef.width/2-60,canvRef.height/2);
+				canvCtx.strokeStyle = "white";
+                canvCtx.font = "50px Arial";
+                canvCtx.strokeText("Gata",canvRef.width/2-60,canvRef.height/2);
+				},1000);
+			}
+		}
+		//setTimeout(function(){canvCtx.fillRect(0,0,canvRef.width,canvRef.height);},1000);
+		
+	</script> 
+</html>
