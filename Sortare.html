@@ -10,21 +10,46 @@
 	</body>
 
 	<script>
-	
+	    var laturaPatrat = 15;
+		var setup = document.createElement('div');
+		var aux = document.createElement('input');
+		setup.innerHTML += "Seteaza latura pixelului : ";
+		aux.type = 'number';
+		aux.id = "pixWidth";
+		aux.value = 10;
+		aux.min = 1;
+		setup.style.position = 'fixed';
+		setup.style.border = '1px dotted black';
+		//setup.style.margin = 'auto';
+		setup.style.top = window.innerHeight/3 + 'px';
+		setup.style.left = window.innerWidth/3 + 'px';
+		//setup.style.width = window.innerWidth/3 + 'px';
+		//setup.style.height = window.innerHeight/5 + 'px';
+		setup.style.padding = "20px";
+		setup.style.borderRadius = "10%";
+		setup.style.zIndex = 2;
+		setup.style.backgroundColor = 'white';
+		setup.appendChild(aux);
+		aux = document.createElement('button');
+		aux.innerHTML = "Incepe";
+		aux.onclick = function(){ this.parentNode.style.opacity = 0; laturaPatrat = document.getElementById('pixWidth').value; console.log(laturaPatrat); adaugaPixeli(); };
+		setup.appendChild(aux);
+		document.body.appendChild(setup);
+		laturaPatrat  = 15;
 	    var canvRef = document.getElementById('panza');
 		canvRef.width = window.innerWidth;
 		canvRef.height = window.innerHeight;
 		var canvCtx = canvRef.getContext('2d');
 		
 		var start = new pixel;
-		start.x = x;
-		start.y = y;
-		start.red = Math.floor(Math.random()*255);
-		start.green = Math.floor(this.red/2);//Math.floor(Math.random()*255);
-		start.blue = Math.floor(this.green/2);//Math.floor(Math.random()*255);
-		start.sum = start.red + start.green + start.blue;		
+		start.x = 0;
+		start.y = 0;
+		start.red = 0;//Math.floor(Math.random()*255);
+		start.green = 0;//Math.floor(Math.random()*255);//Math.floor(Math.random()*255);
+		start.blue = Math.floor(Math.random()*255);//Math.floor(Math.random()*255);
+		start.sum = start.red + start.green + start.blue;	
+        start.next = null;		
 		
-		var laturaPatrat = 15;
 		function pixel(){
 		    this.x;
 			this.y;
@@ -36,33 +61,35 @@
 		}
 		var aux = start;
 		
-		for(var y=0;y<canvRef.height;y+=laturaPatrat){
-		    for(var x=0;x<canvRef.width;x+=laturaPatrat){
-			    if(y > canvRef.height && x > canvRef.width){
-				    aux.next = null;
-				}
-				else{
-			        aux.next = new pixel;
-				    aux = aux.next;
-					aux.x = x;
-					aux.y = y;
-					aux.red = Math.floor(Math.random()*255);
-					aux.green = Math.floor(aux.red/2);//Math.floor(Math.random()*255);
-					aux.blue = Math.floor(aux.green/2);//Math.floor(Math.random()*255);
-					aux.sum = aux.red + aux.green + aux.blue;
-				}
-			}
+		function adaugaPixeli(){
+		    for(var y=0;y<canvRef.height;y+=parseInt(laturaPatrat)){
+		        for(var x=0;x<canvRef.width;x+=parseInt(laturaPatrat)){
+			        if(y > canvRef.height && x > canvRef.width){
+				        aux.next = null;
+				    }
+				    else{
+			            aux.next = new pixel;
+				        aux = aux.next;
+					    aux.x = x;
+					    aux.y = y;
+					    aux.red = 0;//Math.floor(Math.random()*255);
+					    aux.green = 0;//Math.floor(Math.random()*50);//Math.floor(Math.random()*255);
+					    aux.blue = Math.floor(Math.random()*255);//Math.floor(Math.random()*255);
+					    aux.sum = aux.red + aux.green + aux.blue;
+				    }
+					
+			    }
+		    }
+		
+            aux = start;	
+		    while(aux != null){
+			   canvCtx.fillStyle = "rgb("+aux.red+","+aux.green+","+aux.blue+")";
+		       canvCtx.fillRect(aux.x,aux.y,laturaPatrat,laturaPatrat);	
+                aux = aux.next;			
+		    }
+			sorteaza();
 		}
-		
-        aux = start;	
-		while(aux != null){
-			canvCtx.fillStyle = "rgb("+aux.red+","+aux.green+","+aux.blue+")";
-		    canvCtx.fillRect(aux.x,aux.y,laturaPatrat,laturaPatrat);	
-            aux = aux.next;			
-		}
-		
-		sorteaza();
-		
+		canvCtx.clearRect(0,0,canvRef.width,canvRef.height);
 		//bubble sort
 		function sorteaza(){
 		var sortat = true;
