@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html>
+   
+    <head>
+	    <title>---</title>
+	</head>
+	<body style="margin:0;overflow:hidden;cursor:none;">
+	    <img id="imgMea" src="IMG.jpg" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
+		<img id="imgMea2" src="AmmoIcon.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
+		<canvas id='panzaMea'></canvas>
+	</body>
+	<script>
+	    var canvRef = document.getElementById('panzaMea');
+		canvRef.width = window.innerWidth;
+		canvRef.height = window.innerHeight;
+		var canvCtx = canvRef.getContext('2d');
+	    canvCtx.fillStyle = 'black';
+		canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+		
+		var imagine = document.getElementById('imgMea');
+		
+		function proiectil(){
+		    this.x;
+			this.y;
+			this.misca = function(){ this.x++;}
+			this.urmator;
+			this.afiseaza = true;
+		}
+
+		function proiectilInamic(){
+		    this.distrus = false;
+		    this.x;
+			this.y;
+			this.destX;
+			this.destY;
+			this.pasX;
+			this.pasY;
+			this.obtineDestinatie = function(){
+			    this.destX = jucator.x;
+				this.destY = jucator.y;
+				console.log("Proiectil introdus cu destinatia  X = "+this.destX+"   Y = "+this.destY);
+				this.obtinePas();
+			}
+			this.obtinePas = function(){
+			    if(Math.sqrt(Math.pow(this.x-this.destX,2)) < Math.sqrt(Math.pow(this.y-this.destY,2))){
+                    this.pasX = Math.sqrt(Math.pow(this.x-this.destX,2))/Math.sqrt(Math.pow(this.y-this.destY,2));
+					this.pasY = 1;
+					console.log("Pas setat :  X = "+this.pasX+"   Y = "+this.pasY);
+				}else{
+				    this.pasX = 1;
+					this.pasY = Math.sqrt(Math.pow(this.y-this.destY,2))/Math.sqrt(Math.pow(this.x-this.destX,2));
+					console.log("Pas setat :  X = "+this.pasX+"   Y = "+this.pasY);
+				}				
+			}
+			this.misca = function(){
+			    //if(Math.sqrt(Math.pow(this.x-jucator.x,2)+Math.pow(this.y-jucator.y,2)) < 10){ /*console.log("Un proiectil sa distrus");*/this.distrus = true; }
+				if(!this.distrus){
+				//console.log("Se misca un proiectil");
+   			        if(this.x < this.destX)this.x+=this.pasX;
+				    if(this.x > this.destX)this.x-=this.pasX;
+				    if(this.y < this.destY)this.y+=this.pasY;
+				    if(this.y > this.destY)this.y-=this.pasY;
+                }
+			}
+			this.urmator;
+			this.afiseaza = true;		    
+		}
+		
+        function inamic(){
+		    this.x = Math.floor(canvRef.width/2 + Math.random()*canvRef.width/2);
+			this.y = canvRef.height/2;
+			this.hp = 3;
+			this.proiectile = null;
+			this.numarProiectile=0;
+			this.trage = function(){
+			    if(!this.proiectile){
+				    this.proiectile = new proiectilInamic();
+					this.proiectile.x = this.x;
+					this.proiectile.y = this.y;
+					this.proiectile.obtineDestinatie();
+					this.proiectile.urmator = null;
+				}
+				else{
+				    if(this.numarProiectile <= 100){
+				    var aux = this.proiectile;
+					while(aux.urmator){aux = aux.urmator;}
+				    aux.urmator = new proiectilInamic();
+					aux.urmator.urmator = null;
+					aux.urmator.x = this.x;
+					aux.urmator.y = this.y;
+					aux.urmator.obtineDestinatie();}
+				}
+			}
+			this.miscaProiectile = function(){
+			    var aux = this.proiectile;
+				if(aux!=null){
+				    while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}
+					aux = this.proiectile;
+					while(aux){
+					    aux.misca();
+					    aux = aux.urmator;
+					}					
+				}
+			}
+			this.mort = false;
+			this.urmator = null;
+		}
+		
+		var enemy = new inamic();
+		var auxEnemy = enemy;
+		for(var i=0;i<5;i++){
+            auxEnemy.urmator = new inamic();
+            auxEnemy = auxEnemy.urmator;		    
+		}
+		
+		setInterval(function(){
+		    var aux = enemy;
+			while(aux){
+			    aux.miscaProiectile();
+			    aux = aux.urmator;
+			}
+		},50);
+		
+		setInterval(function(){
+		    var aux = enemy;
+			while(aux){
+			    if(Math.round(Math.random()*7) == 5){aux.trage();console.log("Un inamic a tras.");}
+			    aux = aux.urmator;
+			}
+		},500);
+		
+		var jucator = {
+		               x:canvRef.width/2,
+		               y:canvRef.height/2,
+					   proiectile:null,
+					   magazie:10,
+					   trage:function(){
+					       if(jucator.magazie > 0){
+					           if(this.proiectile == null){ 
+							       this.proiectile = new proiectil(); 
+							       this.proiectile.urmator = null;
+								   this.proiectile.x = jucator.x;
+								   this.proiectile.y = jucator.y-2;
+							   }
+						       else{
+						           var aux = new proiectil();
+							       aux.x = jucator.x;
+							       aux.y = jucator.y-2;
+							       aux.urmator = this.proiectile;
+							       this.proiectile = aux;
+						       }
+						       aux = this.proiectile;
+						       //console.log("Afisez lista proiectile : ");
+						       while(aux!=null){
+						           console.log("P ");
+						           aux = aux.urmator;
+						       }
+						       this.miscaProiectile();
+							   jucator.magazie --;
+						   }
+					   },
+					   miscaProiectile:function(){
+					       var aux = this.proiectile;
+						   var aux4 = enemy;
+						   //if(aux)console.log("X : "+aux.x+"  Y : "+aux.y);
+						   while(aux4){
+							   switch(Math.floor(Math.random()*5)){
+						        case 1 : aux4.x++;
+							            break;
+								case 2 : aux4.x--;	
+                                        break;
+                                case 3 : aux4.y++;
+                                        break;
+                                case 4 : aux4.y--;
+                                        break;											
+						        }					   
+						        aux4 = aux4.urmator;
+						   }
+                           var aux3 = enemy;
+                           while(aux!=null){
+							   while(aux3){
+						           if(aux.x > aux3.x && aux3.x+50 < aux.x && aux3.y < aux.y && aux3.y+50 > aux.y && !aux3.mort && aux.afiseaza==true){
+							           if(aux3.hp == 1){
+							           aux.afiseaza = false;
+									   aux3.mort = true;
+								       }
+								       else {aux3.hp --;aux.afiseaza = false;}
+	
+							       }
+                                   aux3 = aux3.urmator;								   
+							   }
+							   aux3 = enemy;
+						       aux = aux.urmator;    
+						   }
+
+                            aux = this.proiectile;
+                            while(aux){
+							    aux.misca();
+								aux = aux.urmator;
+							}						   
+					   },
+					   vieti:3,
+					   directie:'a',
+					   ultimaDirectie:'a',
+					   seMisca:false,
+					   misca: function(){
+					       if(this.seMisca){
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+							   
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}
+					           if(this.ultimaDirectie == 'a'){ this.x -=1;}
+						       if(this.ultimaDirectie == 'd'){ if(this.x < canvRef.width/2)this.x +=1;}
+						       if(this.ultimaDirectie == 's'){ this.y +=1;}
+						       if(this.ultimaDirectie == 'w'){ this.y -=1;}							   
+						   }
+					   },
+					   };
+		
+		document.body.onmousemove = function(event){
+		    jucator.seMisca = true;
+			if(event.clientX < canvRef.width/2)jucator.x = event.clientX;
+			jucator.y = event.clientY;
+			/*console.log("sa apasat o tasta  "+event.keyCode);
+		    if(event.keyCode == 87){ console.log("sus");jucator.ultimaDirectie = 'w';     }
+			if(event.keyCode == 83){ console.log("jos");jucator.ultimaDirectie = 's';     }
+			if(event.keyCode == 65 ){ console.log("stanga");jucator.ultimaDirectie = 'a';  }
+			if(event.keyCode == 68){ console.log("dreapta");jucator.ultimaDirectie = 'd'; }*/
+		}
+		document.body.onkeyup = function(event){
+		    console.log("sa ridicat degetul");
+		    jucator.seMisca = false;
+		    jucator.ultimaDirectie = '';
+		} 
+		
+		document.body.onclick = function(){
+		    console.log("Ai apasat click");
+		    jucator.trage();
+		}
+		
+		imagine.ondrag = function(){};
+		
+		setInterval(function(){
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();			
+		},50);
+		
+		/*setInterval(function(){
+		    jucator.misca();  
+		},50);*/
+		
+		deseneaza();
+		
+		function deseneazaInterfata(){
+		    canvCtx.fillStyle="rgba(100,100,200,0.8)";
+		    canvCtx.fillRect(canvRef.width/20-10*4,canvRef.height/20 -5,10*20 ,30);
+			canvCtx.strokeStyle = "white";
+			canvCtx.fillStyle = 'green';
+			
+			for(var i=1;i<jucator.magazie;i++){
+			    canvCtx.fillRect(canvRef.width/20 + i*9 + 5*i,canvRef.height/20,10,20);
+			}
+			
+			for(var i=9;i>0;i--){
+			    canvCtx.strokeRect(canvRef.width/20 + i*9 + 5*i,canvRef.height/20,10,20);
+			} 			
+			canvCtx.font = '30px Arial';
+			canvCtx.fillStyle = 'white';
+			canvCtx.fillText(jucator.magazie,canvRef.width/20 + 9*11 + 5*9,canvRef.height/20 + 20,10,20);
+			canvCtx.drawImage(document.getElementById('imgMea2'),canvRef.width/20-10*4,canvRef.height/20 -5,50,25);
+		}
+		
+		function deseneaza(){
+		    canvCtx.fillStyle = 'black';
+			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+			deseneazaInterfata();
+			canvCtx.fillStyle='yellow';
+			var aux = jucator.proiectile;
+			while(aux){
+			    if(aux.afiseaza){
+		        canvCtx.beginPath();
+			    canvCtx.arc(aux.x,aux.y,6,0,2*Math.PI);
+				canvCtx.closePath();
+				canvCtx.fill();}
+				aux = aux.urmator;
+			}			
+			canvCtx.fillStyle = 'red';
+			canvCtx.fillRect(jucator.x-10,jucator.y-10,120,15);
+			canvCtx.drawImage(imagine,jucator.x-75,jucator.y-100,150,200);			
+			canvCtx.fillStyle = 'green';
+			/*canvCtx.beginPath();
+			canvCtx.arc(jucator.x,jucator.y,20,0,2*Math.PI);
+			canvCtx.closePath();
+			canvCtx.fill();*/
+			
+			var aux3 = enemy,aux4;
+			while(aux3){
+			    if(!aux3.mort){
+			       canvCtx.fillStyle = 'red';
+			       canvCtx.fillRect(aux3.x-1,aux3.y-15,51,11);
+			       var x = aux3.hp;
+			       for(var i=0;i<x;i++){
+			           canvCtx.fillStyle = 'green';
+			           canvCtx.fillRect(aux3.x+17*i,aux3.y-14,15,9);
+			       }
+			       canvCtx.fillStyle = 'rgba(50,50,150,0.5)';
+			       canvCtx.fillRect(aux3.x,aux3.y,50,50);
+				   aux4 = aux3.proiectile;
+				   canvCtx.fillStyle="white"
+				   while(aux4){
+				       canvCtx.beginPath();canvCtx.arc(aux4.x,aux4.y,5,0,2*Math.PI);canvCtx.closePath();canvCtx.fill();
+					   aux4 = aux4.urmator;
+				   }
+			    }
+			aux3 = aux3.urmator;
+			}
+
+			//canvCtx.fillRect(jucator.x-5,jucator.y-5,jucator.x+5,jucator.y+5);
+			setTimeout('deseneaza()',50);
+		}
+		
+	</script>
+
+</html>
