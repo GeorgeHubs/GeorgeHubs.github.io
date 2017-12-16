@@ -7,6 +7,9 @@
 	    <img id="imgMea" src="IMG.jpg" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
 		<img id="imgMea2" src="AmmoIcon.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
 		<img id="imgMea3" src="Pow.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>		
+		<img id="imgMea4" src="Hat.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
+		<img id="imgMea5" src="Proiectil.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
+		<img id="imgMea6" src="Mort.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>					
 		<canvas id='panzaMea'></canvas>
 	</body>
 	<script>
@@ -20,6 +23,8 @@
 		
 		var imagine = document.getElementById('imgMea');
 		numarProiectileInamice = 0;
+		
+		var jocTerminat = false;
 		
 		function proiectil(){
 		    this.x;
@@ -56,7 +61,7 @@
 				}				
 			}
 			this.misca = function(){
-			    if(Math.sqrt(Math.pow(this.x-jucator.x,2)+Math.pow(this.y-jucator.y,2)) < 80){ /*console.log("Un proiectil sa distrus");*/this.distrus = true; }
+			    if(Math.sqrt(Math.pow(this.x-jucator.x,2)+Math.pow(this.y-jucator.y,2)) < 80 && !this.distrus){ /*console.log("Un proiectil sa distrus");*/if(jucator.hp == 0)jocTerminat = true;jucator.hp--;this.distrus = true; }
 				if(!this.distrus){
 				//console.log("Se misca un proiectil");
    			        if(this.x < this.destX)this.x+=this.pasX;
@@ -79,6 +84,7 @@
 			this.proiectile = null;
 			this.numarProiectile=0;
 			this.trage = function(){
+			    if(!this.mort){
 			    numarProiectileInamice ++;
 			    if(!this.proiectile){
 				    this.proiectile = new proiectilInamic();
@@ -99,6 +105,7 @@
 					aux.urmator.y = this.y;
 					aux.urmator.obtineDestinatie();
 					}
+				}
 				}
 			}
 			this.miscaProiectile = function(){
@@ -217,7 +224,7 @@
 		setInterval(function(){
 		    var aux = enemy;
 			while(aux){
-			    if(Math.round(Math.random()*7) == 5){aux.trage();console.log("Un inamic a tras.");}
+			    if(Math.round(Math.random()*6) == 5){aux.trage();console.log("Un inamic a tras.");}
 			    aux = aux.urmator;
 			}
 		},500);
@@ -258,6 +265,7 @@
 		var jucator = {
 		               x:canvRef.width/2,
 		               y:canvRef.height/2,
+					   hp:10,
 					   proiectile:null,
 					   magazie:10,
 					   trage:function(){
@@ -305,7 +313,7 @@
                            var aux3 = enemy;
                            while(aux!=null){
 							   while(aux3){
-						           if(aux.x > aux3.x && aux3.x+50 < aux.x && aux3.y < aux.y && aux3.y+50 > aux.y && !aux3.mort && aux.afiseaza==true){
+						           if(aux.x > aux3.x && aux.x < aux3.x+50 && aux3.y < aux.y && aux3.y+50 > aux.y && !aux3.mort && aux.afiseaza==true){
 							           if(aux3.hp == 1){
 							           aux.afiseaza = false;
 									   aux3.mort = true;
@@ -436,7 +444,8 @@
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
-			jucator.miscaProiectile();			
+			jucator.miscaProiectile();	
+			jucator.miscaProiectile();		
 		},50);
 		
 		/*setInterval(function(){
@@ -446,6 +455,7 @@
 		deseneaza();
 		
 		function deseneazaInterfata(){
+		    // ammo
 		    canvCtx.fillStyle="rgba(100,100,200,0.8)";
 		    canvCtx.fillRect(canvRef.width/20-10*4,canvRef.height/20 -5,10*20 ,30);
 			canvCtx.strokeStyle = "white";
@@ -463,19 +473,30 @@
 			canvCtx.fillText("Numar proiectile inamice = "+numarProiectileInamice,canvRef.width/2,40);
 			canvCtx.fillText(jucator.magazie,canvRef.width/20 + 9*11 + 5*9,canvRef.height/20 + 20,10,20);
 			canvCtx.drawImage(document.getElementById('imgMea2'),canvRef.width/20-10*4,canvRef.height/20 -5,50,25);
+			
+			// hp bar
+			canvCtx.fillStyle = 'rgb(150,50,50)';
+			canvCtx.fillRect(canvRef.width/20-10*4,canvRef.height/10 -5,10*20 ,15);
+			canvCtx.fillStyle = 'red';
+			if(jucator.hp > 0)canvCtx.fillRect(canvRef.width/20-10*4,canvRef.height/10 -5,(10*20/10)*jucator.hp,15);
+			canvCtx.font = "10px Arial";
+			canvCtx.fillStyle = "white";
+			canvCtx.fillText(jucator.hp,canvRef.width/11,canvRef.height/10 +6);
 		}
 		
 		function deseneaza(){
+		    if(!jocTerminat){
 		    canvCtx.fillStyle = 'black';
 			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 			var aux = jucator.proiectile;
 			canvCtx.fillStyle='yellow';	
 			while(aux){
-			    if(aux.afiseaza){
+			    if(aux.afiseaza){/*
 		        canvCtx.beginPath();
 			    canvCtx.arc(aux.x,aux.y,6,0,2*Math.PI);
 				canvCtx.closePath();
-				canvCtx.fill();}
+				canvCtx.fill();*/
+				canvCtx.drawImage(document.getElementById('imgMea5'),aux.x,aux.y-20,40,40);}
 				aux = aux.urmator;
 			}	
 			canvCtx.fillStyle = 'red';
@@ -490,7 +511,8 @@
 			canvCtx.beginPath();
 			canvCtx.arc(jucator.x,jucator.y,60,0,2*Math.PI);
 			canvCtx.closePath();
-			canvCtx.fill();					
+			canvCtx.fill();
+			canvCtx.drawImage(document.getElementById('imgMea4'),jucator.x-120,jucator.y-120,120,120);			
             deseneazaInterfata();			
 			//canvCtx.drawImage(imagine,jucator.x-75,jucator.y-100,150,200);			
 			canvCtx.fillStyle = 'green';
@@ -530,7 +552,13 @@
 			}
 		   
 			//canvCtx.fillRect(jucator.x-5,jucator.y-5,jucator.x+5,jucator.y+5);
-			setTimeout('deseneaza()',50);
+			setTimeout('deseneaza()',20);
+			}
+			else {
+			    canvCtx.fillStyle = 'rgba(250,250,250,0.1)';
+				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+			    canvCtx.drawImage(document.getElementById('imgMea6'),canvRef.width/10,canvRef.height/10,canvRef.width - canvRef.width/5,canvRef.height - canvRef.height/5);				
+			}
 		}
 		
 	</script>
