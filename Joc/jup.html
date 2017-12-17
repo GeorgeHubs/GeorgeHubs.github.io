@@ -26,6 +26,57 @@
 		
 		var jocTerminat = false;
 		
+		function atac1(){
+		    this.x;
+			this.putere = 1;
+			this.precedent = null;
+			this.urmator = null;
+		}
+		
+		var zid = null;
+		setInterval(function(){
+		console.log("rulez");
+		    var z = 15;
+			while(z > 0){
+		    if(zid!=null){
+			    var aux = zid,aux2,aux3 = enemy;
+				while(aux!=null){
+				    aux.x ++;
+					aux2 = enemy;
+					while(aux2!=null){
+					    if(Math.sqrt(Math.pow(aux2.x - aux.x,2)) == 0){
+						    console.log(aux2.x +" = "+aux.x);
+						    aux2.hp -=aux.putere;
+						}
+						aux2 = aux2.urmator;
+					}
+					
+					while(aux3 != null){
+					    if(aux3.hp <= 0){
+						    if(aux3 == enemy){enemy = enemy.urmator;}
+							else if(aux3 != enemy && aux3.urmator != null){ aux3.precedent.urmator = aux3.urmator; aux3.urmator.precedent = aux3.precedent;}
+							else if(aux3 != enemy && aux3.urmator == null){ aux3.precedent.urmator = null; }
+						}
+					    if(aux3!=null)aux3 = aux3.urmator;
+					}
+					aux3 = enemy;
+				    aux = aux.urmator;
+				}
+			}
+			
+            var aux = zid;
+            while(aux!=null){
+			    if(aux.x > canvRef.width){
+				    if(aux == zid){zid = zid.urmator;}
+					else if(aux != zid && aux.urmator!=null){aux.precedent.urmator = aux.urmator;aux.urmator.precedent = aux.precedent;}
+					else if(aux != zid && aux.urmator==null){aux.precedent.urmator = null;}
+				}
+			    if(aux!=null)aux = aux.urmator;
+			}
+			z--;
+			}		
+		},50);		
+		
 		function proiectil(){
 		    this.x;
 			this.y;
@@ -80,7 +131,7 @@
         function inamic(){
 		    this.x = Math.floor(canvRef.width/2 + Math.random()*canvRef.width/2 - 50);
 			this.y = 100+ Math.floor(Math.random()*(canvRef.height-150));
-			this.hp = 3;
+			this.hp = 4;
 			this.proiectile = null;
 			this.numarProiectile=0;
 			this.trage = function(){
@@ -203,13 +254,15 @@
 				}
 			}
 			this.mort = false;
+			this.precedent = null;
 			this.urmator = null;
 		}
 		
 		var enemy = new inamic();
 		var auxEnemy = enemy;
-		for(var i=0;i<15;i++){
+		for(var i=0;i<50;i++){
             auxEnemy.urmator = new inamic();
+			auxEnemy.urmator.precedent = auxEnemy;
             auxEnemy = auxEnemy.urmator;		    
 		}
 		
@@ -407,10 +460,31 @@
 			if(event.keyCode == 65 ){ console.log("stanga");jucator.ultimaDirectie = 'a';  }
 			if(event.keyCode == 68){ console.log("dreapta");jucator.ultimaDirectie = 'd'; }*/
 		}
-		document.body.onkeyup = function(event){
-		    console.log("sa ridicat degetul");
-		    jucator.seMisca = false;
-		    jucator.ultimaDirectie = '';
+		
+		document.body.onkeypress = function(event){
+            if(event.keyCode == 49){
+			    if(zid!=null){
+				    var aux = zid;
+					while(aux.urmator!=null){
+					    aux = aux.urmator;
+					}
+					aux.urmator = new atac1();
+					aux.urmator.precedent = aux;
+					aux = aux.urmator;
+					aux.x = jucator.x + 40;
+					aux.putere = 1;
+					aux.urmator = null;
+				}
+				
+				if(zid == null){
+				    zid = new atac1();
+				    zid.x = jucator.x + 40;
+					zid.putere = 1;
+                    zid.urmator = null;
+                    console.log(zid);					
+				}
+			}
+			console.log("rulez2");
 		} 
 		
 		document.body.onclick = function(){
@@ -482,6 +556,17 @@
 			canvCtx.font = "10px Arial";
 			canvCtx.fillStyle = "white";
 			canvCtx.fillText(jucator.hp,canvRef.width/11,canvRef.height/10 +6);
+			
+			if(zid!=null) canvCtx.fillStyle = "rgb(50,80,200)";
+			else canvCtx.fillStyle = "rgb(140,150,150)";
+			canvCtx.fillRect(canvRef.width/3.05,canvRef.height*0.89,canvRef.width/16,canvRef.width/17);
+			canvCtx.fillStyle = "white";			
+			canvCtx.fillRect(canvRef.width/3,canvRef.height*0.9,canvRef.width/20,canvRef.width/20);
+			canvCtx.fillStyle = 'black';
+			canvCtx.font = "20px Arial";
+			canvCtx.fillText("1",canvRef.width/3+20,canvRef.height*0.9+20);
+			canvCtx.fillText("pentru",canvRef.width/3,canvRef.height*0.9+40);
+			canvCtx.fillText("perete",canvRef.width/3,canvRef.height*0.9+60);			
 		}
 		
 		function deseneaza(){
@@ -530,7 +615,7 @@
 			       var x = aux3.hp;
 			       for(var i=0;i<x;i++){
 			           canvCtx.fillStyle = 'green';
-			           canvCtx.fillRect(aux3.x+17*i,aux3.y-14,15,9);
+			           canvCtx.fillRect(aux3.x+12.5*i,aux3.y-14,45/4/*(51-x)/x*/,9);
 			       }
 			       canvCtx.fillStyle = 'rgba(50,50,150,0.5)';
 			       canvCtx.fillRect(aux3.x,aux3.y,50,50);
@@ -558,6 +643,14 @@
 			    canvCtx.fillStyle = 'rgba(250,250,250,0.1)';
 				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 			    canvCtx.drawImage(document.getElementById('imgMea6'),canvRef.width/10,canvRef.height/10,canvRef.width - canvRef.width/5,canvRef.height - canvRef.height/5);				
+			}
+			canvCtx.fillStyle = "rgba(50,50,200,0.8)";
+			if(zid!=null){
+			    var aux = zid;
+				while(aux!=null){
+				    canvCtx.fillRect(aux.x,0,5,canvRef.height);
+				    aux = aux.urmator;
+				}
 			}
 		}
 		
