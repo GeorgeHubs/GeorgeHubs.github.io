@@ -9,7 +9,9 @@
 		<img id="imgMea3" src="Pow.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>		
 		<img id="imgMea4" src="Hat.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
 		<img id="imgMea5" src="Proiectil.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>
-		<img id="imgMea6" src="Mort.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>					
+		<img id="imgMea6" src="Mort.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>	
+		<img id="imgMea7" src="Fire.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>	
+		<img id="imgMea8" src="WallIcon.png" style="position:absolute;left:-50px;top:-50px;width:50px;height:50px;"></img>			
 		<canvas id='panzaMea'></canvas>
 	</body>
 	<script>
@@ -29,6 +31,7 @@
 		function atac1(){
 		    this.x;
 			this.putere = 1;
+			this.blue = 100;
 			this.precedent = null;
 			this.urmator = null;
 		}
@@ -42,6 +45,7 @@
 			    var aux = zid,aux2,aux3 = enemy;
 				while(aux!=null){
 				    aux.x ++;
+					if(aux.blue < 250)aux.blue+=0.5;else aux.blue = 100;
 					aux2 = enemy;
 					while(aux2!=null){
 					    if(Math.sqrt(Math.pow(aux2.x - aux.x,2)) == 0){
@@ -82,8 +86,21 @@
 			this.y;
 			this.misca = function(){ this.x++;}
 			this.urmator;
+			this.precedent;
+			this.urma = null;
 			this.afiseaza = true;
 		}
+		
+		function particulaUrmaProiectilPrieten(){
+		    this.x=0;
+			this.y=0;
+			this.urmator=null;
+			this.opacitate=1;
+			this.culoareR=100;
+			this.culoareG=50;
+			this.culoareB=50;
+		}
+		
 		function proiectilInamic(){
 		    this.distrus = false;
 		    this.x;
@@ -299,6 +316,8 @@
 			    aux2 = aux1.proiectile;
 				while(aux2){
 				    if(aux2.explozieIncheiata==true){
+					    var aux5;
+						while(aux2.urma!=null){ aux5 = aux2.urma; aux2.urma = aux2.urma.urmator; aux5.urmator = null;}
 					    if(aux2 == aux1.proiectile && aux2.urmator != null){ aux1.proiectile = aux2.urmator; }
 						else if(aux2 == aux1.proiectile && aux2.urmator == null){ aux1.proiectile = null; }
 						else if(aux2 != aux1.proiectile && aux2.urmator != null){ aux2.precedent.urmator = aux2.urmator; aux2.urmator.precedent = aux2.precedent; }
@@ -313,30 +332,41 @@
 		
 		setInterval(function(){
 		    if(jucator.magazie < 10){jucator.magazie ++;}
-		},1000);
+		},500);
 		
 		var jucator = {
 		               x:canvRef.width/2,
 		               y:canvRef.height/2,
 					   hp:10,
 					   proiectile:null,
-					   magazie:10,
+					   magazie:30,
 					   trage:function(){
 					       if(jucator.magazie > 0){
 					           if(this.proiectile == null){ 
 							       this.proiectile = new proiectil(); 
 							       this.proiectile.urmator = null;
-								   this.proiectile.x = jucator.x+120;
+								   this.proiectile.precedent = null;
+								   this.proiectile.x = jucator.x+100;
 								   this.proiectile.y = jucator.y-2;
+								   this.proiectile.urma = new particulaUrmaProiectilPrieten();
+								   this.proiectile.urma.urmator = null;
+								   this.proiectile.urma.x = this.proiectile.x;
+								   this.proiectile.urma.y = this.proiectile.y;
 							   }
 						       else{
 						           var aux = new proiectil();
-							       aux.x = jucator.x;
+							       aux.x = jucator.x+100;
 							       aux.y = jucator.y-2;
+								   aux.urma = new particulaUrmaProiectilPrieten();
+								   aux.urma.urmator = null;
+								   aux.urma.x = aux.x;
+								   aux.urma.y = aux.y;
 							       aux.urmator = this.proiectile;
+								   aux.precedent = null;
+								   this.proiectile.precedent = aux;
 							       this.proiectile = aux;
 						       }
-						       aux = this.proiectile;
+						       var aux = this.proiectile;
 						       //console.log("Afisez lista proiectile : ");
 						       while(aux!=null){
 						           console.log("P ");
@@ -372,7 +402,6 @@
 									   aux3.mort = true;
 								       }
 								       else {aux3.hp --;aux.afiseaza = false;}
-	
 							       }
                                    aux3 = aux3.urmator;								   
 							   }
@@ -380,10 +409,20 @@
 						       aux = aux.urmator;    
 						   }
                             aux = this.proiectile;
-                            while(aux){
+                            while(aux!=null){
 							    aux.misca();
 								aux = aux.urmator;
-							}						   
+							}
+                            aux = this.proiectile;
+                            while(aux!=null){
+							    if(aux.x > canvRef.width){
+								    if(aux.precedent == null && aux.urmator != null)     { this.proiectile = this.proiectile.urmator;this.proiectile.precedent = null; }
+									else if(aux.precedent != null && aux.urmator != null){ aux.precedent.urmator = aux.urmator; aux.urmator.precedent = aux.precedent; }
+									else if(aux.precedent != null && aux.urmator == null){ aux.precedent.urmator = null;aux.precedent = null;                          }
+									else if(aux.precedent == null && aux.urmator == null){ this.proiectile  = null;                                                    }
+								}
+								if(aux!=null)aux = aux.urmator;
+							}							
 					   },
 					   vieti:3,
 					   directie:'a',
@@ -495,31 +534,79 @@
 		imagine.ondrag = function(){};
 		
 		setInterval(function(){
+		    var aux8 = jucator.proiectile;
+			while(aux8!=null){
+			    var aux9 = aux8.urma;
+			    while(aux9.urmator!=null){
+				    if(aux9.opacitate > 0.03)aux9.opacitate -=0.03; 
+		            aux9 = aux9.urmator;
+			    }			    
+		        aux9.urmator = new particulaUrmaProiectilPrieten();
+		        aux9 = aux9.urmator;
+			    aux9.x = aux8.x;
+			    aux9.y = aux8.y;
+			    aux8 = aux8.urmator; 				
+			}	
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
+			jucator.miscaProiectile();		
+			aux8 = jucator.proiectile;
+			while(aux8!=null){
+			    var aux9 = aux8.urma;
+			    while(aux9.urmator!=null){
+				    if(aux9.opacitate > 0.03)aux9.opacitate -=0.03; 
+		            aux9 = aux9.urmator;
+			    }			    
+		        aux9.urmator = new particulaUrmaProiectilPrieten();
+		        aux9 = aux9.urmator;
+			    aux9.x = aux8.x;
+			    aux9.y = aux8.y;
+			    aux8 = aux8.urmator; 				
+			}			
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
-			jucator.miscaProiectile();
+			jucator.miscaProiectile();			
+			aux8 = jucator.proiectile;
+			while(aux8!=null){
+			    var aux9 = aux8.urma;
+			    while(aux9.urmator!=null){
+				    if(aux9.opacitate > 0.03)aux9.opacitate -=0.03; 
+		            aux9 = aux9.urmator;
+			    }			    
+		        aux9.urmator = new particulaUrmaProiectilPrieten();
+		        aux9 = aux9.urmator;
+			    aux9.x = aux8.x;
+			    aux9.y = aux8.y;
+			    aux8 = aux8.urmator; 				
+			}					
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();
 			jucator.miscaProiectile();	
-			jucator.miscaProiectile();		
+			aux8 = jucator.proiectile;
+			while(aux8!=null){
+			    var aux9 = aux8.urma;
+			    while(aux9.urmator!=null){
+				    if(aux9.opacitate > 0.03)aux9.opacitate -=0.03; 
+		            aux9 = aux9.urmator;
+			    }			    
+		        aux9.urmator = new particulaUrmaProiectilPrieten();
+		        aux9 = aux9.urmator;
+			    aux9.x = aux8.x;
+			    aux9.y = aux8.y;
+			    aux8 = aux8.urmator; 				
+			}		
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();
+			jucator.miscaProiectile();			
+			
 		},50);
 		
 		/*setInterval(function(){
@@ -562,11 +649,12 @@
 			canvCtx.fillRect(canvRef.width/3.05,canvRef.height*0.89,canvRef.width/16,canvRef.width/17);
 			canvCtx.fillStyle = "white";			
 			canvCtx.fillRect(canvRef.width/3,canvRef.height*0.9,canvRef.width/20,canvRef.width/20);
-			canvCtx.fillStyle = 'black';
-			canvCtx.font = "20px Arial";
-			canvCtx.fillText("1",canvRef.width/3+20,canvRef.height*0.9+20);
-			canvCtx.fillText("pentru",canvRef.width/3,canvRef.height*0.9+40);
-			canvCtx.fillText("perete",canvRef.width/3,canvRef.height*0.9+60);			
+			canvCtx.fillStyle = 'rgba(0,0,0,0.8)';
+			canvCtx.font = "50px Arial";
+			canvCtx.drawImage(document.getElementById('imgMea8'),canvRef.width/3,canvRef.height*0.9,canvRef.width/20,canvRef.width/20);
+			canvCtx.fillText("1",canvRef.width/3+20,canvRef.height*0.9+50);
+			/*canvCtx.fillText("pentru",canvRef.width/3,canvRef.height*0.9+40);
+			canvCtx.fillText("perete",canvRef.width/3,canvRef.height*0.9+60);*/		
 		}
 		
 		function deseneaza(){
@@ -581,6 +669,19 @@
 			    canvCtx.arc(aux.x,aux.y,6,0,2*Math.PI);
 				canvCtx.closePath();
 				canvCtx.fill();*/
+				var aux4 = aux.urma;
+				while(aux4!=null){
+				    /*canvCtx.fillStyle = 'rgba('+aux4.culoareR+','+aux4.culoareG+','+aux4.culoareB+','+1+')';
+					canvCtx.beginPath();
+					canvCtx.arc(aux4.x,aux4.y,2,0,2*Math.PI);
+					canvCtx.closePath();
+					canvCtx.fill();*/
+					canvCtx.globalAlpha = aux4.opacitate;
+					canvCtx.drawImage(document.getElementById('imgMea7'),aux4.x,aux4.y-3,12,6);
+					canvCtx.globalAlpha = 1;
+					console.log("Afisez urma la  X = "+aux4.x+"    Y = "+aux4.y);
+				    aux4 = aux4.urmator;
+				}
 				canvCtx.drawImage(document.getElementById('imgMea5'),aux.x,aux.y-20,40,40);}
 				aux = aux.urmator;
 			}	
@@ -644,11 +745,11 @@
 				canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
 			    canvCtx.drawImage(document.getElementById('imgMea6'),canvRef.width/10,canvRef.height/10,canvRef.width - canvRef.width/5,canvRef.height - canvRef.height/5);				
 			}
-			canvCtx.fillStyle = "rgba(50,50,200,0.8)";
 			if(zid!=null){
 			    var aux = zid;
 				while(aux!=null){
-				    canvCtx.fillRect(aux.x,0,5,canvRef.height);
+			        canvCtx.fillStyle = "rgba(50,50,"+parseInt(aux.blue)+",0.8)";				
+				    canvCtx.fillRect(aux.x,0,15,canvRef.height);
 				    aux = aux.urmator;
 				}
 			}
