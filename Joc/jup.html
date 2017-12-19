@@ -44,7 +44,7 @@
 		    if(zid!=null){
 			    var aux = zid,aux2,aux3 = enemy;
 				while(aux!=null){
-				    aux.x ++;
+				    aux.x +=1;
 					if(aux.blue < 250)aux.blue+=0.5;else aux.blue = 100;
 					aux2 = enemy;
 					while(aux2!=null){
@@ -129,7 +129,7 @@
 				}				
 			}
 			this.misca = function(){
-			    if(Math.sqrt(Math.pow(this.x-jucator.x,2)+Math.pow(this.y-jucator.y,2)) < 80 && !this.distrus){ /*console.log("Un proiectil sa distrus");*/if(jucator.hp == 0)jocTerminat = true;jucator.hp--;this.distrus = true; }
+			    if(Math.sqrt(Math.pow(this.x-jucator.x,2)+Math.pow(this.y-jucator.y,2)) < 80 && !this.distrus){ /*console.log("Un proiectil sa distrus");*/if(jucator.scut > 0){jucator.scut--;this.distrus = true;} else if(jucator.hp > 0){jucator.hp--;this.distrus = true;}else jocTerminat = true; }
 				if(!this.distrus){
 				//console.log("Se misca un proiectil");
    			        if(this.x < this.destX)this.x+=this.pasX;
@@ -339,7 +339,8 @@
 		               y:canvRef.height/2,
 					   hp:10,
 					   proiectile:null,
-					   magazie:30,
+					   magazie:10,
+					   scut:10,
 					   trage:function(){
 					       if(jucator.magazie > 0){
 					           if(this.proiectile == null){ 
@@ -390,7 +391,8 @@
                                         break;
                                 case 4 : if(aux4.y < canvRef.height-50 && aux4.y > 0)aux4.y--;
                                         break;											
-						        }					   
+						        }				
+							
 						        aux4 = aux4.urmator;
 						   }
                            var aux3 = enemy;
@@ -415,7 +417,7 @@
 							}
                             aux = this.proiectile;
                             while(aux!=null){
-							    if(aux.x > canvRef.width){
+							    if(aux.x > canvRef.width + canvRef.width/4){
 								    if(aux.precedent == null && aux.urmator != null)     { this.proiectile = this.proiectile.urmator;this.proiectile.precedent = null; }
 									else if(aux.precedent != null && aux.urmator != null){ aux.precedent.urmator = aux.urmator; aux.urmator.precedent = aux.precedent; }
 									else if(aux.precedent != null && aux.urmator == null){ aux.precedent.urmator = null;aux.precedent = null;                          }
@@ -643,6 +645,10 @@
 			canvCtx.font = "10px Arial";
 			canvCtx.fillStyle = "white";
 			canvCtx.fillText(jucator.hp,canvRef.width/11,canvRef.height/10 +6);
+            canvCtx.fillStyle = 'rgb(50,200,200)';
+            canvCtx.fillRect(canvRef.width/20-40,canvRef.height/9 +6,20*jucator.scut,15);
+			canvCtx.fillStyle = "white";			
+            if(jucator.scut > 0)canvCtx.fillText(jucator.scut,canvRef.width/11,canvRef.height/8 +6);			
 			
 			if(zid!=null) canvCtx.fillStyle = "rgb(50,80,200)";
 			else canvCtx.fillStyle = "rgb(140,150,150)";
@@ -654,13 +660,15 @@
 			canvCtx.drawImage(document.getElementById('imgMea8'),canvRef.width/3,canvRef.height*0.9,canvRef.width/20,canvRef.width/20);
 			canvCtx.fillText("1",canvRef.width/3+20,canvRef.height*0.9+50);
 			/*canvCtx.fillText("pentru",canvRef.width/3,canvRef.height*0.9+40);
-			canvCtx.fillText("perete",canvRef.width/3,canvRef.height*0.9+60);*/		
+			canvCtx.fillText("perete",canvRef.width/3,canvRef.height*0.9+60);*/	
+            			
 		}
 		
 		function deseneaza(){
 		    if(!jocTerminat){
 		    canvCtx.fillStyle = 'black';
 			canvCtx.fillRect(0,0,canvRef.width,canvRef.height);
+            if(jucator.scut > 0){ console.log("scut");canvCtx.strokeStyle = 'rgb(50,50,200)';canvCtx.beginPath();canvCtx.arc(jucator.x,jucator.y,100,0,2*Math.PI);canvCtx.closePath();canvCtx.stroke(); }			
 			var aux = jucator.proiectile;
 			canvCtx.fillStyle='yellow';	
 			while(aux){
