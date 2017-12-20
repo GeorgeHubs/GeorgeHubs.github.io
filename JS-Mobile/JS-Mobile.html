@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Test-Touch</title>
+	</head>
+	<body style="margin:0;">
+	    <div id="suprafata"></div>
+	</body>
+    <script>
+	    var container = document.getElementById('suprafata');
+		container.style.height = window.innerHeight+'px';
+		container.style.width = window.innerWidth+'px';
+		container.style.backgroundColor = 'rgb(100,200,100)';
+		
+		var startX;
+		var pozitieX = 0;
+		
+		container.addEventListener('touchstart',function(e){
+		    var punct = e.changedTouches[0];
+			var coordX = parseInt(punct.clientX),coordY = parseInt(punct.clientY);
+			startX = coordX;
+			container.style.backgroundColor = 'rgb(50,100,50)';
+			container.innerHTML = 'Ai atins suprafata la coordonatele :  X = '+coordX+'   Y = '+coordY;
+		})
+		
+		container.addEventListener('touchend',function(e){
+		    var punct = e.changedTouches[0];
+			var distX = parseInt(punct.clientX) - startX;
+            container.innerHTML += "Distanta parcursa pe axa X : "+distX;
+            			
+            container.style.backgroundColor = 'rgb(100,200,100)';
+		})		
+		
+		container.addEventListener('touchmove',function(e){
+		    var punct = e.changedTouches[0];
+			var distX = parseInt(punct.clientX) - startX;
+            container.innerHTML += "Distanta parcursa pe axa X : "+distX;
+			if(distX < 0){pozitieX -=5;}
+			else if(distX > 0){pozitieX += 5;}
+			
+			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth + window.innerWidth/3){containerPoze.style.left = pozitieX + 'px';}
+		})
+		
+		var poze = ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg'];
+		
+		var containerPoze = document.createElement('div');		
+		containerPoze.style.position = 'fixed';
+		containerPoze.style.bottom = 0 + 'px';
+		containerPoze.style.left = 0 + 'px';		
+		containerPoze.style.width = 'auto';
+		containerPoze.style.height = window.innerHeight/3 + 'px';
+		containerPoze.style.backgroundColor = 'rgba(200,200,200,0.5)';
+		
+		var aux;
+		for(var i=0;i<poze.length;i++){
+		    aux = document.createElement('img');
+			aux.src = poze[i];
+			aux.style.float = 'left';
+			aux.style.width = window.innerWidth/3+'px';
+			aux.style.height = window.innerWidth/3+'px';
+			containerPoze.appendChild(aux);
+		}
+		document.body.appendChild(containerPoze);
+        		
+	</script>
+</html>
