@@ -38,21 +38,28 @@
 			var distX = parseInt(punct.clientX) - startX;
             container.innerHTML += "Distanta parcursa pe axa X : "+distX;
 			
-			if(distX < 0){if(pozitieX - 20 > -window.innerHeight/3)pozitieX -=20;}
-			else if(distX > 0){if(pozitieX + 20 < window.innerHeigth/3)pozitieX +=20;}			
+			if(distX < 0){if(pozitieX - 20 > -window.innerHeight/4)pozitieX -=20;}
+			else if(distX > 0){if(pozitieX + 20 < window.innerHeight/4)pozitieX +=20;}			
 			
-			if(pozitieX > -window.innerHeight/3 && pozitieX < window.innerHeight/3){
+			if(pozitieX > -window.innerHeight/4 && pozitieX < window.innerHeight/4){
 			    containerPoze.style.left = pozitieX + 'px';
 			}
 		})
 		
 		var poze = ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg'];
-		
+		var pozaCurenta = document.createElement('img');
+		pozaCurenta.style.position = 'fixed';
+		pozaCurenta.style.top = 0;
+		pozaCurenta.style.left = 0;
+		pozaCurenta.style.width = window.innerWidth + 'px';
+		pozaCurenta.style.height = (window.innerHeight - window.innerHeight/4) + 'px';
+		pozaCurenta.src = poze[0];
+		document.body.appendChild(pozaCurenta);
 		var containerPoze = document.createElement('div');		
 		containerPoze.style.position = 'fixed';
 		containerPoze.style.bottom = 0 + 'px';
 		containerPoze.style.left = 0 + 'px';		
-		containerPoze.style.width = window.innerHeight/4 * poze.lenght;
+		containerPoze.style.width = window.innerHeight/4 * poze.lenght + 'px';
 		containerPoze.style.height = window.innerHeight/4 + 'px';
 		containerPoze.style.backgroundColor = 'rgba(200,200,200,0.5)';
 		
@@ -64,6 +71,7 @@
 			aux.style.position = 'relative';
 			aux.style.width = window.innerHeight/4+'px';
 			aux.style.height = window.innerHeight/4+'px';
+			aux.onclick = function(){ pozaCurenta.src = this.src; }
 			containerPoze.appendChild(aux);
 		}
 		document.body.appendChild(containerPoze);
