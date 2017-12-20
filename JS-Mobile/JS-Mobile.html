@@ -38,10 +38,10 @@
 			var distX = parseInt(punct.clientX) - startX;
             container.innerHTML += "Distanta parcursa pe axa X : "+distX;
 			
-			if(distX < 0){if(pozitieX - 20 > -window.innerWidth/3)pozitieX -=20;}
-			else if(distX > 0){if(pozitieX + 20 < window.innerWidth/3)pozitieX +=20;}			
+			if(distX < 0){if(pozitieX - 20 > -window.innerHeight/3)pozitieX -=20;}
+			else if(distX > 0){if(pozitieX + 20 < window.innerHeigth/3)pozitieX +=20;}			
 			
-			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth/3){
+			if(pozitieX > -window.innerHeight/3 && pozitieX < window.innerHeight/3){
 			    containerPoze.style.left = pozitieX + 'px';
 			}
 		})
