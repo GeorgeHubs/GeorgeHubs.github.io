@@ -16,8 +16,13 @@
 		
 		container.addEventListener('touchstart',function(e){
 		    var punct = e.changedTouches[0];
-			var coordX = parseInt(punct.clinetX),coordY = parseInt(punct.clientY);
+			var coordX = parseInt(punct.clientX),coordY = parseInt(punct.clientY);
+			container.style.backgroundColor = 'rgb(50,100,50)';
 			container.innerHTML = 'Ai atins suprafata la coordonatele :  X = '+coordX+'   Y = '+coordY;
 		})
+		
+		container.addEventListener('touchend',function(e){
+            container.style.backgroundColor = 'rgb(100,200,100)';
+		})		
 	</script>
 </html>
