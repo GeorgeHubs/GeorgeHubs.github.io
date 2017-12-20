@@ -37,10 +37,12 @@
 		    var punct = e.changedTouches[0];
 			var distX = parseInt(punct.clientX) - startX;
             container.innerHTML += "Distanta parcursa pe axa X : "+distX;
-			if(distX < 0){pozitieX -=20;}
-			else if(distX > 0){pozitieX +=20;}
 			
-			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth + window.innerWidth/3){containerPoze.style.left = pozitieX + 'px';}
+			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth/3){
+			    if(distX < 0){pozitieX -=20;}
+			    else if(distX > 0){pozitieX +=20;}
+			    containerPoze.style.left = pozitieX + 'px';
+			}
 		})
 		
 		var poze = ['p1.jpg','p2.jpg','p3.jpg','p4.jpg','p5.jpg'];
