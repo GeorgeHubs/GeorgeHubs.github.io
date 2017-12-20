@@ -37,8 +37,8 @@
 		    var punct = e.changedTouches[0];
 			var distX = parseInt(punct.clientX) - startX;
             container.innerHTML += "Distanta parcursa pe axa X : "+distX;
-			if(distX < 0){pozitieX -=5;}
-			else if(distX > 0){pozitieX += 5;}
+			if(distX < 0){pozitieX -=20;}
+			else if(distX > 0){pozitieX +=20;}
 			
 			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth + window.innerWidth/3){containerPoze.style.left = pozitieX + 'px';}
 		})
@@ -57,7 +57,7 @@
 		for(var i=0;i<poze.length;i++){
 		    aux = document.createElement('img');
 			aux.src = poze[i];
-			aux.style.float = 'left';
+			aux.style.display = 'inline-block';
 			aux.style.width = window.innerWidth/3+'px';
 			aux.style.height = window.innerWidth/3+'px';
 			containerPoze.appendChild(aux);
