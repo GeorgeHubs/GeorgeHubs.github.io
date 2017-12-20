@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+	    <title>Test-Touch</title>
+	</head>
+	<body style="margin:0;">
+	    <div id="suprafata"></div>
+	</body>
+    <script>
+	    var container = document.getElementById('suprafata');
+		container.height = window.innerHeight;
+		container.width = window.innerWidth;
+		container.style.backgroundColor = 'rgb(50,200,50)';
+		
+		container.addEventListener('touchstart',function(e){
+		    var punct = e.changedTouches[0];
+			var coordX = parseInt(punct.clinetX),coordY = parseInt(punct.clientY);
+			container.innerHTML = 'Ai atins suprafata la coordonatele :  X = '+coordX+'   Y = '+coordY;
+		})
+	</script>
+</html>
