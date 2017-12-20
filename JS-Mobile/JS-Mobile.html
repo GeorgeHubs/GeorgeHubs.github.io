@@ -38,9 +38,10 @@
 			var distX = parseInt(punct.clientX) - startX;
             container.innerHTML += "Distanta parcursa pe axa X : "+distX;
 			
+			if(distX < 0){if(pozitieX - 20 > -window.innerWidth/3)pozitieX -=20;}
+			else if(distX > 0){if(pozitieX + 20 < window.innerWidth/3)pozitieX +=20;}			
+			
 			if(pozitieX > -window.innerWidth/3 && pozitieX < window.innerWidth/3){
-			    if(distX < 0){pozitieX -=20;}
-			    else if(distX > 0){pozitieX +=20;}
 			    containerPoze.style.left = pozitieX + 'px';
 			}
 		})
@@ -52,16 +53,17 @@
 		containerPoze.style.bottom = 0 + 'px';
 		containerPoze.style.left = 0 + 'px';		
 		containerPoze.style.width = 'auto';
-		containerPoze.style.height = window.innerHeight/3 + 'px';
+		containerPoze.style.height = window.innerHeight/4 + 'px';
 		containerPoze.style.backgroundColor = 'rgba(200,200,200,0.5)';
 		
 		var aux;
 		for(var i=0;i<poze.length;i++){
 		    aux = document.createElement('img');
 			aux.src = poze[i];
+			aux.style.position = 'relative';
 			aux.style.display = 'inline-block';
-			aux.style.width = window.innerWidth/3+'px';
-			aux.style.height = window.innerWidth/3+'px';
+			aux.style.width = window.innerHeight/4+'px';
+			aux.style.height = window.innerWidth/4+'px';
 			containerPoze.appendChild(aux);
 		}
 		document.body.appendChild(containerPoze);
