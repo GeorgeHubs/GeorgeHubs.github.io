@@ -52,7 +52,7 @@
 		containerPoze.style.position = 'fixed';
 		containerPoze.style.bottom = 0 + 'px';
 		containerPoze.style.left = 0 + 'px';		
-		containerPoze.style.width = 'auto';
+		containerPoze.style.width = window.innerHeight/4 * poze.lenght;
 		containerPoze.style.height = window.innerHeight/4 + 'px';
 		containerPoze.style.backgroundColor = 'rgba(200,200,200,0.5)';
 		
@@ -60,10 +60,10 @@
 		for(var i=0;i<poze.length;i++){
 		    aux = document.createElement('img');
 			aux.src = poze[i];
-			aux.style.position = 'relative';
 			aux.style.display = 'inline-block';
+			aux.style.position = 'relative';
 			aux.style.width = window.innerHeight/4+'px';
-			aux.style.height = window.innerWidth/4+'px';
+			aux.style.height = window.innerHeight/4+'px';
 			containerPoze.appendChild(aux);
 		}
 		document.body.appendChild(containerPoze);
