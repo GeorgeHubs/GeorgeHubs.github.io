@@ -14,9 +14,12 @@
 		container.style.width = window.innerWidth+'px';
 		container.style.backgroundColor = 'rgb(100,200,100)';
 		
+		var startX;
+		
 		container.addEventListener('touchstart',function(e){
 		    var punct = e.changedTouches[0];
 			var coordX = parseInt(punct.clientX),coordY = parseInt(punct.clientY);
+			startX = coordX;
 			container.style.backgroundColor = 'rgb(50,100,50)';
 			container.innerHTML = 'Ai atins suprafata la coordonatele :  X = '+coordX+'   Y = '+coordY;
 		})
@@ -24,5 +27,11 @@
 		container.addEventListener('touchend',function(e){
             container.style.backgroundColor = 'rgb(100,200,100)';
 		})		
+		
+		container.addEventListener('touchmove',function(e){
+		    var punct = e.changedTouches[0];
+			var distX = parseInt(punct.clientX) - startX;
+            container.innerHTML += "Distanta parcursa pe axa X : "+distX;			
+		})
 	</script>
 </html>
